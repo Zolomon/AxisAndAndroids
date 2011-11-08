@@ -53,10 +53,13 @@ public class CameraServer {
 			
 			System.out.printf("Serving client: %s", clientSocket.getInetAddress().toString());
 			
-			// Handle the client some way!!!
 			
-			// e.g. with a thread object:
-			// new ClientHandler(clientSocket).start();
+			// * What was our plan here?
+			// Create some Connection object with socket,
+			// then some ClientHandler with the Connection object.
+						
+			// Handle the client some way!!! e.g. with a thread object:
+			// new ClientHandler(Connection client).start();
 			
 		}
 	}
