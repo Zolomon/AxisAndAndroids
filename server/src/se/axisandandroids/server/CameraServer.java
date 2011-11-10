@@ -60,8 +60,16 @@ public class CameraServer {
 						
 			// Handle the client some way!!! e.g. with a thread object:
 			// new ClientHandler(Connection client).start();
+		
 			
+			// OR if only one client...
+			servClient(clientSocket);
 		}
+	}
+
+	private void servClient(Socket clientSock) {
+		// listen commands, fetch images, send images ???
+
 	}
 
 	
