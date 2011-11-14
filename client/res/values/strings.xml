@@ -3,5 +3,9 @@
 
     <string name="hello">Hello World, from Axis &amp; Androids!</string>
     <string name="app_name">Client</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
 
 </resources>
