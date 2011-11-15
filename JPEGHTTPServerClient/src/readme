@@ -1,0 +1,3 @@
+La till en while(true) runt refreshImage() i klienten för att slippa klicka en gång för varje ny bild. :D
+
+
