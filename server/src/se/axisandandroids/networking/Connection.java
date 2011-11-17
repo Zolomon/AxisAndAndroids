@@ -19,7 +19,9 @@ public class Connection {
 	private BufferedReader in;
 	private PrintWriter out;
 	
-	public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
+	private byte[] image_buffer;
+	
+	public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG } // Create protocol class instead
 	public static enum SYNC_MODE { AUTO, SYNC, ASYNC }
 	public static enum DISP_MODE { AUTO, IDLE, MOVIE }
 	
@@ -31,6 +33,7 @@ public class Connection {
 	
 	public void connect(Socket sock) {
 		this.sock = sock;
+		image_buffer = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 		connect();
 	}
 	
@@ -65,38 +68,39 @@ public class Connection {
 		}			
 	}
 	
-	public byte[] recvImage() {
-		
-		// Read to a buffer array instead ???
-		
-		byte[] b = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-		int len;
+	public byte[] recvImage() {				
+		int len = 0;
+		byte[] b = null;
 		
 		try {
-			len = is.read(b, 0, Axis211A.IMAGE_BUFFER_SIZE);			
+			len = is.read(image_buffer, 0, Axis211A.IMAGE_BUFFER_SIZE);		
+			b = new byte[len];
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
 		}			
 		
-		return null; // note
+		for (int i = 0; i < len; ++i)
+			b[i] = image_buffer[i];
+		
+		return b;
 	}
 	
 	
 	public void sendDisplayMode(int disp_mode) {
-		sendInt(disp_mode); // Sanity Check ?
+		sendInt(disp_mode); 	// Sanity Check ?
 	}
 	
 	public int recvDisplayMode() throws IOException { 		
-		return recvInt(); // Sanity Check ?
+		return recvInt(); 		// Sanity Check ?
 	}
 	
 	public void sendSyncMode(int sync_mode) {
-		sendInt(sync_mode); // Sanity Check ?
+		sendInt(sync_mode); 	// Sanity Check ?
 	}
 	
 	public int recvSyncMode() throws IOException { 
-		return recvInt();  // Sanity Check ?
+		return recvInt();  		// Sanity Check ?
 	}
 				
 	public void sendInt(int nbr) {
