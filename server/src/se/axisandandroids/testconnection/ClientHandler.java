@@ -26,9 +26,9 @@ public class ClientHandler extends Thread {
 	public void run() {
 		try {
 			//servClient(clientSocket);
-			
+
 			//servConnectionTest(clientSocket);
-			
+
 			servTestSendImage(clientSocket); 
 		} catch (IOException e) {
 			System.err.println("io-exception");
@@ -47,7 +47,7 @@ public class ClientHandler extends Thread {
 		nbr = 123123;
 		System.out.printf("Sending int: %d\n", nbr);
 		con.sendInt(nbr);
-		
+
 		// test recvSyncMode
 		int cmd = con.recvInt();
 		int mode = con.recvSyncMode();
@@ -64,22 +64,37 @@ public class ClientHandler extends Thread {
 
 		// send byte array / send image
 		byte[] b = { 12,43,34,120,21,32,100,34 };
-		
+
 		con.sendImage(b);						
 	}
-	
+
 	public void servTestSendImage(Socket sock) throws IOException {
 		Connection con = new Connection(sock);		
 
 		// send byte array / send image
-		byte[] b = { 12,43,34,120,21,32,100,34 };		
-		
-		con.sendImage(b);					
+		/*
+		byte[] b = { 12,43,34,120,21,32,100,34 };				
+		con.sendImage(b);
+		 */
+
+		// test recv byte array / send image
+		int cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		System.out.println("Command: " + cmd);			
+
+		byte[] b = con.recvImage();		
+
+		System.out.printf("Received Length %d\n", b.length);
+		for (int i = 0; i < b.length; ++i) {
+			System.out.printf("%d ", b[i]);
+		}
+		System.out.println();
+
 	}
-	
+
 	public void servClient(Socket clientSocket) throws IOException {	
 		System.out.println("Serving client: " + clientSocket.getInetAddress().toString());
-		
+
 		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				clientSocket.getInputStream()));

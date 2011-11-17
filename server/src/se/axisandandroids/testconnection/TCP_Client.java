@@ -49,7 +49,7 @@ public class TCP_Client {
 			System.err.println("io-exception.");
 			System.exit(1);
 		}
-		
+
 		System.out.println("Connection Setup Complete");
 	}
 
@@ -70,9 +70,9 @@ public class TCP_Client {
 		}
 		stdIn.close();
 	}
-	
-	
-	
+
+
+
 	public void connection_test() throws IOException {		
 		System.out.println("Connection Test");
 
@@ -82,56 +82,57 @@ public class TCP_Client {
 		int nbr = 983745;
 		System.out.printf("Sending int: %d\n", nbr);
 		con.sendInt(nbr);
-		
+
 		// Test recvInt()
 		nbr = con.recvInt();
 		System.out.printf("Got int: %d\n", nbr);	
-		
-		
+
+
 		// test sendSyncMode
 		con.sendSyncMode(Protocol.SYNC_MODE.AUTO);
-		
+
 		// test sendDisplayMode
 		con.sendDisplayMode(Protocol.DISP_MODE.AUTO);
-		
+
 		// test recv byte array / send image
 		int cmd = con.recvInt();
 		assert(cmd == Protocol.COMMAND.IMAGE);
 		byte[] b = con.recvImage();
-		
+
 		System.out.printf("Length %d\n", b.length);
 		for (int i = 0; i < b.length; ++i) {
 			System.out.printf("%d ", b[i]);
 		}
 		System.out.println();
-		
+
 
 	}
-	
+
 	public void send_image_test() throws IOException {		
 		System.out.println("Connection Test");
 
 		Connection con = new Connection(socket);
 
+
 		// test recv byte array / send image
+		/*
 		int cmd = con.recvInt();
 		assert(cmd == Protocol.COMMAND.IMAGE);
-		System.out.println("Command: " + cmd);
-		
-		try {
-			Thread.sleep((long) 2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		byte[] b = con.recvImage();
-		
-		
+		System.out.println("Command: " + cmd);			
+
+		byte[] b = con.recvImage();		
+
 		System.out.printf("Length %d\n", b.length);
 		for (int i = 0; i < b.length; ++i) {
 			System.out.printf("%d ", b[i]);
 		}
 		System.out.println();
+		 */
+
+		// send byte array / send image
+		byte[] b = { 12,43,34,120,21,32,100,34 };				
+		con.sendImage(b);
+
 	}
 
 
@@ -154,19 +155,19 @@ public class TCP_Client {
 		}
 
 		TCP_Client tcpclient = new TCP_Client(addr, port);
-		
+
 		try {
 			//tcpclient.userinput_echo();
-			
+
 			//tcpclient.connection_test();
 			tcpclient.send_image_test();
-			
-			
+
+
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
 		}		
 	}
-	
+
 }

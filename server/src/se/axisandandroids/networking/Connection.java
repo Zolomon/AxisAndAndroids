@@ -59,49 +59,72 @@ public class Connection {
 		sock = null; // etc...
 	}
 	
+	public void recvCommand() throws IOException {
+		int cmd = recvInt();		
+		switch (cmd) {
+		case Protocol.COMMAND.IMAGE: 		
+			byte[] b = recvImage();
+			break;
+		case Protocol.COMMAND.SYNC_MODE:
+			break;
+		case Protocol.COMMAND.DISP_MODE:
+			break;
+		case Protocol.COMMAND.CONNECTED:
+			break;
+		default:
+			break;						
+		}
+	}
 			
 	public void sendImage(byte[] data) {		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);
+		
 		System.out.println("Sent len: " + data.length);
 
-		try {						
-			//os.write(data, 0, data.length);
-			
-			os.write(data);
+		//try {
+			/*
+			os.write(data, 0, data.length);
+			//os.write('\r'); 
+			//os.write('\n');			
 			os.flush();
+			*/
 			
-
+			out.println(new String(data));
+			
+			
+			
+			/*
 			for (int i = 0; i < data.length; ++i) {
 				System.out.print(data[i]+ " ");
 			}
 			System.out.println();
+			*/
 			
-			//out.println(data.toString());			
+			//out.println(data.toString());
+		/*
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
-		}					
+		}		
+		*/			
 	}
 	
 	public byte[] recvImage() throws IOException {				
 		int len = recvInt();
+		
 		System.out.println("len: " + len);
-		byte[] b = new byte[len];	
+		
+		byte[] b = null; // = new byte[len];	
 		try {
 			System.out.println("recv byte array...");
-			//int bytes_read = is.read(b, 0, len);
-			int bytes_read = is.read(b);
-			System.out.println(bytes_read);
 
+			/*
+			int bytes_read = is.read(b, 0, len);
+			*/
+			String str = in.readLine();
+			b = str.getBytes();
 			
-			for (int i = 0; i < b.length; ++i) {
-				System.out.print(b[i]+ " ");
-			}
-			System.out.println();
-			
-			
-			//System.out.println( in.readLine() );
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);

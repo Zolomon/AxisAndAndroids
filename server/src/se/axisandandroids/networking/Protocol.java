@@ -8,7 +8,7 @@ public class Protocol {
 		public final static int SYNC_MODE 	= 1;
 		public final static int DISP_MODE 	= 2;
 		public final static int CONNECTED 	= 3; 
-		public final static int END_MSG 	= 4;
+		//public final static int END_MSG 	= 4;
 	}
 
 	public class SYNC_MODE {		
