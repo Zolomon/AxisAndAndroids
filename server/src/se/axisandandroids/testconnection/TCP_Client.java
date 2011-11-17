@@ -137,7 +137,7 @@ public class TCP_Client {
 
 	public static void main(String[] args) {
 		InetAddress addr = null;
-		int port = 5000;
+		int port = 6001;
 
 		try {
 			addr = InetAddress.getByName("localhost");
