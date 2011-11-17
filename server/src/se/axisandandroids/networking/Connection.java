@@ -64,31 +64,13 @@ public class Connection {
 				
 	public void sendImage(byte[] data) {		
 		sendInt(Protocol.COMMAND.IMAGE);
-		sendInt(data.length);
-		
-		System.out.println("Sent len: " + data.length);
+		sendInt(data.length);		
+		out.println(new String(data));
 
-		//try {
-			/*
-			os.write(data, 0, data.length);
-			//os.write('\r'); 
-			//os.write('\n');			
-			os.flush();
-			*/
-			
-			out.println(new String(data));
-			
-			
-			
-			/*
-			for (int i = 0; i < data.length; ++i) {
-				System.out.print(data[i]+ " ");
-			}
-			System.out.println();
-			*/
-			
-			//out.println(data.toString());
 		/*
+		try {
+			os.write(data, 0, data.length);		
+			os.flush();
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
