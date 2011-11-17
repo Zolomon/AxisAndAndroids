@@ -17,13 +17,19 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 
 public class TCP_Client {
-	Socket socket;
-	InetAddress host;
-	int port;
+	
+	
+	private Socket socket;
+	private InetAddress host;	
+	private final static int default_port = 6000;
+	private int port;
 
 	PrintWriter out = null;
 	BufferedReader in = null;
@@ -72,7 +78,7 @@ public class TCP_Client {
 
 	public static void main(String[] args) {
 		InetAddress addr = null;
-		int port = 6077;
+		int port = default_port;
 
 		try {
 			addr = InetAddress.getByName("localhost");
@@ -92,8 +98,9 @@ public class TCP_Client {
 
 		try {
 			// tcpclient.userinput_echo();
+			// tcpclient.connection_test();
 
-			tcpclient.connection_test();
+			tcpclient.testFakeCam();			
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
@@ -142,8 +149,29 @@ public class TCP_Client {
 
 		// Test sendImage
 		System.out.println("\n** Sending Image...");
-		con.sendImage(c);
-		
+		con.sendImage(c,0,c.length);
 	}
+	
+	public void testFakeCam() throws IOException {
+		System.out.println("**Test FakeCam");
+		
+		Connection con = new Connection(socket);
+		
+		int cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		byte[] img = con.recvImage();	
+		
+		System.out.println("Received " + img.length + " bytes.");
+		jframe_show_jpeg("Primus Inter Pares ", img);
+	}
+	
+	public void jframe_show_jpeg(String framename, byte[] data) {
+		JFrame f = new JFrame(framename); 		
+		ImageIcon img = new javax.swing.ImageIcon(data,"jpeg frame");
+		f.getContentPane().add(new javax.swing.JLabel(img)); 				
+		f.setSize(img.getIconWidth(),img.getIconHeight()); 
+		f.setVisible(true); 
+	}
+
 
 }

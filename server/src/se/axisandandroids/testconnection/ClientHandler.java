@@ -14,20 +14,23 @@ import java.net.Socket;
 
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
+import se.lth.cs.fakecamera.Axis211A;
 
 public class ClientHandler extends Thread {
 	Socket clientSocket;
+	Axis211A axis;
 
-	public ClientHandler(Socket clientSocket) {
+	public ClientHandler(Socket clientSocket, Axis211A axis) {
 		super();
 		this.clientSocket = clientSocket;
+		this.axis = axis;
 	}
 
 	public void run() {
 		try {
-			// servClient(clientSocket);
-
-			servConnectionTest(clientSocket);
+			//servClient(clientSocket);
+			//servConnectionTest(clientSocket);
+			servFakeCam(clientSocket);
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
@@ -90,7 +93,9 @@ public class ClientHandler extends Thread {
 		// Test sendImage
 		System.out.println("\n** Sending Image...");
 		byte[] c = { 12,43,34,120,21,32,100,34 };				
-		con.sendImage(c);
+		//con.sendImage(c);
+		con.sendImage(c,0,c.length);
+
 
 		// Test recvImage
 		System.out.println("\n** Receiving Image...");
@@ -104,6 +109,23 @@ public class ClientHandler extends Thread {
 			assert(b[i] == c[i]);
 		}
 		System.out.println();
+	}
+	
+	
+	public void servFakeCam(Socket sock) throws IOException {
+		Connection con = new Connection(sock);
+		byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
+		if (! axis.connect()) {
+			System.out.println("Failed to connect to camera!");
+			System.exit(1);
+		}
+		
+		int len = axis.getJPEG(jpeg, 0);		
+		
+		System.out.println("Sending: " + len + " bytes.");
+		con.sendImage(jpeg, 0, len);
+
+		axis.close();
 	}
 }

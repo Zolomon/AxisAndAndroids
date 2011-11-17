@@ -55,25 +55,58 @@ public class Connection {
 	public void sendImage(byte[] data) {		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);		
-		out.println(new String(data));
-
-		/*
+		
+		//out.println(new String(data));		
 		try {
-			os.write(data, 0, data.length);		
+			os.write(data, 0, data.length);
 			os.flush();
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
 		}		
-		*/			
+	}
+	
+	public void sendImage(byte[] data, int a, int b) throws IOException {
+		int len = b - a;
+		sendInt(Protocol.COMMAND.IMAGE);
+		sendInt(len);	
+		
+		
+		//out.println((new String(data)).substring(a, b));	
+		
+		try {
+			os.write(data, a, len);		
+			//os.write('\r');
+			//os.write('\n');
+			os.flush();
+		} catch (IOException e) {
+			System.err.println("IO-error");
+			System.exit(1);
+		}		
 	}
 	
 	public byte[] recvImage() throws IOException {				
 		int len = recvInt();				
-		byte[] b = null;	
+		byte[] b = new byte[len];
 		try {
-			//int bytes_read = is.read(b, 0, len);		
-			b = in.readLine().getBytes();			
+			System.out.println("len: "+ len);
+			
+			int status = 0;
+			int bytes_read = 0;
+			do {
+				System.out.println("Loopin' " + status);
+				status = is.read(b, bytes_read, len - bytes_read);		
+				if (status > 0) {
+					bytes_read += status;
+					System.out.println("bytes read: "+ bytes_read);
+				}
+			} while (status >= 0);
+			
+			System.out.println("Not loopin': "+ bytes_read);
+
+	
+			//int bytes_read = is.read(b, 0, len);					
+			//b = in.readLine().getBytes();			
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
