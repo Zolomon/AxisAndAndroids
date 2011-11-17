@@ -25,7 +25,7 @@ public class ClientHandler extends Thread {
 
 	public void run() {
 		try {
-			//servClient(clientSocket);
+			// servClient(clientSocket);
 
 			servConnectionTest(clientSocket);
 		} catch (IOException e) {
@@ -75,16 +75,16 @@ public class ClientHandler extends Thread {
 		int cmd = con.recvInt();
 		int mode = con.recvSyncMode();
 		System.out.printf("Command %d Mode %d\n", cmd, mode);
-		assert(cmd == Protocol.COMMAND.SYNC_MODE);
-		assert(mode == Protocol.SYNC_MODE.AUTO);
+		assert (cmd == Protocol.COMMAND.SYNC_MODE);
+		assert (mode == Protocol.SYNC_MODE.AUTO);
 
 		// Test recvDisplayMode
 		System.out.println("\n** Received DisplayMode...");
 		cmd = con.recvInt();
 		mode = con.recvDisplayMode();
 		System.out.printf("Command %d Mode %d\n", cmd, mode);
-		assert(cmd == Protocol.COMMAND.DISP_MODE);
-		assert(mode == Protocol.DISP_MODE.AUTO);
+		assert (cmd == Protocol.COMMAND.DISP_MODE);
+		assert (mode == Protocol.DISP_MODE.AUTO);
 
 
 		// Test sendImage
@@ -106,5 +106,4 @@ public class ClientHandler extends Thread {
 		System.out.println();
 
 	}
-
 }

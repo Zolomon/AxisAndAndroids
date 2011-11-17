@@ -9,7 +9,6 @@ package se.axisandandroids.testconnection;
  * 				networking/sockets/readingWriting.html
  * --------------------------------------------------- */
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,10 +17,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
-
 
 public class TCP_Client {
 	Socket socket;
@@ -32,7 +29,7 @@ public class TCP_Client {
 	BufferedReader in = null;
 
 	public TCP_Client(InetAddress host, int port) {
-		this.host = host; 
+		this.host = host;
 		this.port = port;
 		connect();
 	}
@@ -41,7 +38,8 @@ public class TCP_Client {
 		try {
 			socket = new Socket(host, port);
 			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(socket
+					.getInputStream()));
 		} catch (UnknownHostException e) {
 			System.err.println("Unknown host.");
 			System.exit(1);
@@ -56,14 +54,15 @@ public class TCP_Client {
 	public void disconnect() throws IOException {
 		out.close();
 		in.close();
-		socket.close();	
+		socket.close();
 	}
 
 	public void userinput_echo() throws IOException {
 		System.out.println("Scream to the ether and it will answer:");
 
-		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));		
-		String userInput;		
+		BufferedReader stdIn = new BufferedReader(new InputStreamReader(
+				System.in));
+		String userInput;
 		while ((userInput = stdIn.readLine()) != null) {
 			out.println(userInput);
 			System.out.println(in.readLine());
@@ -71,36 +70,35 @@ public class TCP_Client {
 		stdIn.close();
 	}
 
-
 	public static void main(String[] args) {
 		InetAddress addr = null;
-		int port = 6001;
+		int port = 6077;
 
 		try {
 			addr = InetAddress.getByName("localhost");
 			if (args.length >= 1) {
 				addr = InetAddress.getByName(args[0]);
-			} 
-		} catch(UnknownHostException e) {
+			}
+		} catch (UnknownHostException e) {
 			System.err.println("Unknown host.");
 			System.exit(1);
 		}
 
 		if (args.length >= 2) {
-			port = Integer.parseInt( args[1] );
+			port = Integer.parseInt(args[1]);
 		}
 
 		TCP_Client tcpclient = new TCP_Client(addr, port);
 
 		try {
-			//tcpclient.userinput_echo();
+			// tcpclient.userinput_echo();
 
 			tcpclient.connection_test();
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
-		}		
+		}
 	}
 	
 	
