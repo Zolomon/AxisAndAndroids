@@ -25,9 +25,9 @@ public class Connection {
 	
 	
 	// Create protocol class instead
-	public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
-	public static enum SYNC_MODE { AUTO, SYNC, ASYNC }
-	public static enum DISP_MODE { AUTO, IDLE, MOVIE }
+	//public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
+	//public static enum SYNC_MODE { AUTO, SYNC, ASYNC }
+	//public static enum DISP_MODE { AUTO, IDLE, MOVIE }
 	
 		
 	public Connection(Socket sock) {
@@ -82,7 +82,7 @@ public class Connection {
 			System.exit(1);
 		}					
 		for (int i = 0; i < len; ++i)
-			b[i] = image_buffer[i];		
+			b[i] = image_buffer[i];					
 		return b;
 	}
 	

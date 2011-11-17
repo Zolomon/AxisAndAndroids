@@ -1,5 +1,5 @@
 package se.axisandandroids.server;
-import se.axisandandroids.networking.Connection.DISP_MODE;
+import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.*;
 import java.io.*;
 
@@ -8,13 +8,13 @@ public class CameraThread {
 	private byte[] jpeg;
 //	final static int IDLE = 0;		// USE ENUMS INSTEAD ...
 //	final static int MOVIE = 1;
-	DISP_MODE display_mode;
+	private int display_mode = Protocol.DISP_MODE.IDLE;
 
 	
 	public CameraThread(){
 		myCamera = new Axis211A();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-		display_mode = DISP_MODE.IDLE;
+		display_mode = Protocol.DISP_MODE.IDLE;
 	}
 
 	private boolean cameraConnect(){
@@ -29,10 +29,10 @@ public class CameraThread {
 		}
 	}
 	
-	public boolean setDisplayMode(DISP_MODE display_mode){
-		if(display_mode != DISP_MODE.MOVIE || 
-				display_mode !=  DISP_MODE.IDLE || 
-				display_mode != DISP_MODE.AUTO){
+	public boolean setDisplayMode(int display_mode){
+		if(display_mode != Protocol.DISP_MODE.MOVIE || 
+				display_mode !=  Protocol.DISP_MODE.IDLE || 
+				display_mode != Protocol.DISP_MODE.AUTO){
 			System.out.println("Invalid mode!");
 			return false;
 		}
@@ -43,7 +43,7 @@ public class CameraThread {
 	}
 	
 	private void recieveJPEG(){
-		if(display_mode == DISP_MODE.IDLE){
+		if(display_mode == Protocol.DISP_MODE.IDLE){
 			int len = myCamera.getJPEG(jpeg,0);
 			//os.write(jpeg,0,len);
 			myCamera.close();
