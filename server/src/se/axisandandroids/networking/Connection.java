@@ -58,24 +58,8 @@ public class Connection {
 		sock.close();
 		sock = null; // etc...
 	}
-	
-	public void recvCommand() throws IOException {
-		int cmd = recvInt();		
-		switch (cmd) {
-		case Protocol.COMMAND.IMAGE: 		
-			byte[] b = recvImage();
-			break;
-		case Protocol.COMMAND.SYNC_MODE:
-			break;
-		case Protocol.COMMAND.DISP_MODE:
-			break;
-		case Protocol.COMMAND.CONNECTED:
-			break;
-		default:
-			break;						
-		}
-	}
-			
+		
+				
 	public void sendImage(byte[] data) {		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);

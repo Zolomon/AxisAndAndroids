@@ -23,4 +23,10 @@ public class Protocol {
 		public final static int MOVIE 		= 2;
 	}
 	
+	/*
+	public class CONNECTED {
+		public final static int TRUE		= 0;
+		public final static int FALSE		= 0;
+	}
+	*/
 }
