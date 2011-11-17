@@ -7,9 +7,8 @@ import java.net.Socket;
 public class CameraServer {
 
 	private final static int default_port = 6000;
-
 	private int port;
-	ServerSocket servSocket = null;
+	private ServerSocket servSocket = null;
 
 	public static void main(String[] args) {
 		System.out
@@ -35,7 +34,7 @@ public class CameraServer {
 		System.out.println("Camera Server up and running...");
 	}
 
-	public void listenForConnection() {
+	private void listenForConnection() {
 
 		System.out.printf("Listening on port: %d", port);
 
