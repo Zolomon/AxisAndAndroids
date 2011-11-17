@@ -72,70 +72,6 @@ public class TCP_Client {
 	}
 
 
-
-	public void connection_test() throws IOException {		
-		System.out.println("Connection Test");
-
-		Connection con = new Connection(socket);
-
-		// Test sendInt()
-		int nbr = 983745;
-		System.out.printf("Sending int: %d\n", nbr);
-		con.sendInt(nbr);
-
-		// Test recvInt()
-		nbr = con.recvInt();
-		System.out.printf("Got int: %d\n", nbr);	
-
-
-		// test sendSyncMode
-		con.sendSyncMode(Protocol.SYNC_MODE.AUTO);
-
-		// test sendDisplayMode
-		con.sendDisplayMode(Protocol.DISP_MODE.AUTO);
-
-		// test recv byte array / send image
-		int cmd = con.recvInt();
-		assert(cmd == Protocol.COMMAND.IMAGE);
-		byte[] b = con.recvImage();
-
-		System.out.printf("Length %d\n", b.length);
-		for (int i = 0; i < b.length; ++i) {
-			System.out.printf("%d ", b[i]);
-		}
-		System.out.println();
-
-
-	}
-
-	public void send_image_test() throws IOException {		
-		System.out.println("Connection Test");
-
-		Connection con = new Connection(socket);
-
-
-		// test recv byte array / send image
-		/*
-		int cmd = con.recvInt();
-		assert(cmd == Protocol.COMMAND.IMAGE);
-		System.out.println("Command: " + cmd);			
-
-		byte[] b = con.recvImage();		
-
-		System.out.printf("Length %d\n", b.length);
-		for (int i = 0; i < b.length; ++i) {
-			System.out.printf("%d ", b[i]);
-		}
-		System.out.println();
-		 */
-
-		// send byte array / send image
-		byte[] b = { 12,43,34,120,21,32,100,34 };				
-		con.sendImage(b);
-
-	}
-
-
 	public static void main(String[] args) {
 		InetAddress addr = null;
 		int port = 6001;
@@ -159,15 +95,57 @@ public class TCP_Client {
 		try {
 			//tcpclient.userinput_echo();
 
-			//tcpclient.connection_test();
-			tcpclient.send_image_test();
-
-
+			tcpclient.connection_test();
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
 		}		
+	}
+	
+	
+	public void connection_test() throws IOException {		
+		System.out.println("Connection Test");
+
+		Connection con = new Connection(socket);
+
+		// Test sendInt()
+		System.out.println("\n** Sending int...");
+		int nbr = 983745;
+		System.out.printf("Sending int: %d\n", nbr);
+		con.sendInt(nbr);
+
+		// Test recvInt()
+		System.out.println("\n** Receiving int...");
+		nbr = con.recvInt();
+		System.out.printf("Got int: %d\n", nbr);	
+
+		// Test sendSyncMode
+		System.out.println("\n** Sending SyncMode...");
+		con.sendSyncMode(Protocol.SYNC_MODE.AUTO);
+
+		// Test sendDisplayMode
+		System.out.println("\n** Sending DisplayMode...");
+		con.sendDisplayMode(Protocol.DISP_MODE.AUTO);
+
+		// Test recvImage
+		byte[] c = { 12,43,34,120,21,32,100,34 };			
+		System.out.println("\n** Receiving Image...");
+		int cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		System.out.println("Command: " + cmd);			
+		byte[] b = con.recvImage();		
+		System.out.printf("Length: %d\n", b.length);
+		for (int i = 0; i < b.length; ++i) {
+			System.out.printf("%d ", b[i]);
+			assert(b[i] == c[i]);
+		}
+		System.out.println();
+
+		// Test sendImage
+		System.out.println("\n** Sending Image...");
+		con.sendImage(c);
+		
 	}
 
 }

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import se.lth.cs.fakecamera.Axis211A;
 
 
 
@@ -95,20 +94,11 @@ public class Connection {
 	}
 	
 	public byte[] recvImage() throws IOException {				
-		int len = recvInt();
-		
-		System.out.println("len: " + len);
-		
-		byte[] b = null; // = new byte[len];	
+		int len = recvInt();				
+		byte[] b = null;	
 		try {
-			System.out.println("recv byte array...");
-
-			/*
-			int bytes_read = is.read(b, 0, len);
-			*/
-			String str = in.readLine();
-			b = str.getBytes();
-			
+			//int bytes_read = is.read(b, 0, len);		
+			b = in.readLine().getBytes();			
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
@@ -119,20 +109,20 @@ public class Connection {
 	
 	public void sendDisplayMode(int disp_mode) {
 		sendInt(Protocol.COMMAND.DISP_MODE);
-		sendInt(disp_mode); 	// Sanity Check ?
+		sendInt(disp_mode);
 	}
 	
 	public int recvDisplayMode() throws IOException { 		
-		return recvInt(); 		// Sanity Check ?
+		return recvInt();
 	}
 	
 	public void sendSyncMode(int sync_mode) {
 		sendInt(Protocol.COMMAND.SYNC_MODE);
-		sendInt(sync_mode); 				// Sanity Check ?
+		sendInt(sync_mode);
 	}
 	
 	public int recvSyncMode() throws IOException { 
-		return recvInt();  		// Sanity Check ?
+		return recvInt();
 	}
 				
 	public void sendInt(int nbr) {				
@@ -148,7 +138,7 @@ public class Connection {
 		out.write((nbr >> 24) & 0xFF);
 		out.write((nbr >> 16) & 0xFF);
 		out.write((nbr >> 8)  & 0xFF);
-		out.write( nbr 	   & 0xFF);
+		out.write( nbr 	      & 0xFF);
 		out.flush();
 		*/
 	}
@@ -158,6 +148,7 @@ public class Connection {
 		int status = in.read(b, 0, b.length);
 		if (status == -1) {
 			System.err.println("IO-error - reached EOF.");
+			System.exit(1);
 		}
 		return b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3];
 		
