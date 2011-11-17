@@ -4,30 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
+//import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
 
-
 public class Connection {
 	
-	private Socket sock;	
-	
-	// input and output should be independent
-	private InputStream is;			
+	private Socket sock;		
+	private InputStream is;		// input and output should be independent
 	private OutputStream os;
 	private BufferedReader in;
 	private PrintWriter out;
-		
-	
-	// Create protocol class instead
-	//public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
-	//public static enum SYNC_MODE { AUTO, SYNC, ASYNC }
-	//public static enum DISP_MODE { AUTO, IDLE, MOVIE }
-	
-		
+			
 	public Connection(Socket sock) {
 		this.sock = sock;		
 		connect();
