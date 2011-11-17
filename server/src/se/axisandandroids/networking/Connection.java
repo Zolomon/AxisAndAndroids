@@ -20,9 +20,7 @@ public class Connection {
 	private OutputStream os;
 	private BufferedReader in;
 	private PrintWriter out;
-	
-	private byte[] image_buffer;
-	
+		
 	
 	// Create protocol class instead
 	//public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
@@ -37,7 +35,6 @@ public class Connection {
 	
 	public void connect(Socket sock) {
 		this.sock = sock;
-		image_buffer = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 		connect();
 	}
 	
@@ -61,33 +58,60 @@ public class Connection {
 		sock.close();
 		sock = null; // etc...
 	}
+	
 			
 	public void sendImage(byte[] data) {		
-		try {
-			os.write(data, 0, data.length);			
-		} catch (IOException e) {
-			System.err.println("IO-error");
-			System.exit(1);
-		}			
-	}
-	
-	public byte[] recvImage() {				
-		int len = 0;
-		byte[] b = null;		
-		try {
-			len = is.read(image_buffer, 0, Axis211A.IMAGE_BUFFER_SIZE);		
-			b = new byte[len];
+		sendInt(Protocol.COMMAND.IMAGE);
+		sendInt(data.length);
+		System.out.println("Sent len: " + data.length);
+
+		try {						
+			//os.write(data, 0, data.length);
+			
+			os.write(data);
+			os.flush();
+			
+
+			for (int i = 0; i < data.length; ++i) {
+				System.out.print(data[i]+ " ");
+			}
+			System.out.println();
+			
+			//out.println(data.toString());			
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
 		}					
-		for (int i = 0; i < len; ++i)
-			b[i] = image_buffer[i];					
+	}
+	
+	public byte[] recvImage() throws IOException {				
+		int len = recvInt();
+		System.out.println("len: " + len);
+		byte[] b = new byte[len];	
+		try {
+			System.out.println("recv byte array...");
+			//int bytes_read = is.read(b, 0, len);
+			int bytes_read = is.read(b);
+			System.out.println(bytes_read);
+
+			
+			for (int i = 0; i < b.length; ++i) {
+				System.out.print(b[i]+ " ");
+			}
+			System.out.println();
+			
+			
+			//System.out.println( in.readLine() );
+		} catch (IOException e) {
+			System.err.println("IO-error");
+			System.exit(1);
+		}										
 		return b;
 	}
 	
 	
 	public void sendDisplayMode(int disp_mode) {
+		sendInt(Protocol.COMMAND.DISP_MODE);
 		sendInt(disp_mode); 	// Sanity Check ?
 	}
 	
@@ -96,7 +120,8 @@ public class Connection {
 	}
 	
 	public void sendSyncMode(int sync_mode) {
-		sendInt(sync_mode); 	// Sanity Check ?
+		sendInt(Protocol.COMMAND.SYNC_MODE);
+		sendInt(sync_mode); 				// Sanity Check ?
 	}
 	
 	public int recvSyncMode() throws IOException { 
@@ -121,8 +146,7 @@ public class Connection {
 		*/
 	}
 	
-	public int recvInt() throws IOException {
-		
+	public int recvInt() throws IOException {		
 		char[] b = new char[4];
 		int status = in.read(b, 0, b.length);
 		if (status == -1) {
@@ -137,6 +161,6 @@ public class Connection {
 		int b3 = in.read();
 		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 		*/
-	}
+	}		
 	
 }

@@ -3,8 +3,6 @@ package se.axisandandroids.networking;
 
 public class Protocol {
 
-	// Comment
-
 	public class COMMAND {	
 		public final static int IMAGE 		= 0;
 		public final static int SYNC_MODE 	= 1;
