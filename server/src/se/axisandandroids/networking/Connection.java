@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -44,6 +45,8 @@ public class Connection {
 			os = sock.getOutputStream();
 			out = new PrintWriter(os, true);
 			in = new BufferedReader(new InputStreamReader(is));
+//			ObjectInputStream ois = new ObjectInputStream(is);
+			
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
