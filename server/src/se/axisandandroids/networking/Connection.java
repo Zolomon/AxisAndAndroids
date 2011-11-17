@@ -14,14 +14,18 @@ import se.lth.cs.fakecamera.Axis211A;
 public class Connection {
 	
 	private Socket sock;	
-	private InputStream is;			// input and output should be independent
+	
+	// input and output should be independent
+	private InputStream is;			
 	private OutputStream os;
 	private BufferedReader in;
 	private PrintWriter out;
 	
 	private byte[] image_buffer;
 	
-	public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG } // Create protocol class instead
+	
+	// Create protocol class instead
+	public static enum COMMANDS { IMAGE, SYNC_MODE, DISP_MODE, CONNECTED, END_MSG }
 	public static enum SYNC_MODE { AUTO, SYNC, ASYNC }
 	public static enum DISP_MODE { AUTO, IDLE, MOVIE }
 	
@@ -57,8 +61,7 @@ public class Connection {
 		sock.close();
 		sock = null; // etc...
 	}
-	
-		
+			
 	public void sendImage(byte[] data) {		
 		try {
 			os.write(data, 0, data.length);			
@@ -70,19 +73,16 @@ public class Connection {
 	
 	public byte[] recvImage() {				
 		int len = 0;
-		byte[] b = null;
-		
+		byte[] b = null;		
 		try {
 			len = is.read(image_buffer, 0, Axis211A.IMAGE_BUFFER_SIZE);		
 			b = new byte[len];
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
-		}			
-		
+		}					
 		for (int i = 0; i < len; ++i)
-			b[i] = image_buffer[i];
-		
+			b[i] = image_buffer[i];		
 		return b;
 	}
 	
@@ -103,8 +103,7 @@ public class Connection {
 		return recvInt();  		// Sanity Check ?
 	}
 				
-	public void sendInt(int nbr) {
-		/*
+	public void sendInt(int nbr) {				
 		char[] b = new char[4];		
 		b[0] = (char) ((nbr >> 24) & 0xFF);
 		b[1] = (char) ((nbr >> 16) & 0xFF);
@@ -112,30 +111,32 @@ public class Connection {
 		b[3] = (char) ( nbr 	   & 0xFF);
 		out.print(b);
 		out.flush();
-		*/
-		
+				
+		/*
 		out.write((nbr >> 24) & 0xFF);
 		out.write((nbr >> 16) & 0xFF);
 		out.write((nbr >> 8)  & 0xFF);
 		out.write( nbr 	   & 0xFF);
 		out.flush();
+		*/
 	}
 	
 	public int recvInt() throws IOException {
-		/*
+		
 		char[] b = new char[4];
 		int status = in.read(b, 0, b.length);
 		if (status == -1) {
 			System.err.println("IO-error - reached EOF.");
 		}
 		return b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3];
-		*/
 		
+		/*
 		int b0 = in.read();
 		int b1 = in.read();
 		int b2 = in.read();
 		int b3 = in.read();
 		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+		*/
 	}
 	
 }
