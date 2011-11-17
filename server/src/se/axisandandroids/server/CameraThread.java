@@ -1,4 +1,5 @@
 package se.axisandandroids.server;
+
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.*;
 import java.io.*;
