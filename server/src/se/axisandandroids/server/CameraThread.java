@@ -1,20 +1,28 @@
 package se.axisandandroids.server;
-import se.lth.cs.fakecamera.*;
-import java.io.*;
 
-public class CameraThread {
-private Axis211A myCamera;
-private byte[] jpeg;
-final static int IDLE = 0;
-final static int MOVIE = 1;
-int mode;
+import se.axisandandroids.networking.Protocol;
+import se.lth.cs.fakecamera.Axis211A;
 
-	public CameraThread(){
+public class CameraThread extends Thread{
+	private Axis211A myCamera;
+	private byte[] jpeg;
+	private CameraMonitor cm;
+
+
+	public CameraThread(CameraMonitor cm){
+		this.cm = cm;
 		myCamera = new Axis211A();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-		mode = IDLE;
 	}
-
+	
+	public void run(){
+		if(cameraConnect()){
+			while(true){
+				recieveJPEG();
+			}
+		}
+	}
+	
 	private boolean cameraConnect(){
 		if(!myCamera.connect()){
 			System.out.println("Failed to connect to camera!");
@@ -26,23 +34,25 @@ int mode;
 			return true;
 		}
 	}
-	public boolean setMode(int mode){
-		if(mode != 0 || mode != 1){
-			System.out.println("Invalid mode!");
-			return false;
-		}
-		else{
-			this.mode = mode;
-			return true;
-		}
-	}
-	private void recieveJPEG(){
-		if(mode == IDLE){
-			int len = myCamera.getJPEG(jpeg,0);
-			os.write(jpeg,0,len);
-			myCamera.close();
-		}
-	}
 	
-    
+	private void recieveJPEG(){
+		if(cm.getDislayMode() == Protocol.DISP_MODE.IDLE){
+			int len = myCamera.getJPEG(jpeg,0);
+			//os.write(jpeg,0,len);
+			try {
+				this.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+			while(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+				int len = myCamera.getJPEG(jpeg,0);
+			}
+
+		}
+	}
+
+
 }
