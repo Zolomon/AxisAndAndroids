@@ -1,6 +1,9 @@
 package se.axisandandroids.client.service;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -12,21 +15,12 @@ import android.widget.Toast;
 public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
-	private int counter = 0;
-	private List<Socket> sockets;
+	private static List<Socket> sockets;
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
 			return CtrlService.this;
 		}
-	}
-	
-	public void addSocket(String hostname, int port) {
-		
-	}
-	
-	public void removeSocket(Socket socket) {
-		
 	}
 
 	@Override
@@ -40,6 +34,8 @@ public class CtrlService extends android.app.Service {
 	public void onCreate() {
 		Toast.makeText(this, "CtrlService Created", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onCreate");
+		
+		sockets = new ArrayList<Socket>();
 	}
 
 	@Override
@@ -50,7 +46,18 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
-	public int increase() {
-		return counter++;
+	public void addSocket(String hostname, int port) {
+		try {
+			sockets.add(new Socket(hostname, port));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeSocket(Socket socket) {
+		if (sockets.contains(socket))
+			sockets.remove(socket);
 	}
 }

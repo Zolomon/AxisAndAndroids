@@ -46,15 +46,12 @@ public class ClientActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.menu_displays:
-			//mController.getInboxHandler().sendEmptyMessage(V_REQUEST_DISPLAYS);
 			Toast.makeText(this, "Displays", Toast.LENGTH_SHORT);
 			onShowDisplays();
 			return true;
 		case R.id.menu_quit:
-			//mController.getInboxHandler().sendEmptyMessage(V_REQUEST_QUIT);
 			Toast.makeText(this, "Quit", Toast.LENGTH_SHORT);
 			onQuit();
 			return true;
@@ -66,14 +63,6 @@ public class ClientActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 
-		/**
-		 * You can also inflate views explicitly by using the LayoutInflater. In
-		 * that case you have to: 1) Get an instance of the LayoutInflater 2)
-		 * Specify the XML to inflate 3) Use the returned View
-		 */
-
-		// Inflate layout
-		// 2 and 3
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);
 		View theInflatedView = inflater.inflate(R.layout.connection_item, tl);
 
@@ -105,7 +94,6 @@ public class ClientActivity extends Activity implements OnClickListener {
 		try {
 			unbindService(mConnection);
 		} catch (java.lang.IllegalArgumentException e) {
-			// Print to log or make toast that it failed
 		}
 	}
 
