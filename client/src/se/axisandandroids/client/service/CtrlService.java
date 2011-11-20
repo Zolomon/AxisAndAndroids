@@ -1,7 +1,8 @@
 package se.axisandandroids.client.service;
 
-import se.axisandandroids.client.service.controller.IController;
-import se.axisandandroids.client.service.model.IModel;
+import java.net.Socket;
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -11,22 +12,21 @@ import android.widget.Toast;
 public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
-	private IController mController;
-	private IModel mModel;
 	private int counter = 0;
+	private List<Socket> sockets;
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
 			return CtrlService.this;
 		}
-
-		public IController getController() {
-			return mController;
-		}
-
-		public IModel getModel() {
-			return mModel;
-		}
+	}
+	
+	public void addSocket(String hostname, int port) {
+		
+	}
+	
+	public void removeSocket(Socket socket) {
+		
 	}
 
 	@Override

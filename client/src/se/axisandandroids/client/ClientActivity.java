@@ -1,15 +1,7 @@
 package se.axisandandroids.client;
 
-import static se.axisandandroids.client.controller.ControllerProtocol.C_QUIT;
-import static se.axisandandroids.client.controller.ControllerProtocol.C_SHOW_DISPLAYS;
-import static se.axisandandroids.client.controller.ControllerProtocol.V_REQUEST_CONNECTIONS;
-import static se.axisandandroids.client.controller.ControllerProtocol.V_REQUEST_DISPLAYS;
-import static se.axisandandroids.client.controller.ControllerProtocol.V_REQUEST_QUIT;
-import se.axisandandroids.client.model.ModelData;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
-import se.axisandandroids.client.service.controller.Controller;
-import se.axisandandroids.client.service.model.Model;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,13 +22,10 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-public class ClientActivity extends Activity implements Handler.Callback,
-		OnClickListener {
+public class ClientActivity extends Activity implements OnClickListener {
 	private static final String TAG = ClientActivity.class.getSimpleName();
 
 	private CtrlService mService;
-	private Controller mController;
-	private Model mModel;
 	private boolean mBound;
 
 	/** Called when the activity is first created. */
@@ -46,23 +35,7 @@ public class ClientActivity extends Activity implements Handler.Callback,
 		setContentView(R.layout.main);
 
 		((Button) findViewById(R.id.btnConnect)).setOnClickListener(this);
-
-		// controller = new Controller(new Model());
-		// controller.addOutboxHandler(new Handler(this));
-		//
-		// controller.getInboxHandler().sendEmptyMessage(V_REQUEST_CONNECTIONS);
 	}
-
-	// @Override
-	// public void onDestroy() {
-	// try {
-	// controller.dispose();
-	// } catch (Throwable t) {
-	// Log.e(TAG, "Failed to destroy the controller", t);
-	// }
-	//
-	// super.onDestroy();
-	// }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,10 +51,12 @@ public class ClientActivity extends Activity implements Handler.Callback,
 		case R.id.menu_displays:
 			//mController.getInboxHandler().sendEmptyMessage(V_REQUEST_DISPLAYS);
 			Toast.makeText(this, "Displays", Toast.LENGTH_SHORT);
+			onShowDisplays();
 			return true;
 		case R.id.menu_quit:
 			//mController.getInboxHandler().sendEmptyMessage(V_REQUEST_QUIT);
 			Toast.makeText(this, "Quit", Toast.LENGTH_SHORT);
+			onQuit();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -141,8 +116,6 @@ public class ClientActivity extends Activity implements Handler.Callback,
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mController = (Controller) binder.getController();
-			mModel = (Model) binder.getModel();
 			mBound = true;
 		}
 
@@ -151,21 +124,7 @@ public class ClientActivity extends Activity implements Handler.Callback,
 		}
 	};
 
-	public boolean handleMessage(Message msg) {
-		Log.d(TAG, "Received message: " + msg);
-
-		switch (msg.what) {
-		case C_QUIT:
-			onQuit();
-			return true;
-		case C_SHOW_DISPLAYS:
-			onShowDisplays((ModelData) msg.obj);
-			return true;
-		}
-		return false;
-	}
-
-	private void onShowDisplays(ModelData data) {
+	private void onShowDisplays() {
 		Log.d(TAG, "onShowDisplays()");
 		Intent intent = new Intent(this, RenderActivity.class);
 		startActivity(intent);

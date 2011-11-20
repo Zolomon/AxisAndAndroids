@@ -18,14 +18,6 @@ public class RenderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.display_grid);
 		
-//		Intent intent = getIntent();
-//		// Receiving connections
-//		int connectionCount = Integer.parseInt(intent.getStringExtra("connectionCount"));
-//		ArrayList<HostPort> connections = new ArrayList<HostPort>();
-//		for(int i = 0; i < connectionCount; i++) {
-//			connections.add(new HostPort(intent.getStringExtra("host"), Integer.parseInt(intent.getStringExtra("port"))));
-//			System.out.println(connections.get(i).toString());
-//		}
 	}
 	
 	@Override
