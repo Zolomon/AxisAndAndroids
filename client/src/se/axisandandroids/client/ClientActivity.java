@@ -2,8 +2,6 @@ package se.axisandandroids.client;
 
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
-import se.axisandandroids.client.service.controller.Controller;
-import se.axisandandroids.client.service.model.Model;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,54 +11,83 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
-public class ClientActivity extends Activity {
-
-	private CtrlService mService;
-	private Controller mController;
-	private Model mModel;
-	private boolean mBound;
+public class ClientActivity extends Activity implements OnClickListener {
 	private static final String TAG = ClientActivity.class.getSimpleName();
 
+	private CtrlService mService;
+	private boolean mBound;
+
+	Button btnConnect, btnDisconnect;
+	LayoutInflater linflater;
+	TableLayout tl;
+
+	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		Button btn = (Button) findViewById(R.id.btnConnect);
-		btn.setOnClickListener(new OnClickListener() {
+		((Button) findViewById(R.id.btnConnect)).setOnClickListener(this);
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.client_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_displays:
+			onShowDisplays();
+			return true;
+		case R.id.menu_quit:
+			onQuit();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void onClick(View v) {
+		EditText etHost = (EditText) findViewById(R.id.etHost);
+		EditText etPort = (EditText) findViewById(R.id.etPort);
+
+		String host = etHost.getText().toString();
+		String port = etPort.getText().toString();
+
+		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
+		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);
+		final View theInflatedView = inflater.inflate(R.layout.connection_item,
+				null);
+
+		TextView tvHostAndPort = (TextView) theInflatedView
+				.findViewById(R.id.etHostAndPort);
+		tvHostAndPort.setText(host + ":" + port);
+
+		Button btnDisconnect = (Button) theInflatedView
+				.findViewById(R.id.btnDisconnect);
+
+		btnDisconnect.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
-
-				/**
-				 * You can also inflate views explicitly by using the
-				 * LayoutInflater. In that case you have to: 1) Get an instance
-				 * of the LayoutInflater 2) Specify the XML to inflate 3) Use
-				 * the returned View
-				 */
-
-				LayoutInflater inflater = LayoutInflater
-						.from(ClientActivity.this); // Inflate layout
-				View theInflatedView = inflater.inflate(
-						R.layout.connection_item, tl); // 2 and 3
-
-				Button btnDisconnect = (Button) theInflatedView
-						.findViewById(R.id.btnDisconnect);
-				btnDisconnect.setOnClickListener(new OnClickListener() {
-
-					public void onClick(View v) {
-						Toast.makeText(getApplicationContext(), "Test",
-								Toast.LENGTH_LONG).show();
-					}
-				});
+				tl.removeView(theInflatedView);
 			}
 		});
+
+		tl.addView(theInflatedView);
 	}
 
 	@Override
@@ -80,19 +107,15 @@ public class ClientActivity extends Activity {
 		try {
 			unbindService(mConnection);
 		} catch (java.lang.IllegalArgumentException e) {
-			// Print to log or make toast that it failed
 		}
 	}
 
 	private ServiceConnection mConnection = new ServiceConnection() {
-
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mController = (Controller) binder.getController();
-			mModel = (Model) binder.getModel();
 			mBound = true;
 		}
 
@@ -100,4 +123,14 @@ public class ClientActivity extends Activity {
 			mBound = false;
 		}
 	};
+
+	private void onShowDisplays() {
+		Log.d(TAG, "onShowDisplays()");
+		Intent intent = new Intent(this, RenderActivity.class);
+		startActivity(intent);
+	}
+
+	private void onQuit() {
+		finish();
+	}
 }
