@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,14 +17,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class ClientActivity extends Activity implements OnClickListener {
 	private static final String TAG = ClientActivity.class.getSimpleName();
 
 	private CtrlService mService;
 	private boolean mBound;
+
+	Button btnConnect, btnDisconnect;
+	LayoutInflater linflater;
+	TableLayout tl;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -35,6 +38,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		((Button) findViewById(R.id.btnConnect)).setOnClickListener(this);
+
 	}
 
 	@Override
@@ -48,11 +52,9 @@ public class ClientActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_displays:
-			Toast.makeText(this, "Displays", Toast.LENGTH_SHORT);
 			onShowDisplays();
 			return true;
 		case R.id.menu_quit:
-			Toast.makeText(this, "Quit", Toast.LENGTH_SHORT);
 			onQuit();
 			return true;
 		default:
@@ -61,20 +63,31 @@ public class ClientActivity extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
+		EditText etHost = (EditText) findViewById(R.id.etHost);
+		EditText etPort = (EditText) findViewById(R.id.etPort);
 
+		String host = etHost.getText().toString();
+		String port = etPort.getText().toString();
+
+		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);
-		View theInflatedView = inflater.inflate(R.layout.connection_item, tl);
+		final View theInflatedView = inflater.inflate(R.layout.connection_item,
+				null);
+
+		TextView tvHostAndPort = (TextView) theInflatedView
+				.findViewById(R.id.etHostAndPort);
+		tvHostAndPort.setText(host + ":" + port);
 
 		Button btnDisconnect = (Button) theInflatedView
 				.findViewById(R.id.btnDisconnect);
-		btnDisconnect.setOnClickListener(new OnClickListener() {
 
+		btnDisconnect.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Toast.makeText(getApplicationContext(), "Test",
-						Toast.LENGTH_LONG).show();
+				tl.removeView(theInflatedView);
 			}
 		});
+
+		tl.addView(theInflatedView);
 	}
 
 	@Override
@@ -98,7 +111,6 @@ public class ClientActivity extends Activity implements OnClickListener {
 	}
 
 	private ServiceConnection mConnection = new ServiceConnection() {
-
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance

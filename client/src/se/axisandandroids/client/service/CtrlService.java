@@ -46,6 +46,14 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
+	public void setSockets(List<Socket> sockets) {
+		CtrlService.sockets = sockets;
+	}
+	
+	public void addSocket(Socket socket) {
+			sockets.add(socket);
+	}
+	
 	public void addSocket(String hostname, int port) {
 		try {
 			sockets.add(new Socket(hostname, port));
