@@ -17,7 +17,6 @@ import java.net.Socket;
 import se.lth.cs.fakecamera.Axis211A;
 
 public class TCP_Server {
-
 	
 	private Axis211A axis;
 	private ServerSocket servSocket = null;
