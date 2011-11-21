@@ -2,6 +2,7 @@ package se.axisandandroids.networking;
 
 public class SendThreadSkeleton extends Thread {
 	
+	@SuppressWarnings("unused")
 	private Connection c;
 	
 	public SendThreadSkeleton(Connection c) {

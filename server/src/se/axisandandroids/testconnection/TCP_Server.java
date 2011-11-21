@@ -13,8 +13,8 @@ package se.axisandandroids.testconnection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import se.lth.cs.fakecamera.Axis211A;
+
 
 public class TCP_Server {
 	
