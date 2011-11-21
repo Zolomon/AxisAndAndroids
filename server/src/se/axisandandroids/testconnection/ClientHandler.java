@@ -33,8 +33,8 @@ public class ClientHandler extends Thread {
 
 
 			//servConnectionTest(clientSocket);
-			//servFakeCam(clientSocket);
-			servFakeCamInteractive(clientSocket);
+			servFakeCam(clientSocket);
+			//servFakeCamInteractive(clientSocket);
 
 
 
@@ -133,12 +133,14 @@ public class ClientHandler extends Thread {
 			System.out.println("Waiting for Request");
 			int cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC
 					
+			System.out.printf("Command: ", cmd);
+
 			switch (cmd) {
 			case Protocol.COMMAND.TERMINATE:
-				try { // Fulhack...
+				try { // ------------------------------------------> Fulhack...
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {}
-				break;
+				break;				
 			case Protocol.COMMAND.IMAGE:			
 				System.out.printf("%d. Image Requested", cmd);
 

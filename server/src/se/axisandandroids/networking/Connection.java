@@ -67,7 +67,7 @@ public class Connection {
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);		
 
-		//assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
+		assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
 
 		os.write(data, 0, data.length);	 // EOF how ???
 		os.flush();
@@ -89,7 +89,6 @@ public class Connection {
 	public int recvImage(byte[] b) throws IOException {				
 
 		int len = recvInt();				
-
 
 		int status = 0;
 		int bytes_read = 0;
@@ -156,7 +155,7 @@ public class Connection {
 		do {
 			bytes_read += status;		
 			status = is.read(readintbuffer, bytes_read, 4 - bytes_read);			
-		} while(status > 0); // while(status > = 0); 
+		} while(status > 0); // while(status >= 0); 
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
 			   ( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 
