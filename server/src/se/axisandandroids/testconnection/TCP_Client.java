@@ -90,8 +90,8 @@ public class TCP_Client {
 			
 			
 			//tcpclient.connection_test();
-			tcpclient.testFakeCam();					
-			//tcpclient.testFakeCamInteractive();
+			//tcpclient.testFakeCam();					
+			tcpclient.testFakeCamInteractive();
 			
 			
 			// *** ------------------------------- ***

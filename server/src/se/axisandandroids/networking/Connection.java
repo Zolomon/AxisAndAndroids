@@ -104,7 +104,7 @@ public class Connection {
 					bytes_read += status;		
 					System.out.println("read: "+ bytes_read);
 				}
-			} while(status >= 0);
+			} while(status >= 0); // EOF => status = -1... EOF how?
 				 */
 
 			} while(status > 0); 
@@ -118,7 +118,6 @@ public class Connection {
 
 		return bytes_read;
 	}
-
 
 	public void sendDisplayMode(int disp_mode) throws IOException {
 		sendInt(Protocol.COMMAND.DISP_MODE);
@@ -148,7 +147,9 @@ public class Connection {
 
 	public int recvInt() throws IOException {
 		
-		// Blocking Receive Integer ???		
+		// Blocking Receive Integer ??? 
+		// Got to be blocking!!!
+		
 		int status = 0;
 		int bytes_read = 0;
 
