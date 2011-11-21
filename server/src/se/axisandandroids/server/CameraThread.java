@@ -38,12 +38,8 @@ public class CameraThread extends Thread{
 	private void recieveJPEG(){
 		if(cm.getDislayMode() == Protocol.DISP_MODE.IDLE){
 			int len = myCamera.getJPEG(jpeg,0);
-			//os.write(jpeg,0,len);
-			try {
-				this.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			os.write(jpeg,0,len);
+//				new TimeHandlerThread().start();
 			}
 		}
 		else if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
