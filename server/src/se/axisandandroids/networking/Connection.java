@@ -147,15 +147,18 @@ public class Connection {
 	public int recvInt() throws IOException {
 		
 		// Blocking Receive Integer ??? 
-		// Got to be blocking!!!
-		
+		// Got to be blocking!!!		
 		int status = 0;
 		int bytes_read = 0;
 
 		do {
 			bytes_read += status;		
-			status = is.read(readintbuffer, bytes_read, 4 - bytes_read);			
-		} while(status > 0); // while(status >= 0); 
+			status = is.read(readintbuffer, bytes_read, 4 - bytes_read); 
+			// Blocking until data available.
+			// -1 if EOF.
+			// 0 if nothing read.
+		} while(status > 0); 
+		// while(status >= 0); 
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
 			   ( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 

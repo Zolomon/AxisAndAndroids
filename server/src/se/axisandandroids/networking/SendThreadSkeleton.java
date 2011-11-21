@@ -16,7 +16,6 @@ public class SendThreadSkeleton extends Thread {
 		}		
 	}
 	
-
 	/* Subclass to specialize for server or client. */
 	
 }
