@@ -9,6 +9,10 @@ package se.axisandandroids.testconnection;
  * 				networking/sockets/readingWriting.html
  * --------------------------------------------------- */
 
+import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,16 +21,24 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
+import se.lth.cs.fakecamera.Axis211A;
 
 public class TCP_Client {
-	Socket socket;
-	InetAddress host;
-	int port;
 
-	PrintWriter out = null;
-	BufferedReader in = null;
+
+	private Socket socket;
+	private InetAddress host;	
+	private final static int default_port = 6000;
+	private int port;
 
 	public TCP_Client(InetAddress host, int port) {
 		this.host = host;
@@ -37,9 +49,6 @@ public class TCP_Client {
 	public void connect() {
 		try {
 			socket = new Socket(host, port);
-			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket
-					.getInputStream()));
 		} catch (UnknownHostException e) {
 			System.err.println("Unknown host.");
 			System.exit(1);
@@ -47,32 +56,16 @@ public class TCP_Client {
 			System.err.println("io-exception.");
 			System.exit(1);
 		}
-
 		System.out.println("Connection Setup Complete");
 	}
 
 	public void disconnect() throws IOException {
-		out.close();
-		in.close();
 		socket.close();
-	}
-
-	public void userinput_echo() throws IOException {
-		System.out.println("Scream to the ether and it will answer:");
-
-		BufferedReader stdIn = new BufferedReader(new InputStreamReader(
-				System.in));
-		String userInput;
-		while ((userInput = stdIn.readLine()) != null) {
-			out.println(userInput);
-			System.out.println(in.readLine());
-		}
-		stdIn.close();
 	}
 
 	public static void main(String[] args) {
 		InetAddress addr = null;
-		int port = 6077;
+		int port = default_port;
 
 		try {
 			addr = InetAddress.getByName("localhost");
@@ -91,17 +84,26 @@ public class TCP_Client {
 		TCP_Client tcpclient = new TCP_Client(addr, port);
 
 		try {
-			// tcpclient.userinput_echo();
-
-			tcpclient.connection_test();
+			
+			
+			// *** --- CHANGE HERE WHAT TO RUN --- ***
+			
+			
+			//tcpclient.connection_test();
+			//tcpclient.testFakeCam();					
+			tcpclient.testFakeCamInteractive();
+			
+			
+			// *** ------------------------------- ***
+			
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
 		}
 	}
-	
-	
+
+
 	public void connection_test() throws IOException {		
 		System.out.println("Connection Test");
 
@@ -132,9 +134,10 @@ public class TCP_Client {
 		int cmd = con.recvInt();
 		assert(cmd == Protocol.COMMAND.IMAGE);
 		System.out.println("Command: " + cmd);			
-		byte[] b = con.recvImage();		
-		System.out.printf("Length: %d\n", b.length);
-		for (int i = 0; i < b.length; ++i) {
+		byte[] b = new byte[Axis211A.IMAGE_BUFFER_SIZE];;
+		int len = con.recvImage(b);		
+		System.out.printf("Length: %d\n", len);
+		for (int i = 0; i < len; ++i) {
 			System.out.printf("%d ", b[i]);
 			assert(b[i] == c[i]);
 		}
@@ -142,8 +145,114 @@ public class TCP_Client {
 
 		// Test sendImage
 		System.out.println("\n** Sending Image...");
-		con.sendImage(c);
-		
+		con.sendImage(c,0,c.length);
 	}
 
+	public void testFakeCam() throws IOException {
+		System.out.println("**Test FakeCam");
+
+		Connection con = new Connection(socket);
+
+
+		int cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+
+		byte[] img = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+		int len = con.recvImage(img);	
+
+		System.out.println("Received " + img.length + " bytes.");
+		jframe_show_jpeg("FakeCamSplatt", img);
+	}
+				
+	public void jframe_show_jpeg(String framename, byte[] data) {
+		JFrame f = new JFrame(framename); 		
+		ImageIcon img = new javax.swing.ImageIcon(data,"jpeg frame");		
+		f.getContentPane().add(new javax.swing.JLabel(img)); 				
+		f.setSize(img.getIconWidth(),img.getIconHeight()); 
+		f.setVisible(true); 
+	}
+
+
+	
+	public void testFakeCamInteractive() {
+		new GUI();
+	}		
+
+	class GUI extends JFrame {
+		ImagePanel imagePanel;
+		JButton button;
+		boolean firstCall = true;
+		Connection con;
+		byte [] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+
+		public GUI() {
+			super();						
+			imagePanel = new ImagePanel();
+			button = new JButton("Get image");
+			button.addActionListener(new ButtonHandler(this));
+			this.getContentPane().setLayout(new BorderLayout());
+			this.getContentPane().add(imagePanel, BorderLayout.NORTH);
+			this.getContentPane().add(button, BorderLayout.SOUTH);
+			this.setLocationRelativeTo(null);
+			this.pack();
+			
+			this.con = new Connection(socket);
+			refreshImage();
+		}
+
+		public void refreshImage() {			
+			int cmd, len = 0;
+			
+			try {			
+				System.out.println("Requesting Image");
+				con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
+				
+				System.out.println("Waiting for Answer");
+				cmd = con.recvInt(); 				 // Wait for Answer
+				
+				if (cmd == Protocol.COMMAND.IMAGE) {
+					System.out.println("Getting Image...");
+					len = con.recvImage(jpeg);	
+				} else {
+					System.err.println("Protocol Voilation!");
+				}
+			} catch (IOException e) {
+				System.err.println("Errornous err...");
+			}			
+			System.out.println("Received " + len + " bytes.");
+			
+			imagePanel.refresh(jpeg);			
+			if (firstCall) {
+				this.pack();
+				this.setVisible(true);
+				firstCall = false;
+			}
+		}
+	}
+
+	class ImagePanel extends JPanel {
+		ImageIcon icon;
+		public ImagePanel() {
+			super();
+			icon = new ImageIcon();
+			JLabel label = new JLabel(icon);
+			add(label, BorderLayout.CENTER);
+			this.setSize(200, 200);
+		}
+		public void refresh(byte[] data) {
+			Image theImage = getToolkit().createImage(data);
+			getToolkit().prepareImage(theImage,-1,-1,null);	    
+			icon.setImage(theImage);
+			icon.paintIcon(this, this.getGraphics(), 5, 5);
+		}
+	}
+	class ButtonHandler implements ActionListener {
+		GUI gui;
+		public ButtonHandler(GUI gui) {
+			this.gui = gui;
+		}
+		public void actionPerformed(ActionEvent evt) {
+			gui.refreshImage();
+		}
+	}
 }

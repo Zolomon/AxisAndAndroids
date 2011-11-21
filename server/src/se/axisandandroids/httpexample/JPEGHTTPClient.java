@@ -51,7 +51,6 @@ class ImagePanel extends JPanel {
 class ButtonHandler implements ActionListener {
 
 	GUI gui;
-
 	public ButtonHandler(GUI gui) {
 		this.gui = gui;
 	}

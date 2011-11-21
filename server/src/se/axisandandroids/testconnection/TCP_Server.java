@@ -14,22 +14,28 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class TCP_Server {
+import se.lth.cs.fakecamera.Axis211A;
 
-	ServerSocket servSocket = null;
-	int port;
+public class TCP_Server {
+	
+	private Axis211A axis;
+	private ServerSocket servSocket = null;
+	private final static int default_port = 6000;
+	private int port;
+	
 
 	public TCP_Server(int port) {
 		this.port = port;
 		try {
 			servSocket = new ServerSocket(port);
+			axis = new Axis211A();
 		} catch (IOException e) {
 			System.out.printf("Could not listen on port: %d\n", port);
 			System.exit(1);
 		}
 	}
 
-	public void listenForConnection() {
+	private void listenForConnection() {
 		while (true) {
 			Socket clientSocket = null;
 			try {
@@ -38,12 +44,12 @@ public class TCP_Server {
 				System.out.printf("Accept failed: %d\n", port);
 				System.exit(1);
 			}
-			new ClientHandler(clientSocket).start();			
+			new ClientHandler(clientSocket, axis).start();			
 		}
 	}
 
 	public static void main(String[] args) {
-		int port = 6077;
+		int port = default_port;
 		if (args.length >= 1) {
 			port = Integer.parseInt(args[0]);
 		}		

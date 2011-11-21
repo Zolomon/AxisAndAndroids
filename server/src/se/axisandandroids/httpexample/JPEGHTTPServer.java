@@ -62,6 +62,8 @@ public class JPEGHTTPServer {
 	 */
 	public void handleRequests() throws IOException {
 		byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+		
+		
 		ServerSocket serverSocket = new ServerSocket(myPort);
 		System.out.println("HTTP server operating at port " + myPort + ".");
 
