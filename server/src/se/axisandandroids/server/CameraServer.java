@@ -6,23 +6,8 @@ import java.net.Socket;
 
 public class CameraServer {
 
-	private final static int default_port = 6000;
-
-	private int port;
+	private static int port;
 	ServerSocket servSocket = null;
-
-	public static void main(String[] args) {
-		System.out
-				.println("Big brother is watching you all: Axis and Androids...");
-
-		int defport = default_port;
-		if (args.length >= 1) {
-			defport = Integer.parseInt(args[0]);
-		}
-
-		CameraServer serv = new CameraServer(defport);
-		serv.listenForConnection();
-	}
 
 	public CameraServer(int port) {
 		this.port = port;
@@ -51,14 +36,6 @@ public class CameraServer {
 			System.out.printf("Serving client: %s", clientSocket
 					.getInetAddress().toString());
 
-			// * What was our plan here?
-			// Create some Connection object with socket,
-			// then some ClientHandler with the Connection object.
-
-			// Handle the client some way!!! e.g. with a thread object:
-			// new ClientHandler(Connection client).start();
-
-			// OR if only one client...
 			servClient(clientSocket);
 		}
 	}
@@ -66,6 +43,18 @@ public class CameraServer {
 	private void servClient(Socket clientSock) {
 		// listen commands, fetch images, send images ???
 
+	}
+
+	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.out
+					.println("Choose port 1024-65535 with syntax: CameraServer <port> ");
+			System.exit(1);
+		}
+
+		port = Integer.parseInt(args[0]);
+		CameraServer serv = new CameraServer(port);
+		serv.listenForConnection();
 	}
 
 }
