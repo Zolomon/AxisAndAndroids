@@ -9,6 +9,7 @@ public class FrameBuffer {
 	private int nextToGet = 0;
 	private int nAvailable = 0;
 	
+	
 	/**
 	 * Create a FrameBuffer with: 
 	 * maximum frame size, Axis211A.IMAGE_BUFFER_SIZE and:
@@ -34,8 +35,8 @@ public class FrameBuffer {
 	private void init_buffer() {
 		buffer = new Frame[MAXSIZE];		
 		for (int i = 0; i < MAXSIZE; ++i) {
-			buffer[i] = new Frame(FRAMESIZE);
-		}	
+			buffer[i] = new Frame();
+		}
 	}
 
 	/**
@@ -98,26 +99,46 @@ public class FrameBuffer {
 		return new Frame(buffer[nextToGet]);
 	}
 
-
 	/**
-	 * Return frame data of the next buffer without removing it.
+	 * Return frame data of the next frame in buffer without removing it.
 	 * @return frame data.
 	 */
-	public synchronized byte[] first() {
+	public synchronized final byte[] first() {
 		if (nAvailable == 0) return null;
 		return buffer[nextToGet].x; // Return copy ?
 	}
-
+	
+	/**
+	 * Return the next frame in buffer without removing it.
+	 * @return frame data.
+	 */
+	public synchronized final Frame firstFrame() {
+		if (nAvailable == 0) return null;
+		return buffer[nextToGet]; // Return copy ?
+	}
+	
 	/**
 	 * Sneak a peek for the frame data at index i in buffer.
 	 * @param i, index of frame in buffer.
 	 * @return frame data.
 	 */
-	public synchronized byte[] sneakpeek(int i) {
+	public synchronized final byte[] sneakpeek(int i) {
 		if (i >= nAvailable) {
 			System.err.println("Out of bounds.");			
 		} 
 		return buffer[(nextToGet+i) % MAXSIZE].x; // Return copy ?
+	}
+
+	/**
+	 * Sneak a peek for the frame at index i in buffer.
+	 * @param i, index of frame in buffer.
+	 * @return frame data.
+	 */
+	public synchronized final Frame sneakpeekFrame(int i) {
+		if (i >= nAvailable) {
+			System.err.println("Out of bounds.");			
+		} 
+		return buffer[(nextToGet+i) % MAXSIZE]; // Return copy ?
 	}
 
 	/**
@@ -147,11 +168,11 @@ public class FrameBuffer {
 
 		fb.printBuffer();
 		
-		byte[] first = fb.first();
+		Frame first = fb.firstFrame();
 		System.out.println("First: " + first.toString());
 		
 		for (int i = 0; i < BUFFMAX; ++i) {
-			byte[] y = fb.sneakpeek(i);
+			Frame y = fb.sneakpeekFrame(i);
 			System.out.println("Index: " + i + " - " + y.toString());
 		}
 		

@@ -9,10 +9,9 @@ class Frame {
 
 	/**
 	 * Create an empty frame.
-	 * @param FRAMESIZE, maximum dimension of data to store.
 	 */
-	public Frame(int FRAMESIZE) {
-		x = new byte[FRAMESIZE]; 
+	public Frame() {
+		x = null;
 		len = 0;
 	}
 	
