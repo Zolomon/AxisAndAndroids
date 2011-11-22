@@ -6,7 +6,11 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.axisandandroids.client.CameraMonitor;
+import se.axisandandroids.client.DrawThread;
+
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,6 +20,7 @@ public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
 	private static List<Socket> sockets;
+	public CameraMonitor cm = new CameraMonitor();
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
@@ -46,6 +51,7 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
+	
 	public void setSockets(List<Socket> sockets) {
 		CtrlService.sockets = sockets;
 	}
