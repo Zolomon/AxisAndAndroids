@@ -1,6 +1,6 @@
 
 
-public class FrameBuffer {
+public class CircularBuffer {
 
 	private Object[] buffer;	
 	private final int MAXSIZE;	
@@ -8,7 +8,7 @@ public class FrameBuffer {
 	private int nextToGet = 0;
 	private int nAvailable = 0;
 
-	public FrameBuffer(int MAXSIZE) {		
+	public CircularBuffer(int MAXSIZE) {		
 		this.MAXSIZE = MAXSIZE;
 		buffer = new Object[MAXSIZE];
 	}
@@ -61,75 +61,54 @@ public class FrameBuffer {
 	
 	public static void main(String[] args) {
 		int BUFFMAX = 10;
-		FrameBuffer fb = new FrameBuffer(BUFFMAX);
+		CircularBuffer fb = new CircularBuffer(BUFFMAX);
 		byte[] raw_img = { 0,120,32,33,2,12,-23,32,-14,3 };
 				
 		for (int i = 0; i < BUFFMAX; ++i) {
 			byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
-			fb.put(new Img(x));
+			fb.put(new Frame(x));
 		}
 
 		fb.printBuffer();
 		
-		Img first = (Img) fb.first();
+		Frame first = (Frame) fb.first();
 		System.out.println("First: " + first.toString());
 		
 		for (int i = 0; i < BUFFMAX; ++i) {
-			Img y = (Img) fb.sneakpeek(i);
+			Frame y = (Frame) fb.sneakpeek(i);
 			System.out.println("Index: " + i + " - " + y.toString());
 		}
 		
-		Img z;
-		z = (Img) fb.get();
+		Frame z;
+		z = (Frame) fb.get();
 		assert(z.x[0] == 0);
 		
-		z = (Img) fb.get();
+		z = (Frame) fb.get();
 		assert(z.x[0] == 1);
 
 		byte[] x = new byte[raw_img.length];
 		System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 		x[0] = (byte) 10;			
-		fb.put(new Img(x));
+		fb.put(new Frame(x));
 
-		z = (Img) fb.get();
+		z = (Frame) fb.get();
 		assert(z.x[0] == 2);
 
 		fb.printBuffer();
 		
 		for (int i = 3; i < BUFFMAX; ++i) {
-			z = (Img) fb.get();
+			z = (Frame) fb.get();
 			assert(z.x[0] == i);
 			assert(z.x[i] == i);			
 		}
 		
 		fb.printBuffer();
 
-		z = (Img) fb.get();
+		z = (Frame) fb.get();
 		assert(z.x[0] == 10);
 		
 		fb.printBuffer();	
-	}
-}
-
-
-class Img { // AUTOBOXER KNOCK DOWN
-	public byte[] x;
-
-	Img(byte[] x) {
-		this.x = x;
-	}
-
-	public String toString() {
-		if (x == null) {
-			return "null";
-		}							
-		String str = "[ ";
-		for (int l = 0; l < x.length; ++l) {
-			str += x[l] + " ";
-		}	
-		str += " ]";
-		return str;
 	}
 }
