@@ -2,16 +2,22 @@ package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
 
+import se.axisandandroids.client.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
 import se.lth.cs.fakecamera.Axis211A;
 
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
+	private DisplayMonitor dm;
+	private FrameBuffer fb;
 	private byte[] img = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
-	public ClientReceiveThread(Connection c) {
+	public ClientReceiveThread(Connection c, DisplayMonitor dm, FrameBuffer fb) {
 		super(c);
+		this.dm = dm;	// Display Monitor
+		this.fb = fb;	// FrameBuffer belonging to DisplayThread
 	}
 
 	protected void handleImage() {
@@ -25,7 +31,8 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		}
 
 		// Post img to displayThreads buffer
-
+			
+		fb.put(img); // copy img ???
 	}
 
 	protected void handleSyncMode() {
@@ -34,8 +41,10 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			sync_mode = c.recvSyncMode();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}		
+		if (sync_mode != -1) {
+			dm.setSyncMode(sync_mode);
 		}
-		
 	}
 
 	protected void handleDispMode() {
@@ -44,6 +53,13 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			disp_mode = c.recvDisplayMode();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		if (disp_mode != -1) {
+			dm.setDispMode(disp_mode);			
+			if (disp_mode == Protocol.DISP_MODE.MOVIE) {
+				// FORWARD TO ALL OTHER CAMERAS
+				
+			}
 		}
 	}
 

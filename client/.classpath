@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/media.jar"/>
 	<classpathentry kind="lib" path="lib/fakecamera.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/circularbuffer"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

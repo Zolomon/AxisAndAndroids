@@ -14,6 +14,7 @@ public class DisplayMonitor {
 	
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;
+	//public FrameBuffer framebuffer;
 	
 	public DisplayMonitor() {
 		camera = new Axis211A();
