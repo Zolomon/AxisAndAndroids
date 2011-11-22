@@ -116,6 +116,7 @@ class GUI extends JFrame {
 			// returns if nothing arrived for some (short) time.
 			do {
 				status = is.read(jpeg, bytesRead, bytesLeft);
+				System.out.println(status);									 // Added by Calle
 				// The 'status' variable now holds the no. of bytes read,
 				// or -1 if no more data is available
 				if (status > 0) {
