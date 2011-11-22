@@ -43,8 +43,7 @@ public class ReceiveThreadSkeleton extends Thread {
 		}
 	}
 	
-	
-	
+		
 	/* Subclass and override following methods ----------------------------- */
 	
 	protected void handleImage() {

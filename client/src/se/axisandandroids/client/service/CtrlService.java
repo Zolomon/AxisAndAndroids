@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import se.axisandandroids.client.CameraMonitor;
+import se.axisandandroids.client.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +20,7 @@ public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
 	private static List<Socket> sockets;
-	public CameraMonitor cm = new CameraMonitor();
+	public DisplayMonitor cm = new DisplayMonitor();
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {

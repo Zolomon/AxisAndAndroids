@@ -69,9 +69,9 @@ public class RenderActivity extends Activity {
 	};
 
 	private class UpdateImageTask extends
-			AsyncTask<CameraMonitor, Bitmap, Void> {
+	AsyncTask<DisplayMonitor, Bitmap, Void> {
 		@Override
-		protected Void doInBackground(final CameraMonitor... cm) {
+		protected Void doInBackground(final DisplayMonitor... cm) {
 			new Thread(new Runnable() {
 
 				public void run() {
