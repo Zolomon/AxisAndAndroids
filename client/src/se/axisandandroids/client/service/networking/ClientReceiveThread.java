@@ -35,6 +35,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	protected void handleDispMode() {
