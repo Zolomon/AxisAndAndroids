@@ -6,10 +6,12 @@
  * */
 public class Command {
 	public int cmd;
+	public int len;
 	public byte[] x;
 
-	public Command(int cmd, byte[] x) {
+	public Command(int cmd, byte[] x, int len) {
 		this.cmd = cmd;
+		this.len = len;
 		this.x = x;
 	}
 

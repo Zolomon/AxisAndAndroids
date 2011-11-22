@@ -4,25 +4,43 @@
 
 class Frame {
 	
-	public byte[] x;
 	public int len;
+	public byte[] x;
 
+	/**
+	 * Create an empty frame.
+	 * @param FRAMESIZE, maximum dimension of data to store.
+	 */
 	public Frame(int FRAMESIZE) {
 		x = new byte[FRAMESIZE]; 
 		len = 0;
 	}
 	
+	/**
+	 * Create a frame encapsulating frame data in x and where
+	 * len is index if last element belonging to the frame.
+	 * @param x, frame data buffer array.
+	 * @param len, length of valid data.
+	 */
 	public Frame(byte[] x, int len) {
 		this.x = x;
 		this.len = len;
 	}
 	
+	/**
+	 * Copy Constructor. 
+	 * Create a Frame object from another Frame object.
+	 * @param other, Frame object to be copied.
+	 */
 	public Frame(Frame other) {
 		this.len = other.len;
 		this.x = new byte[other.x.length];
 		System.arraycopy(x, 0, other.x, 0, len);
 	}
 
+	/**
+	 * Print it all out.
+	 */
 	public String toString() {
 		if (x == null) {
 			return "null";
