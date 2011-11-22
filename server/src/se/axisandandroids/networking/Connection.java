@@ -37,7 +37,7 @@ public class Connection {
 
 	public String getHost() { return host; }
 	public int getPort() { return port; }
-	
+
 	public void connect(Socket sock) { 
 		// Potentially Dangerous, synchronize use of sock? 
 		this.sock = sock;
@@ -88,26 +88,24 @@ public class Connection {
 	}
 
 	public int recvImage(byte[] b) throws IOException {				
-
-		// Must receive an command int before calling recvImage !!! 
 		int len = recvInt();				
-
 		int status = 0;
 		int bytes_read = 0;
 
 		try {					
 			while (bytes_read < len) {
-				status = is.read(b, bytes_read, len - bytes_read);						
+				status = is.read(b, bytes_read, len - bytes_read);
+				/* 	1) Blocking until data available. 
+			 	2) -1 if EOF. 
+			 	3) 0 if nothing read.			 */
 				if (status > 0) {
 					bytes_read += status;		
 				}
 			}
-			//System.out.println("Done: "+ bytes_read);
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
 		}		
-
 		return bytes_read;
 	}
 
@@ -129,7 +127,7 @@ public class Connection {
 		return recvInt();
 	}
 
-	
+
 	private byte[] sendintbuffer = new byte[4];
 
 	public void sendInt(int nbr) throws IOException {
@@ -146,36 +144,31 @@ public class Connection {
 		os.write( (nbr & 0x0000ff00) >> 8	);
 		os.write( (nbr & 0x000000ff) 		);
 		os.flush();
-		*/
+		 */
 	}
 
-	
+
 	private byte[] readintbuffer = new byte[4]; 
-	
-	public int recvInt() throws IOException {
-		
-		// Blocking Receive Integer ??? 
-		// Got to be blocking!!!		
+
+	public int recvInt() throws IOException {	
 		int status = 0;
 		int bytes_read = 0;
 
 		while(bytes_read < 4) {
 			status = is.read(readintbuffer, bytes_read, 4 - bytes_read);
-			// Blocking until data available.
-			// -1 if EOF.
-			// 0 if nothing read.
+			/* 	1) Blocking until data available. 
+			 	2) -1 if EOF. 
+			 	3) 0 if nothing read.			 */
 			if (status > 0) {
 				bytes_read += status;		
 			}		
 		} 
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
-				   ( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 
-				   ( ( (int)readintbuffer[2]) << 8  ) & 0x0000ff00 | 
-				   (   (int)readintbuffer[3]		  & 0x000000ff ); 
-		
-		 
-		
+				( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 
+				( ( (int)readintbuffer[2]) << 8  ) & 0x0000ff00 | 
+				(   (int)readintbuffer[3]		  & 0x000000ff ); 
+
 		/*
 		// Non-Blocking, return -1 on fail...
 		int b0 = is.read();
@@ -183,7 +176,6 @@ public class Connection {
 		int b2 = is.read();
 		int b3 = is.read();
 		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
-		*/			
+		 */			
 	}		
-
 }
