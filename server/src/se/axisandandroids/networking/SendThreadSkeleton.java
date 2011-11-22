@@ -16,7 +16,7 @@ public class SendThreadSkeleton extends Thread {
 	
 	/* Subclass to specialize for server or client. */
 	
-	private void perform() {
+	protected void perform() {
 		// 1) Wait for message with commands.
 		// 2) Send commands and/or images via connection object
 	}

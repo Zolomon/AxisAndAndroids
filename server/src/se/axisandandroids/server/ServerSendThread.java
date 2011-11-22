@@ -5,7 +5,7 @@ import se.axisandandroids.networking.SendThreadSkeleton;
 
 public class ServerSendThread extends SendThreadSkeleton {
 
-	protected final int BUFFERSIZE = 200;
+	protected final int BUFFERSIZE = 10;
 	//protected CircularBuffer cb;
 	//protected FrameBuffer 	 fb;
 
@@ -14,7 +14,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 		super(c);
 	}
 
-	private void perform() {
+	protected void perform() {
 		
 		// 1) Wait for message with commands to be put in buffer.
 		// 	  Stand-alone buffer or buffer in CameraMonitor?
