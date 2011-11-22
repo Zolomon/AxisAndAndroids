@@ -4,7 +4,7 @@ public class FrameBuffer {
 
 	private Frame[] buffer;	
 	private final int MAXSIZE;	
-	private final int FRAMESIZE;
+	//private final int FRAMESIZE;
 	private int nextToPut = 0;	
 	private int nextToGet = 0;
 	private int nAvailable = 0;
@@ -17,7 +17,7 @@ public class FrameBuffer {
 	 **/
 	public FrameBuffer(int MAXSIZE) {		
 		this.MAXSIZE = MAXSIZE;
-		this.FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;		
+		//this.FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;		
 		init_buffer();
 	}
 	
@@ -28,7 +28,7 @@ public class FrameBuffer {
 	 **/
 	public FrameBuffer(int MAXSIZE, int FRAMESIZE) {		
 		this.MAXSIZE = MAXSIZE;
-		this.FRAMESIZE = FRAMESIZE;
+		//this.FRAMESIZE = FRAMESIZE;
 		init_buffer();
 	}
 	

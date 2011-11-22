@@ -81,18 +81,34 @@ public class TCP_Client {
 		TCP_Client tcpclient = new TCP_Client(addr, port);
 
 		try {
-			
-			
+
+
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
-			
-			
-			//tcpclient.connection_test();
-			tcpclient.testFakeCam();					
-			//tcpclient.testFakeCamInteractive();
-			
-			
+
+
+			int testcase = 0;
+
+			switch (testcase) {
+			case 0: 
+				tcpclient.testSendInt();
+				break;
+			case 1: 
+				tcpclient.connection_test();
+				break;
+			case 2:
+				tcpclient.testFakeCam();
+				break;
+			case 3:
+				tcpclient.testFakeCamInteractive();
+				break;
+			default:
+				tcpclient.connection_test();
+				tcpclient.testFakeCam();
+				tcpclient.testFakeCamInteractive();			
+			}
+
 			// *** ------------------------------- ***
-			
+
 			tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
@@ -145,6 +161,21 @@ public class TCP_Client {
 		con.sendImage(c,0,c.length);
 	}
 
+	public void testSendInt() {
+		System.out.println("**Test send int");
+
+		Connection con = new Connection(socket);
+		try {
+			for (int i = -1000; i < 1000; ++i) {
+				con.sendInt(127*i);			
+				System.out.printf("Sent: %d\n",  127*i);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
 	public void testFakeCam() throws IOException {
 		System.out.println("**Test FakeCam");
 
@@ -160,7 +191,7 @@ public class TCP_Client {
 		System.out.println("Received " + len + " bytes.");
 		jframe_show_jpeg("FakeCamSplatt", img);
 	}
-				
+
 	public void jframe_show_jpeg(String framename, byte[] data) {
 		JFrame f = new JFrame(framename); 		
 		ImageIcon img = new javax.swing.ImageIcon(data,"jpeg frame");		
@@ -170,7 +201,7 @@ public class TCP_Client {
 	}
 
 
-	
+
 	public void testFakeCamInteractive() {
 		new GUI();
 	}		
@@ -193,32 +224,39 @@ public class TCP_Client {
 			this.getContentPane().add(button, BorderLayout.SOUTH);
 			this.setLocationRelativeTo(null);
 			this.pack();
-			
+
 			this.con = new Connection(socket);
 			refreshImage();
 		}
 
-		public void refreshImage() {			
+		public void refreshImage() {		
+			System.out.println("** Refreshing Image ------------------------- ");
+
 			int cmd, len = 0;
-			
+
 			try {			
 				System.out.println("Requesting Image");
 				con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
-				
+
 				System.out.println("Waiting for Answer");
 				cmd = con.recvInt(); 				 // Wait for Answer
-				
+
 				if (cmd == Protocol.COMMAND.IMAGE) {
 					System.out.println("Getting Image...");
 					len = con.recvImage(jpeg);	
+				} else if (cmd == Protocol.COMMAND.NOTOK) {
+					System.err.println("Server says not ok!");
+					System.exit(1);
 				} else {
 					System.err.println("Protocol Voilation!");
-				}
+					System.exit(1);
+				}				
 			} catch (IOException e) {
 				System.err.println("Errornous err...");
+				System.exit(1);
 			}			
 			System.out.println("Received " + len + " bytes.");
-			
+
 			imagePanel.refresh(jpeg);			
 			if (firstCall) {
 				this.pack();

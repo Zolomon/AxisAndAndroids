@@ -29,10 +29,26 @@ public class ClientHandler extends Thread {
 
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
 
+			int testcase = 0;
 
-			//servConnectionTest(clientSocket);
-			servFakeCam(clientSocket);
-			//servFakeCamInteractive(clientSocket);
+			switch (testcase) {
+			case 0: 
+				testSendInt(clientSocket);
+				break;
+			case 1: 
+				servConnectionTest(clientSocket);
+				break;
+			case 2:
+				servFakeCam(clientSocket);
+				break;
+			case 3:
+				servFakeCamInteractive(clientSocket);
+				break;
+			default:
+				servConnectionTest(clientSocket);
+				servFakeCam(clientSocket);
+				servFakeCamInteractive(clientSocket);
+			}
 
 
 
@@ -98,6 +114,27 @@ public class ClientHandler extends Thread {
 		System.out.println();
 	}
 
+	public void testSendInt(Socket socket) {
+		System.out.println("**Test recv int");
+
+		Connection con = new Connection(socket);
+		int recv = -1;
+		try {
+						
+			for (int i = -1000; i < 1000; ++i) {
+				recv = con.recvInt();	
+				System.out.printf("Got: %d\n", recv);
+				assert(127*i == recv);
+			}
+
+			System.out.println("Done: **Test recv int");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+
 
 	public void servFakeCam(Socket sock) throws IOException {
 		Connection con = new Connection(sock);
@@ -124,21 +161,18 @@ public class ClientHandler extends Thread {
 		if (! axis.connect()) {
 			System.out.println("Failed to connect to camera!");
 			System.exit(1);
-		}
+		}	
 
 		while (!interrupted()) {
 
-			System.out.println("Waiting for Request");
-			int cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC
-					
-			System.out.printf("Command: ", cmd);
+			int cmd;						
 
-			switch (cmd) {
-			case Protocol.COMMAND.NOTOK:
-				try { // ------------------------------------------> Fulhack...
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {}
-				break;				
+			System.out.println("Waiting for Request");
+
+			cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC					
+			System.out.printf("Command: %d \n", cmd);
+
+			switch (cmd) {			
 			case Protocol.COMMAND.IMAGE:			
 				System.out.printf("%d. Image Requested", cmd);
 
@@ -152,9 +186,10 @@ public class ClientHandler extends Thread {
 				break;
 			default:
 				System.err.printf("Unknown Command %d\n", cmd);
-				//con.sendInt(Protocol.COMMAND.ERR);
+				con.sendInt(Protocol.COMMAND.NOTOK);
+				System.exit(1);
 				break;
-			}
+			}											
 
 		}
 

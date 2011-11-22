@@ -6,8 +6,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import se.lth.cs.fakecamera.Axis211A;
-
 
 public class Connection {
 
@@ -66,7 +64,7 @@ public class Connection {
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);		
 
-		assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
+		//assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
 
 		os.write(data, 0, data.length);	 // EOF how ???
 		os.flush();
@@ -75,8 +73,8 @@ public class Connection {
 	public void sendImage(byte[] data, int a, int b) throws IOException {
 		int len = b - a;
 
-		assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
-		assert(a + len - 1 < data.length);
+		//assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
+		//assert(a + len - 1 < data.length);
 
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(len);	
@@ -87,6 +85,7 @@ public class Connection {
 
 	public int recvImage(byte[] b) throws IOException {				
 
+		// Must receive an command int before calling recvImage !!! 
 		int len = recvInt();				
 
 		int status = 0;
@@ -135,12 +134,24 @@ public class Connection {
 		return recvInt();
 	}
 
-	public void sendInt(int nbr) throws IOException {	
+	
+	private byte[] sendintbuffer = new byte[4];
+
+	public void sendInt(int nbr) throws IOException {
+		sendintbuffer[0] = (byte) ( (nbr & 0xff000000) >> 24 );
+		sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
+		sendintbuffer[2] = (byte) ( (nbr & 0x0000ff00) >> 8	 );
+		sendintbuffer[3] = (byte) ( (nbr & 0x000000ff) 		 );
+		os.write(sendintbuffer, 0, sendintbuffer.length);
+		os.flush();
+
+		/*
 		os.write( (nbr & 0xff000000) >> 24 	);
 		os.write( (nbr & 0x00ff0000) >> 16 	);
 		os.write( (nbr & 0x0000ff00) >> 8	);
 		os.write( (nbr & 0x000000ff) 		);
 		os.flush();
+		*/
 	}
 
 	
@@ -159,7 +170,7 @@ public class Connection {
 			// Blocking until data available.
 			// -1 if EOF.
 			// 0 if nothing read.
-		} while(status > 0); 
+		} while(bytes_read < 4 || status > 0); 
 		// while(status >= 0); 
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 

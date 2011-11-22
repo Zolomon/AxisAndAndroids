@@ -4,12 +4,12 @@ package se.axisandandroids.networking;
 public class Protocol {
 
 	public class COMMAND {	
-		public final static int IMAGE 		= 1;
-		public final static int SYNC_MODE 	= 2;
-		public final static int DISP_MODE 	= 3;
-		public final static int CONNECTED 	= 4;
-		//public final static int END_MSG 	= 5;
-		public final static int NOTOK	 	= 13;
+		public final static int IMAGE 		= 10;
+		public final static int SYNC_MODE 	= 20;
+		public final static int DISP_MODE 	= 30;
+		public final static int CONNECTED 	= 40;
+		//public final static int END_MSG 	= 50;
+		public final static int NOTOK	 	= 130;
 	}
 
 	public class SYNC_MODE {		
