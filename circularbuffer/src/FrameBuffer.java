@@ -31,14 +31,15 @@ public class FrameBuffer {
 		}	
 	}
 
-	public synchronized void put(byte[] x) {
+	public synchronized void put(byte[] x, int len) {
 		try {
 			while (nAvailable == MAXSIZE) wait();
 		} catch (InterruptedException e) {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}
-		buffer[nextToPut].x = x;		
+		buffer[nextToPut].x = x;	
+		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
 		notifyAll();
@@ -54,8 +55,28 @@ public class FrameBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		return buffer[nextToGet].x;
+		
+		/* Return a copy with correct length. */
+		byte[] data = new byte[buffer[nextToGet].len];
+		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		return data;
 	}
+	
+	public synchronized Frame getFrame() {
+		try {
+			while (nAvailable == 0) wait();
+		} catch (InterruptedException e) {
+			System.err.println("Get got interrupted");
+			e.printStackTrace();
+		}
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
+		
+		/* Return copy of the frame. */
+		return new Frame(buffer[nextToGet]);
+	}
+
 
 	public synchronized byte[] first() {
 		if (nAvailable == 0) return null;
@@ -88,7 +109,7 @@ public class FrameBuffer {
 			byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
-			fb.put(x);
+			fb.put(x, x.length);
 		}
 
 		fb.printBuffer();
@@ -111,7 +132,7 @@ public class FrameBuffer {
 		byte[] x = new byte[raw_img.length];
 		System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 		x[0] = (byte) 10;			
-		fb.put(x);
+		fb.put(x, x.length);
 
 		z = fb.get();
 		assert(z[0] == 2);
