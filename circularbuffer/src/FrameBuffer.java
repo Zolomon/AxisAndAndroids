@@ -1,5 +1,6 @@
 import se.lth.cs.fakecamera.Axis211A;
 
+
 public class FrameBuffer {
 
 	private Frame[] buffer;	

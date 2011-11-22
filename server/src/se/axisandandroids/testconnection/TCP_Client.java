@@ -235,13 +235,14 @@ public class TCP_Client {
 		ImagePanel imagePanel;
 		JButton button;
 		boolean firstCall = true;
+		boolean play = true;
 		Connection con;
 		byte [] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
 		public GUI() {
 			super();						
 			imagePanel = new ImagePanel();
-			button = new JButton("Get image");
+			button = new JButton("Stop");
 			button.addActionListener(new ButtonHandler(this));
 			this.getContentPane().setLayout(new BorderLayout());
 			this.getContentPane().add(imagePanel, BorderLayout.NORTH);
@@ -250,45 +251,48 @@ public class TCP_Client {
 			this.pack();
 
 			this.con = new Connection(socket);
+						
 			refreshImage();
 		}
 
 		public void refreshImage() {		
-			System.out.println("** Refreshing Image ------------------------- ");
+			//			System.out.println("** Refreshing Image ------------------------- ");			
+			while (play) {
+				int cmd, len = 0;
 
-			int cmd, len = 0;
+				try {			
+					//				System.out.println("Requesting Image");
+					con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
 
-			try {			
-				System.out.println("Requesting Image");
-				con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
+					//				System.out.println("Waiting for Answer");
+					cmd = con.recvInt(); 				 // Wait for Answer
 
-				System.out.println("Waiting for Answer");
-				cmd = con.recvInt(); 				 // Wait for Answer
-
-				if (cmd == Protocol.COMMAND.IMAGE) {
-					System.out.println("Getting Image...");
-					len = con.recvImage(jpeg);	
-				} else if (cmd == Protocol.COMMAND.NOTOK) {
-					System.err.println("Server says not ok!");
+					if (cmd == Protocol.COMMAND.IMAGE) {
+						//					System.out.println("Getting Image...");
+						len = con.recvImage(jpeg);	
+					} else if (cmd == Protocol.COMMAND.NOTOK) {
+						System.err.println("Server says not ok!");
+						System.exit(1);
+					} else {
+						System.err.println("Protocol Voilation!");
+						System.exit(1);
+					}				
+				} catch (IOException e) {
+					System.err.println("Errornous err...");
+					e.printStackTrace();
 					System.exit(1);
-				} else {
-					System.err.println("Protocol Voilation!");
-					System.exit(1);
-				}				
-			} catch (IOException e) {
-				System.err.println("Errornous err...");
-				e.printStackTrace();
-				System.exit(1);
-			}			
-			System.out.println("Received " + len + " bytes.");
+				}			
+				System.out.println("Received " + len + " bytes.");
 
-			imagePanel.refresh(jpeg);			
-			if (firstCall) {
-				this.pack();
-				this.setVisible(true);
-				firstCall = false;
+				imagePanel.refresh(jpeg);			
+				if (firstCall) {
+					this.pack();
+					this.setVisible(true);
+					firstCall = false;
+				}
 			}
 		}
+		
 	}
 
 	class ImagePanel extends JPanel {
@@ -310,11 +314,13 @@ public class TCP_Client {
 	}
 	class ButtonHandler implements ActionListener {
 		GUI gui;
+
 		public ButtonHandler(GUI gui) {
 			this.gui = gui;
 		}
 		public void actionPerformed(ActionEvent evt) {
-			gui.refreshImage();
+			if (gui.play) gui.play = false;
+			else gui.play = true;
 		}
 	}
 }

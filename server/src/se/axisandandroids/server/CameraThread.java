@@ -45,8 +45,7 @@ public class CameraThread extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		else if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+		} else if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
 			while(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
 				int len = myCamera.getJPEG(jpeg,0);
 			}

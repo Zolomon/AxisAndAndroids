@@ -204,20 +204,20 @@ public class ClientHandler extends Thread {
 
 			int cmd;						
 
-			System.out.println("Waiting for Request");
+//			System.out.println("Waiting for Request");
 
 			cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC
 
-			System.out.printf("Command: %d \n", cmd);
+//			System.out.printf("Command: %d \n", cmd);
 
 			switch (cmd) {			
 			case Protocol.COMMAND.IMAGE:			
-				System.out.printf("%d. Image Requested", cmd);
+//				System.out.printf("%d. Image Requested", cmd);
 
-				System.out.println("Fetching from camera,");
+//				System.out.println("Fetching from camera,");
 				int len = axis.getJPEG(jpeg, 0);		
 
-				System.out.println("Sending Image...");
+				//System.out.println("Sending Image...");
 				con.sendImage(jpeg, 0, len);
 
 				System.out.println("Sent: " + len + " bytes.");

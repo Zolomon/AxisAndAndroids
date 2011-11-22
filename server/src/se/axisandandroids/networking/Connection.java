@@ -98,8 +98,7 @@ public class Connection {
 					bytes_read += status;		
 				}
 			}
-			System.out.println("Done: "+ bytes_read);
-
+			//System.out.println("Done: "+ bytes_read);
 		} catch (IOException e) {
 			System.err.println("IO-error");
 			System.exit(1);
@@ -130,15 +129,10 @@ public class Connection {
 	private byte[] sendintbuffer = new byte[4];
 
 	public void sendInt(int nbr) throws IOException {
-		System.out.print("Sending int: " + nbr);
 		sendintbuffer[0] = (byte) ( (nbr & 0xff000000) >> 24 );
 		sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
 		sendintbuffer[2] = (byte) ( (nbr & 0x0000ff00) >> 8	 );
 		sendintbuffer[3] = (byte) ( (nbr & 0x000000ff) 		 );
-		System.out.print(", sending int: ");
-		for(int i= 0; i < sendintbuffer.length; i++)
-			System.out.printf("%x", sendintbuffer[i]);
-		System.out.println();
 		os.write(sendintbuffer, 0, sendintbuffer.length);
 		os.flush();
 
@@ -171,13 +165,11 @@ public class Connection {
 			}		
 		} 
 
-		int result = ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
+		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
 				   ( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 
 				   ( ( (int)readintbuffer[2]) << 8  ) & 0x0000ff00 | 
 				   (   (int)readintbuffer[3]		  & 0x000000ff ); 
 		
-		System.out.println("Receive int: " + result);
-		return result;
 		 
 		
 		/*
