@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import se.axisandandroids.client.DisplayMonitor;
-import se.axisandandroids.networking.Connection;
+import se.axisandandroids.client.service.networking.ConnectionHandler;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Binder;
@@ -20,7 +19,9 @@ public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
 	private static List<Socket> sockets;
+
 	public DisplayMonitor cm = new DisplayMonitor();
+	public ConnectionHandler ch = new ConnectionHandler();
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
@@ -55,11 +56,6 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
-	
-	/* Connection mock */
-	
-	/* End of connection mock */
-	private HashMap<Integer, NewImageCallback> nicListeners = new HashMap<Integer, CtrlService.NewImageCallback>();
 	
 	public void receiveImage(/*SomeClass here ,*/NewImageCallback nic) {
 		Bitmap result = null; 

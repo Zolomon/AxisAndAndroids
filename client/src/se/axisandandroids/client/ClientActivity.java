@@ -1,7 +1,13 @@
 package se.axisandandroids.client;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
+import se.axisandandroids.client.service.networking.ConnectionHandler;
+import se.axisandandroids.networking.Connection;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,7 +32,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 
 	private CtrlService mService;
 	private boolean mBound;
-
+	private ConnectionHandler ch;
 	Button btnConnect, btnDisconnect;
 	LayoutInflater linflater;
 	TableLayout tl;
@@ -68,7 +74,17 @@ public class ClientActivity extends Activity implements OnClickListener {
 
 		String host = etHost.getText().toString();
 		String port = etPort.getText().toString();
-
+		
+		try {
+			ch.add(new Connection(host, Integer.parseInt(port)));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);
 		final View theInflatedView = inflater.inflate(R.layout.connection_item,
@@ -116,6 +132,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
+			ch = mService.ch;
 			mBound = true;
 		}
 

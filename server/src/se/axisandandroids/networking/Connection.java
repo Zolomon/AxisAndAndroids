@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 
 public class Connection {
@@ -20,6 +21,10 @@ public class Connection {
 	private OutputStream os;
 
 
+	public Connection(String host, int port) throws UnknownHostException, IOException {
+		this(new Socket(host, port));
+	}
+	
 	public Connection(Socket sock) {
 		this.sock = sock;	
 
@@ -37,6 +42,7 @@ public class Connection {
 
 	public String getHost() { return host; }
 	public int getPort() { return port; }
+	@Override public String toString() {return host +":"+port;}
 
 	public void connect(Socket sock) { 
 		// Potentially Dangerous, synchronize use of sock? 
