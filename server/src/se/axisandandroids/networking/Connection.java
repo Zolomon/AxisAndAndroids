@@ -79,7 +79,7 @@ public class Connection {
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(len);	
 
-		os.write(data, a, len); // EOF how ???		
+		os.write(data, a, len); // EOF how ???						
 		os.flush();
 	}
 
@@ -92,20 +92,12 @@ public class Connection {
 		int bytes_read = 0;
 
 		try {					
-			do {
-				bytes_read += status;		
-				status = is.read(b, bytes_read, len - bytes_read);
-
-				/*
-				if (status > 0) { // -1 = EOF how ???
+			while (bytes_read < len) {
+				status = is.read(b, bytes_read, len - bytes_read);						
+				if (status > 0) {
 					bytes_read += status;		
-					System.out.println("read: "+ bytes_read);
 				}
-			} while(status >= 0); // EOF => status = -1... EOF how?
-				 */
-
-			} while(status > 0); 
-
+			}
 			System.out.println("Done: "+ bytes_read);
 
 		} catch (IOException e) {
@@ -164,14 +156,15 @@ public class Connection {
 		int status = 0;
 		int bytes_read = 0;
 
-		do {
-			bytes_read += status;		
-			status = is.read(readintbuffer, bytes_read, 4 - bytes_read); 
+		while(bytes_read < 4) {
+			status = is.read(readintbuffer, bytes_read, 4 - bytes_read);
 			// Blocking until data available.
 			// -1 if EOF.
 			// 0 if nothing read.
-		} while(bytes_read < 4 || status > 0); 
-		// while(status >= 0); 
+			if (status > 0) {
+				bytes_read += status;		
+			}		
+		} 
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
 			   ( ( (int)readintbuffer[1]) << 16 ) & 0x00ff0000 | 

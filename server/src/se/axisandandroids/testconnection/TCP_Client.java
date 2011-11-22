@@ -86,7 +86,7 @@ public class TCP_Client {
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
 
 
-			int testcase = 0;
+			int testcase = 2;
 
 			switch (testcase) {
 			case 0: 
@@ -175,21 +175,45 @@ public class TCP_Client {
 			e.printStackTrace();
 		}	
 	}
-	
+
 	public void testFakeCam() throws IOException {
 		System.out.println("**Test FakeCam");
 
 		Connection con = new Connection(socket);
 
 
+		// Get image 1
 		int cmd = con.recvInt();
 		assert(cmd == Protocol.COMMAND.IMAGE);
-
 		byte[] img = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 		int len = con.recvImage(img);	
-
 		System.out.println("Received " + len + " bytes.");
-		jframe_show_jpeg("FakeCamSplatt", img);
+
+		jframe_show_jpeg("FakeCamSplatt 1", img);
+
+		// Get image 2
+		cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		len = con.recvImage(img);
+		System.out.println("Received " + len + " bytes.");
+
+		jframe_show_jpeg("FakeCamSplatt 2", img);
+
+		// Get image 3		
+		cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		len = con.recvImage(img);
+		System.out.println("Received " + len + " bytes.");
+
+		jframe_show_jpeg("FakeCamSplatt 3", img);
+
+		// Get image 4
+		cmd = con.recvInt();
+		assert(cmd == Protocol.COMMAND.IMAGE);
+		len = con.recvImage(img);
+		System.out.println("Received " + len + " bytes.");
+
+		jframe_show_jpeg("FakeCamSplatt 4", img);
 	}
 
 	public void jframe_show_jpeg(String framename, byte[] data) {

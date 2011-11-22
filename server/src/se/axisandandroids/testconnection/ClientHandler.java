@@ -29,7 +29,7 @@ public class ClientHandler extends Thread {
 
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
 
-			int testcase = 0;
+			int testcase = 2;
 
 			switch (testcase) {
 			case 0: 
@@ -120,7 +120,7 @@ public class ClientHandler extends Thread {
 		Connection con = new Connection(socket);
 		int recv = -1;
 		try {
-						
+
 			for (int i = -1000; i < 1000; ++i) {
 				recv = con.recvInt();	
 				System.out.printf("Got: %d\n", recv);
@@ -128,7 +128,7 @@ public class ClientHandler extends Thread {
 			}
 
 			System.out.println("Done: **Test recv int");
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -145,11 +145,48 @@ public class ClientHandler extends Thread {
 			System.exit(1);
 		}
 
+		// Send image 1
 		int len = axis.getJPEG(jpeg, 0);		
 		assert(len <= jpeg.length);
-
 		con.sendImage(jpeg, 0, len);
 		System.out.println("Sent: " + len + " bytes.");
+
+		try {
+			Thread.sleep((long)1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		// Send image 2
+		len = axis.getJPEG(jpeg, 0);		
+		assert(len <= jpeg.length);
+		con.sendImage(jpeg, 0, len);
+		System.out.println("Sent: " + len + " bytes.");
+
+		try {
+			Thread.sleep((long)1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
+		
+		// Send image 3
+		len = axis.getJPEG(jpeg, 0);		
+		assert(len <= jpeg.length);
+		con.sendImage(jpeg, 0, len);
+		System.out.println("Sent: " + len + " bytes.");
+		
+		try {
+			Thread.sleep((long)1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		// Send image 4
+		len = axis.getJPEG(jpeg, 0);		
+		assert(len <= jpeg.length);
+		con.sendImage(jpeg, 0, len);
+		System.out.println("Sent: " + len + " bytes.");
+		
 
 		axis.close();
 	}
@@ -169,7 +206,8 @@ public class ClientHandler extends Thread {
 
 			System.out.println("Waiting for Request");
 
-			cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC					
+			cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC
+
 			System.out.printf("Command: %d \n", cmd);
 
 			switch (cmd) {			

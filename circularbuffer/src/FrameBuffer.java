@@ -12,7 +12,7 @@ public class FrameBuffer {
 
 	/**
 	 * Create a FrameBuffer with: 
-	 * maximum frame size, Axis211A.IMAGE_BUFFER_SIZE and:
+	 * maximum frame size, Axis211A.IMAGE_BUFFER_SIZE and:1
 	 * @param MAXSIZE, maximum buffer capacity. 
 	 **/
 	public FrameBuffer(int MAXSIZE) {		
