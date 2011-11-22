@@ -1,7 +1,9 @@
 
 
 /* CameraServer can pass this to it's send thread. If camera only ever send
- * images a Frame will be enough.											*/
+ * images a Frame will be enough.											
+ * For commands without parameters an int might be sufficient.
+ * */
 public class Command {
 	public int cmd;
 	public byte[] x;
