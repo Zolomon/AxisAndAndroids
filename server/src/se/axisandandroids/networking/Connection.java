@@ -8,7 +8,8 @@ import java.net.SocketException;
 
 
 public class Connection {
-
+	private String host;
+	private int port;
 	private Socket sock;		
 
 	// Input and output should be independent!
@@ -34,6 +35,9 @@ public class Connection {
 		connect();
 	}
 
+	public String getHost() { return host; }
+	public int getPort() { return port; }
+	
 	public void connect(Socket sock) { 
 		// Potentially Dangerous, synchronize use of sock? 
 		this.sock = sock;
