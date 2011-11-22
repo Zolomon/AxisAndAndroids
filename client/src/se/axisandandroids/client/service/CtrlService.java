@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import se.axisandandroids.client.CameraMonitor;
+import se.axisandandroids.networking.Connection;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -23,6 +26,10 @@ public class CtrlService extends android.app.Service {
 		public CtrlService getService() {
 			return CtrlService.this;
 		}
+	}
+	
+	public interface NewImageCallback {
+		void callback(Bitmap result);
 	}
 
 	@Override
@@ -48,6 +55,18 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
+	
+	/* Connection mock */
+	
+	/* End of connection mock */
+	private HashMap<Integer, NewImageCallback> nicListeners = new HashMap<Integer, CtrlService.NewImageCallback>();
+	
+	public void receiveImage(/*SomeClass here ,*/NewImageCallback nic) {
+		Bitmap result = null; 
+		
+		nic.callback(result);
+	}
+	
 	
 	public void setSockets(List<Socket> sockets) {
 		CtrlService.sockets = sockets;
