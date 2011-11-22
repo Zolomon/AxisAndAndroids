@@ -36,19 +36,19 @@ public class CircularBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		return buffer[nextToGet];
+		return buffer[nextToGet]; // Return copy ?
 	}
 
 	public synchronized Object first() {
 		if (nAvailable == 0) return -1;
-		return buffer[nextToGet];
+		return buffer[nextToGet]; // Return copy ?
 	}
 
 	public synchronized Object sneakpeek(int i) {
 		if (i >= nAvailable) {
 			System.err.println("Out of bounds.");			
 		} 
-		return buffer[(nextToGet+i) % MAXSIZE];
+		return buffer[(nextToGet+i) % MAXSIZE]; // Return copy ?
 	}
 
 	public synchronized void printBuffer() {
@@ -68,7 +68,7 @@ public class CircularBuffer {
 			byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
-			fb.put(new Frame(x));
+			fb.put(new Frame(x, x.length));
 		}
 
 		fb.printBuffer();
@@ -91,7 +91,7 @@ public class CircularBuffer {
 		byte[] x = new byte[raw_img.length];
 		System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 		x[0] = (byte) 10;			
-		fb.put(new Frame(x));
+		fb.put(new Frame(x, x.length));
 
 		z = (Frame) fb.get();
 		assert(z.x[0] == 2);
