@@ -86,7 +86,7 @@ public class RenderActivity extends Activity {
 
 		@Override
 		protected void onProgressUpdate(Bitmap... values) {
-				mDisplay.setImageBitmap(values[0]);
+			mDisplay.setImageBitmap(values[0]);
 		}
 
 		@Override
