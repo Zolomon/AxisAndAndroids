@@ -19,7 +19,6 @@ public class Connection {
 
 	private InputStream is;									
 	private OutputStream os;
-	private byte[] readintbuffer = new byte[4]; 
 
 
 	public Connection(Socket sock) {
@@ -144,6 +143,9 @@ public class Connection {
 		os.flush();
 	}
 
+	
+	private byte[] readintbuffer = new byte[4]; 
+	
 	public int recvInt() throws IOException {
 		
 		// Blocking Receive Integer ??? 

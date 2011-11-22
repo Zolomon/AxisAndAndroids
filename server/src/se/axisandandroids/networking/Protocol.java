@@ -9,8 +9,7 @@ public class Protocol {
 		public final static int DISP_MODE 	= 3;
 		public final static int CONNECTED 	= 4;
 		//public final static int END_MSG 	= 5;
-		public final static int ERR			= 13;
-		public final static int NOMOREDATA 	= -1;
+		public final static int NOTOK	 	= 13;
 	}
 
 	public class SYNC_MODE {		

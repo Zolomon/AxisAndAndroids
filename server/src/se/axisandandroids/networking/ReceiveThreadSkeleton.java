@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class ReceiveThreadSkeleton extends Thread {
 
-	private Connection c;
+	protected Connection c;
 
 	public ReceiveThreadSkeleton(Connection c) {
 		this.c = c;

@@ -134,7 +134,7 @@ public class ClientHandler extends Thread {
 			System.out.printf("Command: ", cmd);
 
 			switch (cmd) {
-			case Protocol.COMMAND.NOMOREDATA:
+			case Protocol.COMMAND.NOTOK:
 				try { // ------------------------------------------> Fulhack...
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {}
