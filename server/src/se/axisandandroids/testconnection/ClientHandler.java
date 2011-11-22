@@ -29,7 +29,7 @@ public class ClientHandler extends Thread {
 
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
 
-			int testcase = 2;
+			int testcase = 3;
 
 			switch (testcase) {
 			case 0: 

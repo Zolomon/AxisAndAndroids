@@ -34,7 +34,7 @@ public class TCP_Client {
 
 	private Socket socket;
 	private InetAddress host;	
-	private final static int default_port = 6000;
+	private final static int default_port = 5555;
 	private int port;
 
 	public TCP_Client(InetAddress host, int port) {
@@ -86,7 +86,7 @@ public class TCP_Client {
 			// *** --- CHANGE HERE WHAT TO RUN --- ***
 
 
-			int testcase = 2;
+			int testcase = 3;
 
 			switch (testcase) {
 			case 0: 
@@ -109,7 +109,7 @@ public class TCP_Client {
 
 			// *** ------------------------------- ***
 
-			tcpclient.disconnect();
+			//tcpclient.disconnect();
 		} catch (IOException e) {
 			System.err.println("io-exception");
 			System.exit(1);
@@ -277,6 +277,7 @@ public class TCP_Client {
 				}				
 			} catch (IOException e) {
 				System.err.println("Errornous err...");
+				e.printStackTrace();
 				System.exit(1);
 			}			
 			System.out.println("Received " + len + " bytes.");

@@ -20,7 +20,7 @@ public class TCP_Server {
 	
 	private Axis211A axis;
 	private ServerSocket servSocket = null;
-	private final static int default_port = 6000;
+	private final static int default_port = 5555;
 	private int port;
 	
 
