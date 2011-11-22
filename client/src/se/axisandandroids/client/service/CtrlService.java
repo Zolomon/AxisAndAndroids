@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.axisandandroids.client.CameraMonitor;
-import se.axisandandroids.client.DrawThread;
-
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
