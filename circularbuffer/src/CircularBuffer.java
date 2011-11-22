@@ -36,19 +36,19 @@ public class CircularBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		return buffer[nextToGet];
+		return buffer[nextToGet]; // Return copy ?
 	}
 
 	public synchronized Object first() {
 		if (nAvailable == 0) return -1;
-		return buffer[nextToGet];
+		return buffer[nextToGet]; // Return copy ?
 	}
 
 	public synchronized Object sneakpeek(int i) {
 		if (i >= nAvailable) {
 			System.err.println("Out of bounds.");			
 		} 
-		return buffer[(nextToGet+i) % MAXSIZE];
+		return buffer[(nextToGet+i) % MAXSIZE]; // Return copy ?
 	}
 
 	public synchronized void printBuffer() {

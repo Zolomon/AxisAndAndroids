@@ -80,14 +80,14 @@ public class FrameBuffer {
 
 	public synchronized byte[] first() {
 		if (nAvailable == 0) return null;
-		return buffer[nextToGet].x;
+		return buffer[nextToGet].x; // Return copy ?
 	}
 
 	public synchronized byte[] sneakpeek(int i) {
 		if (i >= nAvailable) {
 			System.err.println("Out of bounds.");			
 		} 
-		return buffer[(nextToGet+i) % MAXSIZE].x;
+		return buffer[(nextToGet+i) % MAXSIZE].x; // Return copy ?
 	}
 
 	public synchronized void printBuffer() {
