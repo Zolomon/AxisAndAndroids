@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import se.lth.cs.fakecamera.Axis211A;
+//import se.lth.cs.cameraproxy.Axis211A;
 
 public class JPEGHTTPClient {
 
