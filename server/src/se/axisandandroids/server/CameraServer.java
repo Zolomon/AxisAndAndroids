@@ -25,18 +25,29 @@ public class CameraServer {
 
 	
 	public static void main(String[] args) {
-		System.out
-				.println("Big brother is watching you all: Axis and Androids...");
 
 		int defport = default_port;
-		if (args.length >= 1) {
-			defport = Integer.parseInt(args[0]);
-		}
 		boolean http = false;
-		if (args.length >= 2) {
-			http = args[1].equals("-http");
+		boolean fake = false;
 
+
+		for (int argc = 0; argc < args.length; ++argc) {
+			if (args[argc].equals("-http")) http = true;
+			else if (args[argc].equals("-fake")) fake = true;
+			else if (args[argc].equals("-proxy")) fake = false;
+			else if (args[argc].equals("-help")) {
+				System.out.println("Usage: CameraServer [options] [port]");
+				System.out.println("Options:");
+				System.out.println("\t-http  - Run tiny http server as well as camera server.");
+				System.out.println("\t-fake  - Use fake camera.");
+				System.out.println("\t-proxy - Use camera proxy.");
+				System.out.println("\t-help  - Show help.");
+				System.exit(0);
+			} 
+			else defport = Integer.parseInt(args[argc]);			
 		}
+	
+		System.out.println("Big brother is watching you all, Axis and Androids...");
 
 		CameraServer serv = new CameraServer(defport, http);
 		serv.listenForConnection();
@@ -73,12 +84,10 @@ public class CameraServer {
 
 			System.out.printf("Serving client: %s", clientSocket
 					.getInetAddress().toString());
-
-			// * What was our plan here?
-			// Create some Connection object with socket,
-			// then some ClientHandler with the Connection object.
-
-			// Handle the client some way!!! e.g. with a thread object:
+	
+			/* Handle the client some way !!! */ 
+			
+			// With a thread object if multi-client:
 			// new ClientHandler(Connection client).start();
 
 			// OR if only one client...
