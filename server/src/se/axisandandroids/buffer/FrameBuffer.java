@@ -53,12 +53,12 @@ public class FrameBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}		
+		if (nAvailable == 0) notifyAll();
 		//buffer[nextToPut].x = x;
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
 		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
-		notifyAll();
 	}
 
 
@@ -73,10 +73,10 @@ public class FrameBuffer {
 		}
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
-		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);		
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 		return data;
 	}
 
@@ -89,12 +89,11 @@ public class FrameBuffer {
 			return null;
 		}
 		/* Return copy of the frame. */
-		Frame f = new Frame(buffer[nextToGet]);
+		Frame frame = new Frame(buffer[nextToGet]);
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
-
-		return f;
+		return frame;
 	}
 
 
@@ -114,9 +113,9 @@ public class FrameBuffer {
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
 		
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 		return data;
 	}
 	
@@ -134,9 +133,9 @@ public class FrameBuffer {
 		}
 		/* Write data to jpeg. */
 		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, buffer[nextToGet].len);
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 		return buffer[nextToGet].len;
 	}
 	
@@ -153,9 +152,9 @@ public class FrameBuffer {
 			e.printStackTrace();
 		}
 		Frame f = new Frame(buffer[nextToGet]);
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 
 		/* Return copy of the frame. */
 		return f;
@@ -216,11 +215,11 @@ public class FrameBuffer {
 			
 	public static void main(String[] args) { /* Test Module */
 		int BUFFMAX = 10;
-		FrameBuffer fb = new FrameBuffer(BUFFMAX);
-		byte[] raw_img = { 0,120,32,33,2,12,-23,32,-14,3 };
+		final FrameBuffer fb = new FrameBuffer(BUFFMAX);
+		final byte[] raw_img = { 0,120,32,33,2,12,-23,32,-14,3 };
 
 		for (int i = 0; i < BUFFMAX; ++i) {
-			byte[] x = new byte[raw_img.length];
+			final byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
 			fb.put(x, x.length);

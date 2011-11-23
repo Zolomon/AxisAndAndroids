@@ -21,13 +21,10 @@ public class CircularBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}
-
+		if (nAvailable == 0) notifyAll();
 		buffer[nextToPut] = x;	
-		//		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
-
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
-		notifyAll();
 	}
 
 	public synchronized void putOverwriting(Object x) {
@@ -50,24 +47,24 @@ public class CircularBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		if (nAvailable == MAXSIZE) notifyAll();
 		Object ret = buffer[nextToGet];
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-
 		return ret;
 	}
 
 	public synchronized Object tryGet() {
 		if (nAvailable == 0) return null;
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 		return buffer[nextToGet];
 	}
 
 	public synchronized Object first() {
-		if (nAvailable == 0) return -1;
+		if (nAvailable == 0) return null;
 		return buffer[nextToGet];
 	}
 
