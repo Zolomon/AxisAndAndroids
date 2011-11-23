@@ -81,6 +81,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			if (disp_mode == Protocol.DISP_MODE.MOVIE) {
 				// FORWARD TO ALL OTHER CAMERAS				
 				// Put something in ALL sendthread mailboxes.
+				
 				//Protocol.COMMAND.DISP_MODE
 				//Protocol.DISP_MODE.MOVIE
 			}

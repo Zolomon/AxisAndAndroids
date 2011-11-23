@@ -2,6 +2,7 @@ package se.axisandandroids.server;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
+import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
@@ -29,7 +30,7 @@ public class CameraThread extends Thread {
 		if (cameraConnect()) {
 			while(! interrupted()) {
 				int len = receiveJPEG();
-				mailbox.put(new Frame(jpeg, len, true));				
+				mailbox.put(new Frame(jpeg, len, true));					
 			}
 		}
 	}
@@ -57,6 +58,10 @@ public class CameraThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		// if motion detect
+		// mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
+
 		return len;
 	}
 
