@@ -9,6 +9,7 @@ import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
 
+
 public class ServerSendThread extends SendThreadSkeleton {
 
 	protected final int BUFFERSIZE = 10;

@@ -21,12 +21,25 @@ public class CircularBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}
-		
+
 		buffer[nextToPut] = x;	
-//		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
+		//		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
 
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
+		notifyAll();
+	}
+
+	public synchronized void putOverwriting(Object x) {
+		if (nAvailable == MAXSIZE) {
+			buffer[nextToPut] = x;	
+			if (++nextToPut == MAXSIZE) nextToPut = 0;
+			if (++nextToGet == MAXSIZE) nextToGet = 0;
+		} else {		
+			buffer[nextToPut] = x;	
+			if (++nextToPut == MAXSIZE) nextToPut = 0;
+			++nAvailable;
+		}
 		notifyAll();
 	}
 
@@ -124,9 +137,9 @@ public class CircularBuffer {
 		assert(z.x[0] == 10);
 
 		fb.printBuffer();	
-		
-		
-		
+
+
+
 		/* Test Case */
 		System.out.println("Test case");
 		CircularBuffer fb2 = new CircularBuffer(BUFFMAX);
@@ -135,9 +148,9 @@ public class CircularBuffer {
 
 		fb2.put(new Frame(img, img.length, img.length));
 		fb2.printBuffer();
-		
+
 		Object img2 = fb2.get();
-//		System.out.println( ((Frame) img2).toString() );
-		
+		//		System.out.println( ((Frame) img2).toString() );
+
 	}
 }
