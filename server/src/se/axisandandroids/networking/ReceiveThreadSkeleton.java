@@ -25,6 +25,7 @@ public class ReceiveThreadSkeleton extends Thread {
 	
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
+		System.out.println(cmd);
 		switch (cmd) {
 		case Protocol.COMMAND.IMAGE: 	
 			handleImage();

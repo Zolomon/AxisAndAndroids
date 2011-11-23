@@ -29,7 +29,11 @@ public class ServerSendThread extends SendThreadSkeleton {
 	protected void perform() {
 		// 1) Wait for message with commands to be put in buffer.
 		Object command = mailbox.get();
-
+		
+		if (command == null) {
+			System.out.println("COMMAND = NULL, SOMETHING IS VERY WRONG");
+		}
+		System.out.println("Getting command from mailbox:" + ((Frame) command).toString());
 		// Possible:
 		// 		- image
 		//		- motion detected => display mode to movie change
@@ -37,6 +41,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 		try {
 			// 2) Send commands and/or images via connection object.			
 			if (command instanceof Frame) {
+				System.out.println(((Frame) command).len + " " +command.toString());
 				c.sendImage(((Frame) command).x, 0, ((Frame) command).len);
 			} else if (command instanceof ModeChange) {
 				c.sendInt(((ModeChange) command).cmd);

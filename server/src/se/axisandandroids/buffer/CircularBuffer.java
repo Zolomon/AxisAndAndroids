@@ -21,7 +21,10 @@ public class CircularBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}
-		buffer[nextToPut] = x;		
+		
+		buffer[nextToPut] = x;	
+		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
+
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
 		notifyAll();
@@ -34,10 +37,14 @@ public class CircularBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		Object ret = buffer[nextToGet];
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		return buffer[nextToGet];
+		
+		System.out.println("next to get: " + nextToGet);
+
+		return ret;
 	}
 
 	public synchronized Object tryGet() {
@@ -119,5 +126,20 @@ public class CircularBuffer {
 		assert(z.x[0] == 10);
 
 		fb.printBuffer();	
+		
+		
+		
+		/* Test Case */
+		System.out.println("Test case");
+		CircularBuffer fb2 = new CircularBuffer(BUFFMAX);
+
+		byte[] img = { 5,120,32,33,2,12,-23,32,-14,3 };
+
+		fb2.put(new Frame(img, img.length, img.length));
+		fb2.printBuffer();
+		
+		Object img2 = fb2.get();
+		System.out.println( ((Frame) img2).toString() );
+		
 	}
 }

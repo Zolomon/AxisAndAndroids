@@ -34,7 +34,7 @@ public class TCP_Client {
 
 	private Socket socket;
 	private InetAddress host;	
-	private final static int default_port = 5555;
+	private final static int default_port = 6000;
 	private int port;
 
 	public TCP_Client(InetAddress host, int port) {
@@ -263,7 +263,7 @@ public class TCP_Client {
 				try {			
 					//				System.out.println("Waiting for Answer");
 					cmd = con.recvInt(); 				 // Wait for Answer
-
+					System.out.println("Command" + cmd + "received");
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
 						len = con.recvImage(jpeg);	
