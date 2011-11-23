@@ -37,19 +37,27 @@ public class CircularBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		return buffer[nextToGet]; // Return copy ?
+		return buffer[nextToGet];
+	}
+
+	public synchronized Object tryGet() {
+		if (nAvailable == 0) return null;
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
+		return buffer[nextToGet];
 	}
 
 	public synchronized Object first() {
 		if (nAvailable == 0) return -1;
-		return buffer[nextToGet]; // Return copy ?
+		return buffer[nextToGet];
 	}
 
 	public synchronized Object sneakpeek(int i) {
 		if (i >= nAvailable) {
 			System.err.println("Out of bounds.");			
 		} 
-		return buffer[(nextToGet+i) % MAXSIZE]; // Return copy ?
+		return buffer[(nextToGet+i) % MAXSIZE];
 	}
 
 	public synchronized void printBuffer() {
@@ -59,57 +67,57 @@ public class CircularBuffer {
 		}	
 		System.out.println("");
 	}	
-	
+
 	public static void main(String[] args) {
 		int BUFFMAX = 10;
 		CircularBuffer fb = new CircularBuffer(BUFFMAX);
 		byte[] raw_img = { 0,120,32,33,2,12,-23,32,-14,3 };
-				
+
 		for (int i = 0; i < BUFFMAX; ++i) {
 			byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
-			fb.put(new Frame(x, x.length));
+			fb.put(new Frame(x, x.length, false));
 		}
 
 		fb.printBuffer();
-		
+
 		Frame first = (Frame) fb.first();
 		System.out.println("First: " + first.toString());
-		
+
 		for (int i = 0; i < BUFFMAX; ++i) {
 			Frame y = (Frame) fb.sneakpeek(i);
 			System.out.println("Index: " + i + " - " + y.toString());
 		}
-		
+
 		Frame z;
 		z = (Frame) fb.get();
 		assert(z.x[0] == 0);
-		
+
 		z = (Frame) fb.get();
 		assert(z.x[0] == 1);
 
 		byte[] x = new byte[raw_img.length];
 		System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 		x[0] = (byte) 10;			
-		fb.put(new Frame(x, x.length));
+		fb.put(new Frame(x, x.length, false));
 
 		z = (Frame) fb.get();
 		assert(z.x[0] == 2);
 
 		fb.printBuffer();
-		
+
 		for (int i = 3; i < BUFFMAX; ++i) {
 			z = (Frame) fb.get();
 			assert(z.x[0] == i);
 			assert(z.x[i] == i);			
 		}
-		
+
 		fb.printBuffer();
 
 		z = (Frame) fb.get();
 		assert(z.x[0] == 10);
-		
+
 		fb.printBuffer();	
 	}
 }
