@@ -20,6 +20,15 @@ public class DisplayMonitor {
 		camera = new Axis211A();
 	}
 	
+	
+	
+	public synchronized int syncFrames(long timestamp) {
+		
+		
+		return -1;
+	}
+	
+	
 	public synchronized void connect() {
 		isConnected = camera.connect();
 		System.out.println("Is connected: " + isConnected);
