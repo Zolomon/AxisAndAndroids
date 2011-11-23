@@ -1,5 +1,6 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import android.app.Activity;
@@ -59,41 +60,13 @@ public class RenderActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mBound = true;
-			mService.cm.connect();
-			new UpdateImageTask().execute(mService.cm);
+			mService.dm.connect();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
 			mBound = false;
 		}
-	};
-
-	private class UpdateImageTask extends
-	AsyncTask<DisplayMonitor, Bitmap, Void> {
-		@Override
-		protected Void doInBackground(final DisplayMonitor... cm) {
-			new Thread(new Runnable() {
-
-				public void run() {
-					while (true) {
-						publishProgress(cm[0].nextImage());
-					}
-				}
-			}).start();
-
-			return null;
-		}
-
-		@Override
-		protected void onProgressUpdate(Bitmap... values) {
-			mDisplay.setImageBitmap(values[0]);
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-
-		}
-	}
+	};	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

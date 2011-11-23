@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.axisandandroids.client.DisplayMonitor;
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,8 +20,8 @@ public class CtrlService extends android.app.Service {
 	private final IBinder mBinder = new LocalBinder();
 	private static List<Socket> sockets;
 
-	public DisplayMonitor cm = new DisplayMonitor();
-	public ConnectionHandler ch = new ConnectionHandler();
+	public DisplayMonitor dm = new DisplayMonitor();
+	public ConnectionHandler ch = new ConnectionHandler(dm);
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
