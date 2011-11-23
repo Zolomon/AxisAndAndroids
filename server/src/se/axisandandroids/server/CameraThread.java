@@ -2,6 +2,7 @@ package se.axisandandroids.server;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
+
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.httpexample.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Protocol;

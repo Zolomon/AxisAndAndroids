@@ -12,6 +12,8 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	}
 
 	protected void showImage(long delay, int len) {
+		
+		
 		System.out.printf("ShowTime!!! Delay: %d", delay);
 	}
 
