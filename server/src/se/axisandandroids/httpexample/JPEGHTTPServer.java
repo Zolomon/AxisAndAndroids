@@ -15,8 +15,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import se.lth.cs.fakecamera.Axis211A;
-//import se.lth.cs.cameraproxy.Axis211A;
+//import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.cameraproxy.Axis211A;
 
 /**
  * Itsy bitsy teeny weeny web server. Always returns an image, regardless
@@ -43,7 +43,7 @@ public class JPEGHTTPServer {
 	 */
 	public JPEGHTTPServer(int port) {
 		myPort   = port;
-		myCamera = new Axis211A("argus-4.student.lth.se", 6077);
+		myCamera = new Axis211A("argus-8.student.lth.se", 6077);
 	}
 
 	// --------------------------------------------------------- PUBLIC METHODS

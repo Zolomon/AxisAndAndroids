@@ -25,13 +25,13 @@ public class DisplayMonitor {
 	public synchronized long syncFrames(long timestamp) {
 		if (showtime_old > 0) {
 			long showtime_new = showtime_old + timestamp - timestamp_old;
-			long currTime = System.currentTimeMillis();
-			while (currTime < showtime_new) {
-				wait(showtime_new - currTime);
-				
-
+			long diffTime = showTime_new - System.currentTimeMillis();
+			while (diffTime > 0) {
+				wait(diffTime);
 			}
-		} else { // showtime_old == 0
+			
+			return diffTime;
+		} else {
 			return 0;
 		}
 
