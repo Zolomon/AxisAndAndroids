@@ -1,6 +1,6 @@
 
 
-package se.axisandandroids.httpexample;
+package se.axisandandroids.http;
 
 /*
  * Real-time and concurrent programming
