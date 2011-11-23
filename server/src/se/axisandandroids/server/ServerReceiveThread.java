@@ -11,8 +11,11 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
 	private CameraMonitor camera_monitor;
 	
-	
-	
+	/**
+	 * 	 
+	 * @param c, Connection object shared with a corresponding ServerSendThread.
+	 * @param camera_monitor, camera monitor synchronizing server settings.
+	 */
 	public ServerReceiveThread(Connection c, 
 							   CameraMonitor camera_monitor) {
 		super(c);

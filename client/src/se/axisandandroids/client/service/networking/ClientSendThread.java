@@ -33,7 +33,6 @@ public class ClientSendThread extends SendThreadSkeleton {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

@@ -12,13 +12,18 @@ import se.axisandandroids.networking.SendThreadSkeleton;
 public class ServerSendThread extends SendThreadSkeleton {
 
 	protected final int BUFFERSIZE = 10;
-	public CircularBuffer mailbox;
+	public CircularBuffer mailbox; // Command mailbox for this ServerSendThread.
 
 	// In a multi client setup a list with subscribing clients connection 
 	// objects would be appropriate or some MultiConnection object. 
 
+	/**
+	 * 
+	 * @param c, 
+	 */
 	public ServerSendThread(Connection c) {
 		super(c);
+		mailbox = new CircularBuffer(BUFFERSIZE);
 	}
 
 	protected void perform() {
