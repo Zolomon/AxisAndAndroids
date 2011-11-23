@@ -1,6 +1,5 @@
 package se.axisandandroids.client;
 
-import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import android.app.Activity;
@@ -8,8 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;

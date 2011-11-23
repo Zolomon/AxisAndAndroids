@@ -6,12 +6,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
  
  
-public class DisplayView extends SurfaceView implements SurfaceHolder.Callback {
+public class DisplaySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
     private SurfaceViewThread surfaceViewThread;
     private boolean hasSurface;
  
-    DisplayView(Context context) {
+    public DisplaySurfaceView(Context context) {
         super(context);
         init();
     }
