@@ -24,7 +24,7 @@ import se.lth.cs.cameraproxy.Axis211A;
  * Itsy bitsy teeny weeny web server. Always returns an image, regardless
  * of the requested file name.
  */
-public class JPEGHTTPServerThread implements Runnable {
+public class JPEGHTTPServerThread extends Thread {
 
 	
 	// ------------------------------------------------------------ CONSTRUCTOR

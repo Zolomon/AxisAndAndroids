@@ -46,7 +46,7 @@ public class CameraServer {
 		myCamera = new Axis211A(host, 4321);
 		if(http){
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
-			new Thread(httpServer).start();
+			httpServer.start();
 		}
 		this.port = port;
 		try {
@@ -95,8 +95,7 @@ public class CameraServer {
 		ct = new CameraThread(cm, sendThread.mailbox, myCamera);
 		receiveThread.start();
 		sendThread.start();
-		ct.start();
-		
+		ct.start();		
 	}
 
 }
