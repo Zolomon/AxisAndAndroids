@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import se.axisandandroids.httpexample.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
+//import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.cameraproxy.Axis211A;
 
 public class CameraServer {
 
@@ -16,6 +19,10 @@ public class CameraServer {
 	private CameraThread ct;
 	private ServerReceiveThread receiveThread;
 	private ServerSendThread sendThread;
+	private Axis211A myCamera;
+	private JPEGHTTPServerThread httpServer;
+	private String host = "argus-2.student.lth.se";
+
 	
 	public static void main(String[] args) {
 		System.out
@@ -25,12 +32,22 @@ public class CameraServer {
 		if (args.length >= 1) {
 			defport = Integer.parseInt(args[0]);
 		}
+		boolean http = false;
+		if (args.length >= 2) {
+			http = args[1].equals("-http");
 
-		CameraServer serv = new CameraServer(defport);
+		}
+
+		CameraServer serv = new CameraServer(defport, http);
 		serv.listenForConnection();
 	}
 
-	public CameraServer(int port) {
+	public CameraServer(int port, boolean http) {
+		myCamera = new Axis211A(host, 4321);
+		if(http){
+			httpServer = new JPEGHTTPServerThread(8080, myCamera);
+			new Thread(httpServer).start();
+		}
 		this.port = port;
 		try {
 			servSocket = new ServerSocket(port);
@@ -75,10 +92,11 @@ public class CameraServer {
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
-		ct = new CameraThread(cm, sendThread.mailbox);
+		ct = new CameraThread(cm, sendThread.mailbox, myCamera);
 		receiveThread.start();
 		sendThread.start();
 		ct.start();
+		
 	}
 
 }

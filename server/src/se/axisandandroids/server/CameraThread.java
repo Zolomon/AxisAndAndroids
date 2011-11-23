@@ -3,20 +3,22 @@ package se.axisandandroids.server;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.buffer.ModeChange;
+import se.axisandandroids.httpexample.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Protocol;
-import se.lth.cs.fakecamera.Axis211A;
+//import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.fakecamera.MotionDetector;
 
 public class CameraThread extends Thread {
 	
-	private Axis211A myCamera;
+
 	private byte[] jpeg;
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;
 	private MotionDetector md;
 	private long time_intervall;
-	private String host = "argus-1.student.lth.se";
-	private int port = 4321;
+
+	private Axis211A myCamera;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera, proxy-camera
@@ -24,11 +26,13 @@ public class CameraThread extends Thread {
 	 * @param camera_monitor
 	 * @param mailbox
 	 */
-	public CameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox){
+	public CameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox, Axis211A cam){
+		myCamera = cam;
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
-		myCamera = new Axis211A();
+
 //		myCamera = new Axis211A(host, port);
+
 		md = new MotionDetector();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 		time_intervall = 5000;
