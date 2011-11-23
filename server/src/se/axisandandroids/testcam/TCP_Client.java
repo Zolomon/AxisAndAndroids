@@ -263,7 +263,7 @@ public class TCP_Client {
 				try {			
 					//				System.out.println("Waiting for Answer");
 					cmd = con.recvInt(); 				 // Wait for Answer
-					System.out.println("Command" + cmd + "received");
+//					System.out.println("Command" + cmd + "received");
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
 						len = con.recvImage(jpeg);	
@@ -279,7 +279,7 @@ public class TCP_Client {
 					e.printStackTrace();
 					System.exit(1);
 				}			
-				System.out.println("Received " + len + " bytes.");
+//				System.out.println("Received " + len + " bytes.");
 
 				imagePanel.refresh(jpeg);			
 				if (firstCall) {

@@ -33,7 +33,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 		if (command == null) {
 			System.out.println("COMMAND = NULL, SOMETHING IS VERY WRONG");
 		}
-		System.out.println("Getting command from mailbox:" + ((Frame) command).toString());
+		
 		// Possible:
 		// 		- image
 		//		- motion detected => display mode to movie change

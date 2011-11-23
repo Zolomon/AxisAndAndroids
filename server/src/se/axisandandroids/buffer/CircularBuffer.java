@@ -23,7 +23,7 @@ public class CircularBuffer {
 		}
 		
 		buffer[nextToPut] = x;	
-		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
+//		System.out.println("next to put: " + nextToPut + " - " + buffer[nextToPut].toString());
 
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
@@ -41,8 +41,6 @@ public class CircularBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		
-		System.out.println("next to get: " + nextToGet);
 
 		return ret;
 	}
@@ -139,7 +137,7 @@ public class CircularBuffer {
 		fb2.printBuffer();
 		
 		Object img2 = fb2.get();
-		System.out.println( ((Frame) img2).toString() );
+//		System.out.println( ((Frame) img2).toString() );
 		
 	}
 }

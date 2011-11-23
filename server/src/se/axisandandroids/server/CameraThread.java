@@ -53,7 +53,6 @@ public class CameraThread extends Thread {
 		long t, dt;
 		t = System.currentTimeMillis();
 		int len = receiveJPEG();
-		System.out.println("skickar " + len + " till mailbox");
 		mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));
 		t += time_intervall;
 		dt = t - System.currentTimeMillis();

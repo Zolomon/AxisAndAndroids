@@ -42,9 +42,6 @@ public class Frame {
 		System.arraycopy(x, 0, this.x, 0, len); // copy ?
 		this.len = len;
 		
-		for (int i = 0; i < 10; ++i)
-			System.out.printf("%d ", this.x[i]);
-		System.out.println("");
 	}	
 	
 	public Frame(byte[] x, int len, boolean copy) {

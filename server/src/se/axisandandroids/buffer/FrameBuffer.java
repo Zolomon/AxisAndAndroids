@@ -71,13 +71,12 @@ public class FrameBuffer {
 		if (nAvailable == 0) {
 			return null;
 		}
-		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;
-		notifyAll();
-
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
 		return data;
 	}
 
@@ -89,11 +88,13 @@ public class FrameBuffer {
 		if (nAvailable == 0) {
 			return null;
 		}
+		/* Return copy of the frame. */
+		Frame f = new Frame(buffer[nextToGet]);
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		/* Return copy of the frame. */
-		return new Frame(buffer[nextToGet]);
+
+		return f;
 	}
 
 
@@ -109,13 +110,13 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
-		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;
-		notifyAll();
-
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
 		return data;
 	}
 	
@@ -131,11 +132,11 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		/* Write data to jpeg. */
+		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, buffer[nextToGet].len);
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		/* Write data to jpeg. */
-		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, buffer[nextToGet].len);
 		return buffer[nextToGet].len;
 	}
 	
@@ -151,12 +152,13 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		Frame f = new Frame(buffer[nextToGet]);
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
 
 		/* Return copy of the frame. */
-		return new Frame(buffer[nextToGet]);
+		return f;
 	}
 
 	/**
