@@ -8,11 +8,20 @@ class Frame {
 	public int len;
 	public byte[] x;
 
+	
 	/**
 	 * Create an empty frame.
 	 */
 	public Frame() {
 		x = null;
+		len = 0;
+	}
+	
+	/**
+	 * Create an empty, but initialized frame.
+	 */
+	public Frame(int FRAMESIZE) {
+		x = new byte[FRAMESIZE];
 		len = 0;
 	}
 	
@@ -24,6 +33,7 @@ class Frame {
 	 */
 	public Frame(byte[] x, int len) {
 		this.x = x;
+//		System.arraycopy(x, 0, this.x, 0, len);	
 		this.len = len;
 	}
 	

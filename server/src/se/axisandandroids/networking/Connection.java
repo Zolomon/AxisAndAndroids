@@ -24,7 +24,7 @@ public class Connection {
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
 	}
-	
+
 	public Connection(Socket sock) {
 		this.sock = sock;	
 
@@ -39,10 +39,6 @@ public class Connection {
 		}
 		connect();
 	}
-
-	public String getHost() { return host; }
-	public int getPort() { return port; }
-	@Override public String toString() {return host +":"+port;}
 
 	public void connect(Socket sock) { 
 		// Potentially Dangerous, synchronize use of sock? 
@@ -184,4 +180,18 @@ public class Connection {
 		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 		 */			
 	}		
+
+	public String getHost() { 
+		return host; 
+	}
+
+	public int getPort() { 
+		return port; 
+	}
+
+	@Override 
+	public String toString() {
+		return host +":"+port;
+	}
+
 }
