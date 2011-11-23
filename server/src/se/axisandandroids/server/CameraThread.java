@@ -2,7 +2,6 @@ package se.axisandandroids.server;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
-import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 import se.lth.cs.fakecamera.MotionDetector;

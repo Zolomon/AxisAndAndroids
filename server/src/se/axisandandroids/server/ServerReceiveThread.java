@@ -6,22 +6,23 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
 
-
 public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
 	private CameraMonitor camera_monitor;
-	
+
 	/**
-	 * 	 
-	 * @param c, Connection object shared with a corresponding ServerSendThread.
-	 * @param camera_monitor, camera monitor synchronizing server settings.
+	 * 
+	 * @param c
+	 *            , Connection object shared with a corresponding
+	 *            ServerSendThread.
+	 * @param camera_monitor
+	 *            , camera monitor synchronizing server settings.
 	 */
-	public ServerReceiveThread(Connection c, 
-							   CameraMonitor camera_monitor) {
+	public ServerReceiveThread(Connection c, CameraMonitor camera_monitor) {
 		super(c);
 		this.camera_monitor = camera_monitor;
-	}	
-	
+	}
+
 	protected void handleImage() {
 
 		/* Instruct CameraThread via CameraMonitor */
@@ -31,23 +32,9 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 		// multi client setup.
 	}
 
-	// Unnecessary !!!
-	protected void handleSyncMode() {
-			int sync_mode;
-			try {
-				sync_mode = c.recvSyncMode();
-			} catch (IOException e) {
-				System.err.println("Counld not receive sync mode.");
-				e.printStackTrace();
-			}
-			
-			/* Instruct CameraThread via CameraMonitor */
-					
-	}
-	
 	protected void handleDispMode() {
 		int disp_mode = Protocol.COMMAND.NOTOK;
-		
+
 		try {
 			disp_mode = c.recvDisplayMode();
 		} catch (IOException e) {
@@ -57,14 +44,14 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
 		/* Instruct CameraThread via CameraMonitor */
 
-		if (disp_mode !=  Protocol.COMMAND.NOTOK) {
+		if (disp_mode != Protocol.COMMAND.NOTOK) {
 			camera_monitor.setDisplayMode(disp_mode);
 		}
 	}
 
 	protected void handleConnected() {
 		/* Instruct CameraThread via CameraMonitor */
-		
+
 		// connect / disconnect ?
 		// Clean disconnect at least ?
 	}
