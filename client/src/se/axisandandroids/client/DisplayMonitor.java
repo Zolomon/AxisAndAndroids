@@ -9,12 +9,12 @@ import se.axisandandroids.networking.Protocol;
 public class DisplayMonitor {
 	private Axis211A camera;
 	private Bitmap bmp;
+	
 	private byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	private boolean isConnected;
-	
+		
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;
-	//public FrameBuffer framebuffer;
 	
 	public DisplayMonitor() {
 		camera = new Axis211A();

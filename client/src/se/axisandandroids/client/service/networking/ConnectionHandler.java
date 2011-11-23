@@ -1,15 +1,19 @@
 package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-
 import se.axisandandroids.client.CameraTunnel;
 import se.axisandandroids.networking.Connection;
+
 
 public class ConnectionHandler {
 
 	private static int id = 0;
-	private HashMap<Integer, CameraTunnel> tunnels;
+
+	//private HashMap<Integer, CameraTunnel> tunnels;	
+	private ArrayList<CameraTunnel> tunnels;
+	
 	
 	public ConnectionHandler() {
 		 tunnels = new HashMap<Integer, CameraTunnel>();
