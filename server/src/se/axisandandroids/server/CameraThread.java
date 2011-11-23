@@ -39,7 +39,7 @@ public class CameraThread extends Thread {
 				}
 				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE){
 					int len = receiveJPEG();
-					mailbox.put(new Frame(jpeg, len, true));	
+					mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));	
 				}
 				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO){
 					periodReceive();
@@ -53,7 +53,8 @@ public class CameraThread extends Thread {
 		long t, dt;
 		t = System.currentTimeMillis();
 		int len = receiveJPEG();
-		mailbox.put(new Frame(jpeg, len, true));
+		System.out.println("skickar " + len + " till mailbox");
+		mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));
 		t += time_intervall;
 		dt = t - System.currentTimeMillis();
 		try {

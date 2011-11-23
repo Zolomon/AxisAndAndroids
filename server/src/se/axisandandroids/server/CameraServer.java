@@ -74,9 +74,11 @@ public class CameraServer {
 		con = new Connection(clientSock);
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
-		sendThread= new ServerSendThread(con);
+		sendThread = new ServerSendThread(con);
 		ct = new CameraThread(cm, sendThread.mailbox);
-
+		receiveThread.start();
+		sendThread.start();
+		ct.start();
 	}
 
 }
