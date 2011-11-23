@@ -20,7 +20,6 @@ public class Connection {
 	private InputStream is;									
 	private OutputStream os;
 
-
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
 	}
@@ -40,8 +39,7 @@ public class Connection {
 		connect();
 	}
 
-	public void connect(Socket sock) { 
-		// Potentially Dangerous, synchronize use of sock? 
+	public void connect(Socket sock) { // Potentially Dangerous!
 		this.sock = sock;
 		connect();
 	}
@@ -68,24 +66,16 @@ public class Connection {
 
 	public void sendImage(byte[] data) throws IOException {		
 		sendInt(Protocol.COMMAND.IMAGE);
-		sendInt(data.length);		
-
-		//assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
-
-		os.write(data, 0, data.length);	 // EOF how ???
+		sendInt(data.length);				
+		os.write(data, 0, data.length);	
 		os.flush();
 	}
 
 	public void sendImage(byte[] data, int a, int b) throws IOException {
-		int len = b - a;
-
-		//assert(data.length <= Axis211A.IMAGE_BUFFER_SIZE);
-		//assert(a + len - 1 < data.length);
-
+		int len = b - a;		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(len);	
-
-		os.write(data, a, len); // EOF how ???						
+		os.write(data, a, len);					
 		os.flush();
 	}
 

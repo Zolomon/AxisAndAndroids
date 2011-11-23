@@ -1,5 +1,7 @@
 package se.axisandandroids.server;
 
+import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
@@ -7,18 +9,26 @@ public class CameraThread extends Thread{
 	private Axis211A myCamera;
 	private byte[] jpeg;
 	private CameraMonitor cm;
+	private CircularBuffer mailbox;
 
-
-	public CameraThread(CameraMonitor cm){
+	/**
+	 * Create a CameraThread with task to Fetch images from a camera, proxy-camera
+	 * or fake camera and post it to one sendthread.
+	 * @param cm
+	 * @param mailbox
+	 */
+	public CameraThread(CameraMonitor cm, CircularBuffer mailbox){
 		this.cm = cm;
+		this.mailbox = mailbox;
 		myCamera = new Axis211A();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	}
 	
 	public void run(){
 		if(cameraConnect()){
-			while(true){
-				recieveJPEG();
+			while(!interrupted()){
+				int len = receiveJPEG();
+				mailbox.put(new Frame(jpeg, len, true));				
 			}
 		}
 	}
@@ -35,22 +45,19 @@ public class CameraThread extends Thread{
 		}
 	}
 	
-	private void recieveJPEG(){
-		if(cm.getDislayMode() == Protocol.DISP_MODE.IDLE){
-			int len = myCamera.getJPEG(jpeg,0);
-			//os.write(jpeg,0,len);
+	private int receiveJPEG(){
+		int len = 0;		
+		if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+			len = myCamera.getJPEG(jpeg,0);
+		} else if(cm.getDislayMode() == Protocol.DISP_MODE.IDLE){
+			len = myCamera.getJPEG(jpeg,0);
 			try {
-				this.sleep(5000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
-			while(cm.getDislayMode() == Protocol.DISP_MODE.MOVIE){
-				int len = myCamera.getJPEG(jpeg,0);
-			}
-
 		}
+		return len;
 	}
 
 

@@ -5,17 +5,19 @@ import java.io.IOException;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
-import se.lth.cs.fakecamera.Axis211A;
+
 
 public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
-	private CameraMonitor cm;
+	private CameraMonitor camera_monitor;
 	
-	public ServerReceiveThread(Connection c, CameraMonitor cm) {
+	
+	
+	public ServerReceiveThread(Connection c, 
+							   CameraMonitor camera_monitor) {
 		super(c);
-		this.cm = cm;
-	}
-	
+		this.camera_monitor = camera_monitor;
+	}	
 	
 	protected void handleImage() {
 
@@ -26,6 +28,7 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 		// multi client setup.
 	}
 
+	// Unnecessary !!!
 	protected void handleSyncMode() {
 			int sync_mode;
 			try {
@@ -36,9 +39,7 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 			}
 			
 			/* Instruct CameraThread via CameraMonitor */
-			
-			// Force sync mode. Debug purposes. ???
-		
+					
 	}
 	
 	protected void handleDispMode() {
@@ -54,7 +55,7 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 		/* Instruct CameraThread via CameraMonitor */
 
 		if (disp_mode !=  Protocol.COMMAND.NOTOK) {
-			cm.setDisplayMode(disp_mode);
+			camera_monitor.setDisplayMode(disp_mode);
 		}
 	}
 

@@ -1,7 +1,6 @@
 package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
-
 import se.axisandandroids.client.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
@@ -9,12 +8,20 @@ import se.axisandandroids.networking.ReceiveThreadSkeleton;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.lth.cs.fakecamera.Axis211A;
 
+
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	private DisplayMonitor disp_monitor;
 	private FrameBuffer frame_buffer;	
 	private byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
+	
+	/**
+	 * Create a ClientReceiveThread. 
+	 * @param c, Connection object shared with a corresponding ClientSendThread.
+	 * @param disp_monitor, a DisplayMonitor synchronizing different DisplayThreads.
+	 * @param frame_buffer, a FrameBuffer object = DisplayThreads image buffer (mailbox). 
+	 */
 	public ClientReceiveThread(Connection c, 
 							   DisplayMonitor disp_monitor, 
 							   FrameBuffer frame_buffer) {
@@ -23,6 +30,11 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		this.frame_buffer = frame_buffer;	// FrameBuffer belonging to DisplayThread
 	}
 
+	
+	/**
+	 * Receive an image from a server via the Connection object c, 
+	 * put the image in the DisplayThreads buffer.
+	 */
 	protected void handleImage() {
 		int len = 0;
 		try {
@@ -39,7 +51,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	}
 
 	/**
-	 * For debugging.
+	 * Force a synchronization mode for debugging.
 	 */
 	protected void handleSyncMode() {
 		int sync_mode = -1;
@@ -68,7 +80,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			disp_monitor.setDispMode(disp_mode);			
 			if (disp_mode == Protocol.DISP_MODE.MOVIE) {
 				// FORWARD TO ALL OTHER CAMERAS				
-				// Put something in the sendthread mailbox.
+				// Put something in ALL sendthread mailboxes.
 				//Protocol.COMMAND.DISP_MODE
 				//Protocol.DISP_MODE.MOVIE
 			}

@@ -3,7 +3,7 @@ package se.axisandandroids.buffer;
 /* Autoboxing around an image contained in a byte[]. This is meant to be
  * put in the buffer.														*/
 
-class Frame {
+public class Frame {
 	
 	public int len;
 	public byte[] x;
@@ -32,11 +32,20 @@ class Frame {
 	 * @param len, length of valid data.
 	 */
 	public Frame(byte[] x, int len) {
-		this.x = x;
-//		System.arraycopy(x, 0, this.x, 0, len);	
+		//this.x = x; // no copy ?
+		System.arraycopy(x, 0, this.x, 0, len); // copy ?
 		this.len = len;
-	}
+	}	
 	
+	public Frame(byte[] x, int len, boolean copy) {
+		if (copy) {
+			System.arraycopy(x, 0, this.x, 0, len); // copy
+		} else {
+			this.x = x; 							// no copy
+		}
+		this.len = len;
+	}	
+
 	/**
 	 * Copy Constructor. 
 	 * Create a Frame object from another Frame object.
