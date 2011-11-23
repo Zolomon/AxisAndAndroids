@@ -4,8 +4,7 @@ import se.axisandandroids.buffer.FrameBuffer;
 import se.lth.cs.fakecamera.Axis211A;
 
 public class DisplayThread extends Thread {
-	
-	
+		
 	private DisplayMonitor disp_monitor;
 	private final int BUFFERSIZE = 10;
 	private final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
@@ -35,24 +34,10 @@ public class DisplayThread extends Thread {
 		}
 	}
 	
-	private long getTimestamp(byte[] jpeg) { // WORK IN PROGRESS !!!
-		
+	private long getTimestamp(byte[] jpeg) {		
 		int offset = 0;
 
-		/*		
- 		// This was sent:
- 		long seconds = stime / 1000;
-		long hundredths = (stime - seconds*1000) / 10;		
-		image[25+offset] = (byte)((seconds & 0xff000000) >> 24);
-		image[26+offset] = (byte)((seconds & 0x00ff0000) >> 16);
-		image[27+offset] = (byte)((seconds & 0x0000ff00) >> 8);
-		image[28+offset] = (byte)(seconds & 0x000000ff);				
-		image[29+offset] = (byte)(hundredths & 0xff);				
-		*/
-
-				
-		
-		/* Decode */
+		/* Decode Timestamp */
 		long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 					   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
 					   ( ( (long)jpeg[27+offset]) << 8  ) & 0x0000ff00 | 

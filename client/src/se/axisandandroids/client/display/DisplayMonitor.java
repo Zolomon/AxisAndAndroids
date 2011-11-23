@@ -25,6 +25,7 @@ public class DisplayMonitor {
 	public synchronized int syncFrames(long timestamp) {
 		
 		
+		
 		return -1;
 	}
 	
