@@ -5,6 +5,7 @@ import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.fakecamera.MotionDetector;
 
 public class CameraThread extends Thread {
 	
@@ -12,6 +13,8 @@ public class CameraThread extends Thread {
 	private byte[] jpeg;
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;
+	private MotionDetector md;
+	private long time_intervall;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera, proxy-camera
@@ -23,18 +26,51 @@ public class CameraThread extends Thread {
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		myCamera = new Axis211A();
+		md = new MotionDetector();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+		time_intervall = 5000;
 	}
 
 	public void run() {
 		if (cameraConnect()) {
 			while(! interrupted()) {
-				int len = receiveJPEG();
-				mailbox.put(new Frame(jpeg, len, true));					
+				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
+					periodReceive();
+				}
+				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+					int len = receiveJPEG();
+					mailbox.put(new Frame(jpeg, len, true));	
+				}
+				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO){
+					periodReceive();
+					checkForMotion();
+				}
 			}
 		}
 	}
+	
+	private void periodReceive(){
+		long t, dt;
+		t = System.currentTimeMillis();
+		int len = receiveJPEG();
+		mailbox.put(new Frame(jpeg, len, true));
+		t += time_intervall;
+		dt = t - System.currentTimeMillis();
+		try {
+			if (dt > 0) {
+				sleep(dt);
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Got interrupted while sleeping...");
+		}
+	}
 
+	private int receiveJPEG(){
+		int len = 0;		
+		len = myCamera.getJPEG(jpeg,0);
+		return len;
+		}
+	
 	private boolean cameraConnect(){
 		if (! myCamera.connect()) {
 			System.out.println("Failed to connect to camera!");
@@ -45,24 +81,15 @@ public class CameraThread extends Thread {
 			return true;
 		}
 	}
+	
 
-	private int receiveJPEG(){
-		int len = 0;		
-		if(camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
-			len = myCamera.getJPEG(jpeg,0);
-		} else if(camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
-			len = myCamera.getJPEG(jpeg,0);
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+	private void checkForMotion(){
+		if(md.detect()){
+			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
+			System.out.println("Motion detected!");
 		}
-		
-		// if motion detect
-		// mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
-
-		return len;
 	}
 
+
+	
 }
