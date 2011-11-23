@@ -20,8 +20,8 @@ public class CtrlService extends android.app.Service {
 	private final IBinder mBinder = new LocalBinder();
 	private static List<Socket> sockets;
 
-	public DisplayMonitor cm = new DisplayMonitor();
-	public ConnectionHandler ch = new ConnectionHandler();
+	public DisplayMonitor dm = new DisplayMonitor();
+	public ConnectionHandler ch = new ConnectionHandler(dm);
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
