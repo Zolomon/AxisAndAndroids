@@ -15,6 +15,8 @@ public class CameraThread extends Thread {
 	private CircularBuffer mailbox;
 	private MotionDetector md;
 	private long time_intervall;
+	private String host = "argus-1.student.lth.se";
+	private int port = 4321;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera, proxy-camera
@@ -26,6 +28,7 @@ public class CameraThread extends Thread {
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		myCamera = new Axis211A();
+//		myCamera = new Axis211A(host, port);
 		md = new MotionDetector();
 		jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 		time_intervall = 5000;

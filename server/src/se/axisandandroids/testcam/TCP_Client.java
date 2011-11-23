@@ -264,6 +264,7 @@ public class TCP_Client {
 					//				System.out.println("Waiting for Answer");
 					cmd = con.recvInt(); 				 // Wait for Answer
 //					System.out.println("Command" + cmd + "received");
+//					con.sendDisplayMode(Protocol.DISP_MODE.IDLE);
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
 						len = con.recvImage(jpeg);	
