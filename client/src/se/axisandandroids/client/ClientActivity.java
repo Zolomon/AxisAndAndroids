@@ -76,7 +76,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String port = etPort.getText().toString();
 		
 		try {
-			ch.add(new Connection(host, Integer.parseInt(port)));
+			ch.add(new Connection(host, Integer.parseInt(port)));			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {

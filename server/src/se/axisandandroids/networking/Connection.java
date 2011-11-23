@@ -38,12 +38,7 @@ public class Connection {
 		}
 		connect();
 	}
-
-	public void connect(Socket sock) { // Potentially Dangerous!
-		this.sock = sock;
-		connect();
-	}
-
+	
 	private void connect() {
 		try {
 			is = sock.getInputStream();
