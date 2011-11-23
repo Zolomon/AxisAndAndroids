@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import se.axisandandroids.httpexample.JPEGHTTPServerThread;
+import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
 //import se.lth.cs.fakecamera.Axis211A;
 import se.lth.cs.cameraproxy.Axis211A;
