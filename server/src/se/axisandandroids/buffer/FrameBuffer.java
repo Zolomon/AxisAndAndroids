@@ -144,7 +144,7 @@ public class FrameBuffer {
 	 */
 	public synchronized final byte[] first() {
 		if (nAvailable == 0) return null;
-		return buffer[nextToGet].x; // Return copy ?
+		return buffer[nextToGet].x;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class FrameBuffer {
 	 */
 	public synchronized final Frame firstFrame() {
 		if (nAvailable == 0) return null;
-		return buffer[nextToGet]; // Return copy ?
+		return buffer[nextToGet]; 
 	}
 
 	/**
