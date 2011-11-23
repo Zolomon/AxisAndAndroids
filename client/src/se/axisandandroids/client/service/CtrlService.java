@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.axisandandroids.client.DisplayMonitor;
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
 import android.content.Intent;
 import android.graphics.Bitmap;

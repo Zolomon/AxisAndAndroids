@@ -1,5 +1,6 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import android.app.Activity;

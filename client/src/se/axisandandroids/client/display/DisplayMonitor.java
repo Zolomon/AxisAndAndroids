@@ -1,4 +1,4 @@
-package se.axisandandroids.client;
+package se.axisandandroids.client.display;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

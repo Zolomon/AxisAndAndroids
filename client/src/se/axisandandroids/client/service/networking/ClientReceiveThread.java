@@ -1,7 +1,8 @@
 package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
-import se.axisandandroids.client.DisplayMonitor;
+
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;

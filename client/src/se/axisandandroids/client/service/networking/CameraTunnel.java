@@ -1,8 +1,7 @@
-package se.axisandandroids.client;
+package se.axisandandroids.client.service.networking;
 
 import java.net.Socket;
 
-import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.networking.Connection;
 
 public class CameraTunnel {
@@ -19,6 +18,6 @@ public class CameraTunnel {
 		
 		//DisplayThread disp_thread = new DisplayThread();
 		//FrameBuffer frame_buffer = disp_thread.getMailbox();
-		ClientReceiveThread recv_thread = new ClientReceiveThread(connection, disp_monitor, frame_buffer);
+		//ClientReceiveThread recv_thread = new ClientReceiveThread(connection, disp_monitor, frame_buffer);
 	}
 }

@@ -2,7 +2,6 @@ package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import se.axisandandroids.client.CameraTunnel;
 import se.axisandandroids.networking.Connection;
 
 
