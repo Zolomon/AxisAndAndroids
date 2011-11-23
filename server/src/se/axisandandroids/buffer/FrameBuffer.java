@@ -71,13 +71,12 @@ public class FrameBuffer {
 		if (nAvailable == 0) {
 			return null;
 		}
-		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;
-		notifyAll();
-
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
 		return data;
 	}
 
@@ -89,11 +88,13 @@ public class FrameBuffer {
 		if (nAvailable == 0) {
 			return null;
 		}
+		/* Return copy of the frame. */
+		Frame f = new Frame(buffer[nextToGet]);
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
-		/* Return copy of the frame. */
-		return new Frame(buffer[nextToGet]);
+
+		return f;
 	}
 
 
@@ -109,15 +110,36 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
-		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;
-		notifyAll();
-
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
+		
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
 		return data;
 	}
+	
+	/**
+	 * Returns the data of next frame from buffer, blocks until available.
+	 * @return a byte array with frame data. Note that all data in the 
+	 * array belong to the frame.  
+	 */
+	public synchronized int get(byte[] jpeg) {
+		try {
+			while (nAvailable == 0) wait();
+		} catch (InterruptedException e) {
+			System.err.println("Get got interrupted");
+			e.printStackTrace();
+		}
+		/* Write data to jpeg. */
+		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, buffer[nextToGet].len);
+		if (++nextToGet == MAXSIZE) nextToGet = 0;
+		--nAvailable;
+		notifyAll();
+		return buffer[nextToGet].len;
+	}
+	
 
 	/**
 	 * Returns the next frame from buffer, blocks until available.
@@ -130,12 +152,13 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		Frame f = new Frame(buffer[nextToGet]);
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
 
 		/* Return copy of the frame. */
-		return new Frame(buffer[nextToGet]);
+		return f;
 	}
 
 	/**

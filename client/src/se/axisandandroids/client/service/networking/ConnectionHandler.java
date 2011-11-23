@@ -2,20 +2,23 @@ package se.axisandandroids.client.service.networking;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 
 
 public class ConnectionHandler {
 
 	private ArrayList<CameraTunnel> tunnels;
+	private DisplayMonitor disp_monitor;
 	
-	
-	public ConnectionHandler() {
+	public ConnectionHandler(DisplayMonitor disp_monitor) {
+		this.disp_monitor = disp_monitor;
 		tunnels = new ArrayList<CameraTunnel>();
 	}
 	
 	public void add(Connection c) {		
-		CameraTunnel ct = new CameraTunnel(c);
+		CameraTunnel ct = new CameraTunnel(c, disp_monitor);
 		tunnels.add(ct);	
 	}
 	

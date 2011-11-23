@@ -4,12 +4,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import se.axisandandroids.networking.Connection;
+
 public class CameraServer {
 
 	private final static int default_port = 6000;
 	private int port;
 	private ServerSocket servSocket = null;
-
+	private Connection con;
+	private CameraMonitor cm;
+	private CameraThread ct;
+	private ServerReceiveThread receiveThread;
+	private ServerSendThread sendThread;
+	
 	public static void main(String[] args) {
 		System.out
 				.println("Big brother is watching you all: Axis and Androids...");
@@ -58,13 +65,20 @@ public class CameraServer {
 			// new ClientHandler(Connection client).start();
 
 			// OR if only one client...
+
 			servClient(clientSocket);
 		}
 	}
 
 	private void servClient(Socket clientSock) {
-		// listen commands, fetch images, send images ???
-
+		con = new Connection(clientSock);
+		cm = new CameraMonitor();
+		receiveThread = new ServerReceiveThread(con, cm);
+		sendThread = new ServerSendThread(con);
+		ct = new CameraThread(cm, sendThread.mailbox);
+		receiveThread.start();
+		sendThread.start();
+		ct.start();
 	}
 
 }

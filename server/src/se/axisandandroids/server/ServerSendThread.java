@@ -29,7 +29,11 @@ public class ServerSendThread extends SendThreadSkeleton {
 	protected void perform() {
 		// 1) Wait for message with commands to be put in buffer.
 		Object command = mailbox.get();
-
+//		
+//		if (command == null) {
+//			System.out.println("COMMAND = NULL, SOMETHING IS VERY WRONG");
+//		}
+//		
 		// Possible:
 		// 		- image
 		//		- motion detected => display mode to movie change
