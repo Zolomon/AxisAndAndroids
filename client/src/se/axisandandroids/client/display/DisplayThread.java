@@ -31,6 +31,7 @@ public class DisplayThread extends Thread {
 			
 			// CALLBACK
 			System.out.printf("ShowTime Delay: %d", delay);
+			
 		}
 	}
 	
