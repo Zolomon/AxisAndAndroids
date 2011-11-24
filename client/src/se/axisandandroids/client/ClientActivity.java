@@ -44,17 +44,6 @@ public class ClientActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		((Button) findViewById(R.id.btnConnect)).setOnClickListener(this);
-		Socket s;
-		try {
-			s = new Socket("130.235.227.11", 5555);
-			BufferedWriter bw;
-			bw = new BufferedWriter(new PrintWriter(s.getOutputStream()));
-			bw.write("HELLO WORLD");
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
@@ -87,6 +76,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String port = etPort.getText().toString();
 
 		try {
+			System.out.println("Trying to connect to: " + host + ":" + port);
 			mService.add(new Connection(host, Integer.parseInt(port)));
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

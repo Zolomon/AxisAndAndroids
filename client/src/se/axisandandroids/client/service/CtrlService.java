@@ -85,4 +85,14 @@ public class CtrlService extends android.app.Service {
 			System.out.println("Tunnel added:" + mConnections.get(id));
 		}
 	}
+	
+	public void createTunnel(Connection connection, Panel panel, int id) {
+		mConnectionHandler.add(id, new CameraTunnel(connection, panel, dm, id));
+		System.out.println("Tunnel added:" + mConnections.get(id));
+	}
+
+	public void createTunnel(Panel panel, int id) {
+		Connection c = mConnections.get(id);
+		createTunnel(c, panel, id);
+	}
 }

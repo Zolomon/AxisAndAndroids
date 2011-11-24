@@ -1,5 +1,8 @@
 package se.axisandandroids.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
@@ -15,14 +18,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.TableLayout;
+import android.widget.LinearLayout;
 
 public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
 	private CtrlService mService;
-
+	private List<Panel> mPanels;
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,6 +41,8 @@ public class RenderActivity extends Activity {
 		boolean res = getApplicationContext().bindService(intent, mConnection,
 				Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "" + res);
+		
+		mPanels = new ArrayList<Panel>();
 	}
 
 	@Override
@@ -52,26 +58,40 @@ public class RenderActivity extends Activity {
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 
+		private LinearLayout mLinearLayout;
+		private LayoutInflater mLayoutInflater;
+
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 
-			final GridView gv = (GridView) findViewById(R.id.gridview);
-			LayoutInflater inflater = LayoutInflater.from(RenderActivity.this);
+			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
+			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
 
 			for (int i = 0; i < mService.connections(); i++) {
-				final Panel theInflatedPanel = (Panel) inflater.inflate(
-						R.layout.panel, null);
-
-				gv.addView(theInflatedPanel);
-				mService.add(theInflatedPanel);
+				addPanel(mLinearLayout, mLayoutInflater);
 			}
 			
 			mService.createTunnels();
 		}
 
+		private void addPanel(final LinearLayout gv, LayoutInflater inflater) {
+			final FrameLayout theInflatedPanel = (FrameLayout) inflater.inflate(
+					R.layout.panel, null);
+			Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
+
+			gv.addView(theInflatedPanel);
+			mPanels.add(panel);
+			mService.createTunnel(panel);
+			mService.add(panel);
+		}
+
 		public void onServiceDisconnected(ComponentName compName) {
 		}
+	};
+	
+	protected void onResume() {
+		
 	};
 
 	@Override
