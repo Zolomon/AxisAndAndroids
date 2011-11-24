@@ -4,6 +4,7 @@ import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.display.DisplayThread;
 import se.axisandandroids.client.display.NewImageCallback;
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
@@ -29,7 +30,7 @@ public class CameraTunnel {
 	
 	private void createThreads() {		
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
-		disp_thread = new DisplayThread(disp_monitor, id, mNewImageCallback);		
+		disp_thread = new DisplayThread(disp_monitor, mNewImageCallback);		
 		recv_thread = new ClientReceiveThread(connection, disp_monitor, disp_thread.mailbox);
 		send_thread = new ClientSendThread(connection);
 	}

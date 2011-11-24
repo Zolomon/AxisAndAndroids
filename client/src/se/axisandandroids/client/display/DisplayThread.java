@@ -1,9 +1,9 @@
 package se.axisandandroids.client.display;
 
-import se.axisandandroids.client.service.CtrlService.NewImageCallback;
 import android.graphics.BitmapFactory;
 
 public class DisplayThread extends DisplayThreadSkeleton {
+	
 	private NewImageCallback mNewImageCallback;
 
 	public DisplayThread(DisplayMonitor disp_monitor, NewImageCallback callback) {
