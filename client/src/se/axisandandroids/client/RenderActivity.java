@@ -26,7 +26,9 @@ public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
 	private CtrlService mService;
 	private List<Panel> mPanels;
-		
+	private LinearLayout mLinearLayout;
+	private LayoutInflater mLayoutInflater;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,10 +59,6 @@ public class RenderActivity extends Activity {
 	}
 
 	private ServiceConnection mConnection = new ServiceConnection() {
-
-		private LinearLayout mLinearLayout;
-		private LayoutInflater mLayoutInflater;
-
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
@@ -75,17 +73,6 @@ public class RenderActivity extends Activity {
 			mService.createTunnels();
 		}
 
-		private void addPanel(final LinearLayout gv, LayoutInflater inflater) {
-			final FrameLayout theInflatedPanel = (FrameLayout) inflater.inflate(
-					R.layout.panel, null);
-			Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
-
-			gv.addView(theInflatedPanel);
-			mPanels.add(panel);
-			mService.createTunnel(panel);
-			mService.add(panel);
-		}
-
 		public void onServiceDisconnected(ComponentName compName) {
 		}
 	};
@@ -93,6 +80,19 @@ public class RenderActivity extends Activity {
 	protected void onResume() {
 		
 	};
+	
+	private void addPanel(final LinearLayout gv, LayoutInflater inflater) {
+		final FrameLayout theInflatedPanel = (FrameLayout) inflater.inflate(
+				R.layout.panel, null);
+		Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
+
+		if(!mPanels.contains(panel)) {
+			gv.addView(theInflatedPanel); // add it to the view
+			mService.add(panel);		  // store the panel
+			mService.createTunnel(panel, 1); // create the tunnel;
+			mPanels.add(panel);	 // Store it
+		}	
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

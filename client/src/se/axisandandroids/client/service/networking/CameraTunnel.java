@@ -1,5 +1,7 @@
 package se.axisandandroids.client.service.networking;
 
+import java.io.IOException;
+
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.display.DisplayThread;
@@ -11,7 +13,7 @@ import se.axisandandroids.networking.Connection;
 
 public class CameraTunnel {
 	
-	public Connection connection;		
+	private Connection connection;		
 	private DisplayMonitor disp_monitor;
 	private DisplayThread disp_thread;
 	private ClientSendThread send_thread;
@@ -66,4 +68,15 @@ public class CameraTunnel {
 		return send_thread.mailbox;
 	}
 	
+	public void disconnect() {
+		try {
+			connection.disconnect();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getId() {
+		return id;
+	}
 }
