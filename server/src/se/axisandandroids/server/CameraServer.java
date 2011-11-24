@@ -28,7 +28,7 @@ public class CameraServer {
 
 	public static void main(String[] args) {
 
-		int defport = default_port;
+		int listenPort = default_port;
 		boolean http = false;
 
 
@@ -41,29 +41,31 @@ public class CameraServer {
 				System.out.println("\t-help  - Show help.");
 				System.exit(0);
 			} 
-			else defport = Integer.parseInt(args[argc]);			
+			else listenPort = Integer.parseInt(args[argc]);			
 		}
 
 
 		System.out.println("Big brother is watching you all, Axis and Androids...");
 
-		CameraServer serv = new CameraServer(defport, http);
+		CameraServer serv = new CameraServer(listenPort, http);
 		serv.listenForConnection();
 	}
 
-	public CameraServer(int port, boolean http) {
-		this.port = port;
-		myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
-		md = new se.lth.cs.cameraproxy.MotionDetector(host, 4321);
+	public CameraServer(int listenPort, boolean http) {
+		this.listenPort = listenPort;
+		
+		myCamera = new Axis211A(host, cameraPort);
+		md = new MotionDetector(host, cameraPort);
 
 		if (http) {
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
 			httpServer.start();
 		}
+		
 		try {
-			servSocket = new ServerSocket(port);
+			servSocket = new ServerSocket(listenPort);
 		} catch (IOException e) {
-			System.out.printf("Could not listen on port: %d", port);
+			System.out.printf("Could not listen on port: %d", listenPort);
 			System.exit(1);
 		}
 		System.out.println("Camera Server up and running...");
