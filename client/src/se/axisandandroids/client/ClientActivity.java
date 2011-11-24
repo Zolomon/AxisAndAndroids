@@ -1,6 +1,9 @@
 package se.axisandandroids.client;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -41,6 +44,17 @@ public class ClientActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		((Button) findViewById(R.id.btnConnect)).setOnClickListener(this);
+		Socket s;
+		try {
+			s = new Socket("130.235.227.11", 5555);
+			BufferedWriter bw;
+			bw = new BufferedWriter(new PrintWriter(s.getOutputStream()));
+			bw.write("HELLO WORLD");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -71,9 +85,9 @@ public class ClientActivity extends Activity implements OnClickListener {
 
 		String host = etHost.getText().toString();
 		String port = etPort.getText().toString();
-		
+
 		try {
-			mService.add(new Connection(host, Integer.parseInt(port)));			
+			mService.add(new Connection(host, Integer.parseInt(port)));
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -81,7 +95,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);
 		final View theInflatedView = inflater.inflate(R.layout.connection_item,

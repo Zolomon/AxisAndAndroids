@@ -77,7 +77,7 @@ public class CtrlService extends android.app.Service {
 	
 	public int panels() {
 		return mPanels.size();
-	}
+	}	
 	
 	public void createTunnels() {
 		for(int id = 0; id < mConnections.size(); id++) {
