@@ -59,7 +59,7 @@ public class DisplayMonitor {
 			}
 			
 			timestamps[id] = Long.MAX_VALUE; // This timestamp is done
-
+			notifyAll();
 		}
 		
 		timestamp_old[id] = timestamp;
