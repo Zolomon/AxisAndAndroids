@@ -17,8 +17,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import se.lth.cs.fakecamera.Axis211A;
-//import se.lth.cs.cameraproxy.Axis211A;
+//import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.cameraproxy.Axis211A;
 
 
 /**

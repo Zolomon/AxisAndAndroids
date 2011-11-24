@@ -6,8 +6,8 @@ import java.net.Socket;
 
 import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
-import se.lth.cs.fakecamera.Axis211A;
-//import se.lth.cs.cameraproxy.Axis211A;
+//import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.cameraproxy.Axis211A;
 
 public class CameraServer {
 
@@ -28,7 +28,7 @@ public class CameraServer {
 
 		int defport = default_port;
 		boolean http = false;
-		boolean fake = true;
+		boolean fake = false;
 
 
 		for (int argc = 0; argc < args.length; ++argc) {
@@ -57,9 +57,9 @@ public class CameraServer {
 		this.port = port;
 		
 		if (fake) {
-			myCamera = new se.lth.cs.fakecamera.Axis211A();
+			//myCamera = new se.lth.cs.fakecamera.Axis211A();
 		} else {
-			//myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
+			myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 6000);
 		}
 		
 		if (http) {
