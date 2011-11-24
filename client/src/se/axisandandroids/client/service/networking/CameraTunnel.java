@@ -14,9 +14,10 @@ public class CameraTunnel {
 	private DisplayThread disp_thread;
 	private ClientSendThread send_thread;
 	private ClientReceiveThread recv_thread;
+	private int id;
 	
-	
-	public CameraTunnel(Connection c, DisplayMonitor disp_monitor) {
+	public CameraTunnel(Connection c, DisplayMonitor disp_monitor, int id) {
+		this.id = id;
 		this.connection  = c;				
 		this.disp_monitor = disp_monitor;
 		createThreads();
@@ -24,7 +25,7 @@ public class CameraTunnel {
 	
 	private void createThreads() {		
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
-		disp_thread = new DisplayThread(disp_monitor);		
+		disp_thread = new DisplayThread(disp_monitor, id);		
 		recv_thread = new ClientReceiveThread(connection, disp_monitor, disp_thread.mailbox);
 		send_thread = new ClientSendThread(connection);
 	}

@@ -7,8 +7,8 @@ import se.axisandandroids.client.display.DisplayThreadSkeleton;
 
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
-	public DesktopDisplayThread(DisplayMonitor disp_monitor) {
-		super(disp_monitor);
+	public DesktopDisplayThread(DisplayMonitor disp_monitor, int id) {
+		super(disp_monitor, id);
 	}
 
 	protected void showImage(long delay, int len) {

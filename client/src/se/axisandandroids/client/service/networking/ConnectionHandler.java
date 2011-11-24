@@ -18,7 +18,8 @@ public class ConnectionHandler {
 	}
 	
 	public void add(Connection c) {		
-		CameraTunnel ct = new CameraTunnel(c, disp_monitor);
+		int id = -1; // tunnels.size(); // NOT IMPLEMENTED !!!
+		CameraTunnel ct = new CameraTunnel(c, disp_monitor, id);
 		tunnels.add(ct);	
 	}
 	
