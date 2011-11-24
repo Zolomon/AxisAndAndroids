@@ -32,7 +32,7 @@ public class DisplayMonitor {
 	private long showtime_old = 0;
 	private long timestamp_old = 0;	
 	
-	public synchronized long syncFrames(int id, long timestamp) throws InterruptedException {
+	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 		
 		/* No old showtime exists for ANY frame, display now! */
 		if (showtime_old <= 0) return System.currentTimeMillis() - timestamp;

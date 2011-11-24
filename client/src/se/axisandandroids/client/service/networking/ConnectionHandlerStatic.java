@@ -3,7 +3,6 @@ package se.axisandandroids.client.service.networking;
 import java.io.IOException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.networking.Connection;
 
 

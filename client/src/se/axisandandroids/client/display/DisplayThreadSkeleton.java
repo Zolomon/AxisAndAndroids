@@ -13,17 +13,14 @@ public class DisplayThreadSkeleton extends Thread {
 
 		protected DisplayMonitor disp_monitor;
 		public FrameBuffer mailbox;
-		
-		protected int id;
-		
+				
 				
 		/**
 		 * DisplayThread superclass.
 		 * @param disp_monitor, display monitor shared between several DisplayThreads.
 		 */
-		public DisplayThreadSkeleton(DisplayMonitor disp_monitor, int id) {
+		public DisplayThreadSkeleton(DisplayMonitor disp_monitor) {
 			this.disp_monitor = disp_monitor;
-			this.id = id;
 			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
 		}
 				
@@ -37,7 +34,7 @@ public class DisplayThreadSkeleton extends Thread {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
 				try {
-					delay = disp_monitor.syncFrames(id, timestamp);
+					delay = disp_monitor.syncFrames(timestamp);
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted");
 					e.printStackTrace();

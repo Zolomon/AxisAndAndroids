@@ -4,7 +4,6 @@ import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.display.DisplayThread;
 import se.axisandandroids.client.display.NewImageCallback;
-import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;

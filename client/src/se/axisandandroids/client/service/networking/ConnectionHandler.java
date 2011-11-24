@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.client.display.Panel;
-import se.axisandandroids.networking.Connection;
 
 
 public class ConnectionHandler {
@@ -19,15 +17,15 @@ public class ConnectionHandler {
 	}
 	
 	public void add(CameraTunnel tunnel) {		
-		int id = -1; // tunnels.size(); // NOT IMPLEMENTED !!!
 		CameraTunnel ct = tunnel;
 		tunnels.add(ct);	
 	}
 	
-	public void remove(int id) {
-		disconnect(id);
-		tunnels.remove(id);
-	}	
+	public void remove(int id) {	// MAYBE I WAS WRONG AGAIN !
+		disconnect(id);				// HARD TO TRACK ID=INDEX CHANGES IN AN ARRAY LIST		
+		tunnels.remove(id)			// WHEN USER ADD AND REMOVE CONNECTION TUNNELS
+									// AT THE SPEED OF LIGHT. /JAKOB
+	}								// By the way I removed a ; just to get your attention.
 	
 	public void disconnect(int id) {
 		CameraTunnel c = tunnels.get(id);
