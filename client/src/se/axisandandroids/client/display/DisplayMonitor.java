@@ -22,21 +22,19 @@ public class DisplayMonitor {
 		camera = new Axis211A();
 	}
 
-	public synchronized long syncFrames(long timestamp) {
-		if (showtime_old > 0) {
-			long showtime_new = showtime_old + timestamp - timestamp_old;
-			long diffTime = showTime_new - System.currentTimeMillis();
-			while (diffTime > 0) {
-				wait(diffTime);
-			}
-			
-			return diffTime;
-		} else {
-			return 0;
+	public synchronized long syncFrames(long timestamp) throws InterruptedException {
+		if (showtime_old <= 0) return 0;
+
+		long showtime_new = showtime_old + (timestamp - timestamp_old);
+		long diffTime = showtime_new - System.currentTimeMillis();
+		while (diffTime > 0) {
+				diffTime = showtime_new - System.currentTimeMillis();
+				wait(diffTime);		
 		}
 
-		showtime_old = System.currentTimeMillis();
-		delay = showtime_old - timestamp;
+
+		long delay = showtime_new - timestamp;
+		showtime_old = showtime_new;
 		return delay;
 	}
 

@@ -12,7 +12,7 @@ import se.axisandandroids.networking.SendThreadSkeleton;
 
 public class ServerSendThread extends SendThreadSkeleton {
 
-	protected final int BUFFERSIZE = 10;
+	protected final int BUFFERSIZE = 30;
 	public CircularBuffer mailbox; // Command mailbox for this ServerSendThread.
 
 	// In a multi client setup a list with subscribing clients connection 
@@ -50,7 +50,9 @@ public class ServerSendThread extends SendThreadSkeleton {
 				c.sendInt(((Command) command).cmd);
 			} 
 		} catch (IOException e) {
+			System.err.println("Send Fail.");
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}	
 

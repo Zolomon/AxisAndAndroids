@@ -6,8 +6,8 @@ import java.net.Socket;
 
 import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
-//import se.lth.cs.fakecamera.Axis211A;
-import se.lth.cs.cameraproxy.Axis211A;
+import se.lth.cs.fakecamera.Axis211A;
+//import se.lth.cs.cameraproxy.Axis211A;
 
 public class CameraServer {
 
@@ -18,7 +18,7 @@ public class CameraServer {
 	private CameraMonitor cm;
 	private CameraThread ct;
 	private ServerReceiveThread receiveThread;
-	private ServerSendThread sendThread;
+	private ServerSendThread sendThread;	
 	private Axis211A myCamera;
 	private JPEGHTTPServerThread httpServer;
 	private String host = "argus-2.student.lth.se";
@@ -28,7 +28,7 @@ public class CameraServer {
 
 		int defport = default_port;
 		boolean http = false;
-		boolean fake = false;
+		boolean fake = true;
 
 
 		for (int argc = 0; argc < args.length; ++argc) {
@@ -49,17 +49,23 @@ public class CameraServer {
 	
 		System.out.println("Big brother is watching you all, Axis and Androids...");
 
-		CameraServer serv = new CameraServer(defport, http);
+		CameraServer serv = new CameraServer(defport, http, fake);
 		serv.listenForConnection();
 	}
 
-	public CameraServer(int port, boolean http) {
-		myCamera = new Axis211A(host, 4321);
-		if(http){
+	public CameraServer(int port, boolean http, boolean fake) {
+		this.port = port;
+		
+		if (fake) {
+			myCamera = new se.lth.cs.fakecamera.Axis211A();
+		} else {
+			//myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
+		}
+		
+		if (http) {
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
 			httpServer.start();
 		}
-		this.port = port;
 		try {
 			servSocket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -71,7 +77,7 @@ public class CameraServer {
 
 	private void listenForConnection() {
 
-		System.out.printf("Listening on port: %d", port);
+		System.out.printf("Listening on port: %d\n", port);
 
 		while (true) {
 			Socket clientSocket = null;
@@ -82,7 +88,7 @@ public class CameraServer {
 				System.exit(1);
 			}
 
-			System.out.printf("Serving client: %s", clientSocket
+			System.out.printf("Serving client: %s\n", clientSocket
 					.getInetAddress().toString());
 	
 			/* Handle the client some way !!! */ 

@@ -33,7 +33,12 @@ public class DisplayThreadSkeleton extends Thread {
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
-				delay = disp_monitor.syncFrames(timestamp);				
+				try {
+					delay = disp_monitor.syncFrames(timestamp);
+				} catch (InterruptedException e) {
+					System.err.println("syncFrames got interrupted");
+					e.printStackTrace();
+				}				
 				showImage(delay, len); // Override for Platform Dependent show image
 			}
 		}

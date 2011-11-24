@@ -17,8 +17,9 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//import se.lth.cs.fakecamera.Axis211A;
-import se.lth.cs.cameraproxy.Axis211A;
+import se.lth.cs.fakecamera.Axis211A;
+//import se.lth.cs.cameraproxy.Axis211A;
+
 
 /**
  * Itsy bitsy teeny weeny web server. Always returns an image, regardless
@@ -35,7 +36,7 @@ public class JPEGHTTPServerThread extends Thread {
 	public JPEGHTTPServerThread(int port, Axis211A cam) {
 		myPort   = port;
 //		myCamera = new Axis211A("argus-4.student.lth.se", myPort);
-		myCamera = cam;
+		//myCamera = cam;
 	}
 	
 	
@@ -182,11 +183,12 @@ public class JPEGHTTPServerThread extends Thread {
 	// ----------------------------------------------------- PRIVATE ATTRIBUTES
 
 	private int myPort;                             // TCP port for HTTP server
+	
 	private Axis211A myCamera;                      // Makes up the JPEG images
 
 	// By convention, these bytes are always sent between lines
 	// (CR = 13 = carriage return, LF = 10 = line feed)
 
-	private static final byte[] CRLF      = { 13, 10 };
+	private static final byte[] CRLF = { 13, 10 };
 
 }
