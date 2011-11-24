@@ -55,10 +55,12 @@ public class CtrlService extends android.app.Service {
 	/* public methods for client */
 	public void add(Connection connection) {
 		mConnections.add(connection);
+		System.out.println("Connection added:" + connection);
 	}
 	
 	public void add(Panel panel) {
 		mPanels.add(panel);
+		System.out.println("Panel added");
 	}
 	
 	public void remove(Connection connection) {
@@ -79,7 +81,8 @@ public class CtrlService extends android.app.Service {
 	
 	public void createTunnels() {
 		for(int id = 0; id < mConnections.size(); id++) {
-			mConnectionHandler.add(new CameraTunnel(mConnections.get(id), mPanels.get(id), dm, id));
+			mConnectionHandler.add(id, new CameraTunnel(mConnections.get(id), mPanels.get(id), dm, id));
+			System.out.println("Tunnel added:" + mConnections.get(id));
 		}
 	}
 }
