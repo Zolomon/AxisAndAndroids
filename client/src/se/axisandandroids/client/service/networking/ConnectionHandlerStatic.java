@@ -19,9 +19,9 @@ public class ConnectionHandlerStatic {
 		nconnected_cameras = 0;
 	}
 	
-	public void add(Connection c, Panel panel) {		
+	public void add(CameraTunnel tunnel) {		
 		if (nconnected_cameras == tunnels.length) return;		
-		tunnels[nconnected_cameras] = new CameraTunnel(c, disp_monitor, nconnected_cameras);
+		tunnels[nconnected_cameras] = tunnel;
 		++nconnected_cameras;
 	}
 		
