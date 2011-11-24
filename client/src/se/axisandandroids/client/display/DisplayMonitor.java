@@ -32,9 +32,8 @@ public class DisplayMonitor {
 		}
 
 
-		long delay = showtime_new - timestamp;
 		showtime_old = showtime_new;
-		return delay;
+		return System.currentTimeMillis() - timestamp; // The real delay
 	}
 
 	public synchronized void connect() {
