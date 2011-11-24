@@ -8,10 +8,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.client.service.networking.CameraTunnel;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
-import se.axisandandroids.client.service.networking.ConnectionHandler;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
 
@@ -52,6 +50,7 @@ public class DesktopClient {
 		System.out.println("** Desktop Client");
 
 		DisplayMonitor dm = new DisplayMonitor();	
+		
 		
 		// Display 0
 		int id = 0;

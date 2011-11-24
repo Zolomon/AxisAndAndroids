@@ -51,7 +51,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 */
 		protected void showImage(long delay, int len) {
 			// Override for Platform Dependent show image
-			System.out.printf("ShowTime!!! Delay: %d", delay);
+			System.out.printf("Delay: %d\n", delay);
 		}
 		
 		/**

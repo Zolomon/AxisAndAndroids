@@ -45,10 +45,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			System.err.println("Failed to get image. Skipping this.");
 			e.printStackTrace();
 			return;
-		}
-
-		System.out.println("handleImage() got: " + len + " bytes.");
-		
+		}		
 		/* Post jpeg to displayThreads buffer */			
 		frame_buffer.put(jpeg, len);
 	}
@@ -82,11 +79,12 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		if (disp_mode != -1) {
 			disp_monitor.setDispMode(disp_mode);			
 			if (disp_mode == Protocol.DISP_MODE.MOVIE) {
-				// FORWARD TO ALL OTHER CAMERAS				
+				// ---------------------------------------->>> FORWARD TO ALL OTHER CAMERAS 
 				// Put something in ALL sendthread mailboxes.
 				
 				//Protocol.COMMAND.DISP_MODE
-				//Protocol.DISP_MODE.MOVIE
+				//Protocol.DISP_MODE.MOVIE				
+				// ---------------------------------------->>> FORWARD TO ALL OTHER CAMERAS 
 			}
 		}
 	}

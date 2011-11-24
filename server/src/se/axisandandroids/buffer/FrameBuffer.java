@@ -134,14 +134,10 @@ public class FrameBuffer {
 		}
 		/* Write data to jpeg. */
 		int len = buffer[nextToGet].len;
-		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, len);
-		
-		System.out.println("FrameBuffer get(byte[]): " + len + " bytes.");
-
+		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, len);		
 		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;
-		
+		--nAvailable;		
 		return len;
 	}
 	
