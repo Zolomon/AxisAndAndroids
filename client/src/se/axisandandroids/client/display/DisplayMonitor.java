@@ -26,20 +26,20 @@ public class DisplayMonitor {
 	
 	/* Generalize this for other than 2 DisplayThreads !!! */
 	//private final long[] timestamps = new long[2];
-	
-	private final long[] showtime_old = new long[2]; // genaralize
-	private final long[] timestamp_old = new long[2]; // genaralize
-	
+		
+	private final long DELAY_SYNCMODE_TRESH = 200;
 	private PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-
+	private long showtime_old = 0;
+	private long timestamp_old = 0;	
 	
 	public synchronized long syncFrames(int id, long timestamp) throws InterruptedException {
 		
-		/* No old showtime exists, display now! */
-		if (showtime_old[id] <= 0) return System.currentTimeMillis() - timestamp;
-		
-		long showtime_new = showtime_old[id] + (timestamp - timestamp_old[id]);
-		long diffTime;
+		/* No old showtime exists for ANY frame, display now! */
+		if (showtime_old <= 0) return System.currentTimeMillis() - timestamp;
+				
+		/* Calculate showtime for this thread in relation to what has been shown last. */
+		long showtime_new = showtime_old + (timestamp - timestamp_old);				
+		long diffTime;	// Time to showtime_new
 		
 		if (sync_mode == Protocol.SYNC_MODE.ASYNC) {
 						
@@ -71,12 +71,12 @@ public class DisplayMonitor {
 			notifyAll();
 		}
 		
-		timestamp_old[id] = timestamp;
-		showtime_old[id] = showtime_new;
+		timestamp_old = timestamp;
+		showtime_old = showtime_new;
 
 		/* Calculate delay and determine sync mode */
 		long delay = System.currentTimeMillis() - timestamp; 	// The real delay
-		if (delay > 200) sync_mode = Protocol.SYNC_MODE.ASYNC;	// delay determines sync mode
+		if (delay > DELAY_SYNCMODE_TRESH) sync_mode = Protocol.SYNC_MODE.ASYNC;	// delay determines sync mode
 		else sync_mode = Protocol.SYNC_MODE.SYNC;
 		return delay; 											// Return delay to show
 	}
