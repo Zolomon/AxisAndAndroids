@@ -53,11 +53,12 @@ public class TCP_Client {
 			System.err.println("io-exception.");
 			System.exit(1);
 		}
-		System.out.println("Connection Setup Complete");
+		System.out.println("Connection Setup Complete: " + host +":"+port);
 	}
 
 	public void disconnect() throws IOException {
 		socket.close();
+		System.out.println("Client disconnected.");
 	}
 
 	public static void main(String[] args) {
