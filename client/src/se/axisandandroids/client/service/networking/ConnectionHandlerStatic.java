@@ -3,6 +3,7 @@ package se.axisandandroids.client.service.networking;
 import java.io.IOException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.networking.Connection;
 
 
@@ -18,12 +19,12 @@ public class ConnectionHandlerStatic {
 		nconnected_cameras = 0;
 	}
 	
-	public void add(Connection c) {		
+	public void add(Connection c, Panel panel) {		
 		if (nconnected_cameras == tunnels.length) return;		
 		tunnels[nconnected_cameras] = new CameraTunnel(c, disp_monitor, nconnected_cameras);
 		++nconnected_cameras;
 	}
-	
+		
 	public void remove(int id) {
 		disconnect(id);
 		tunnels[id] = null;			// Consequences? stop threads, null pointers, etc. ?

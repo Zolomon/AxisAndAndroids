@@ -1,5 +1,6 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import android.app.Activity;
@@ -10,9 +11,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.GridView;
+import android.widget.TableLayout;
 
 public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
@@ -48,22 +53,38 @@ public class RenderActivity extends Activity {
 	private ServiceConnection mConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 			mService.dm.connect();
+
+			final GridView gv = (GridView) findViewById(R.id.gridview);
+			LayoutInflater inflater = LayoutInflater.from(RenderActivity.this);
+
+			for (int i = 0; i < mService.connections(); i++) {
+				final Panel theInflatedPanel = (Panel) inflater.inflate(
+						R.layout.panel, null);
+
+				gv.addView(theInflatedPanel);
+				mService.add(theInflatedPanel);
+			}
+			
+			mService.createTunnels();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
 		}
-	};	
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.client_menu, menu);
 		return true;
+	}
+
+	protected Panel createPanel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

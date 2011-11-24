@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
@@ -72,7 +73,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String port = etPort.getText().toString();
 		
 		try {
-			mConnectionHandler.add(new Connection(host, Integer.parseInt(port)));			
+			mService.add(new Connection(host, Integer.parseInt(port)));			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -128,7 +129,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mConnectionHandler = mService.ch;
+			mConnectionHandler = mService.mConnectionHandler;
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {

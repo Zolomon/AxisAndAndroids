@@ -1,15 +1,14 @@
 package se.axisandandroids.client.service;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import se.axisandandroids.client.display.DisplayMonitor;
+import se.axisandandroids.client.display.Panel;
+import se.axisandandroids.client.service.networking.CameraTunnel;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
+import se.axisandandroids.networking.Connection;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,10 +17,11 @@ import android.widget.Toast;
 public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
-	private static List<Socket> sockets;
 
 	public DisplayMonitor dm = new DisplayMonitor();
-	public ConnectionHandler ch = new ConnectionHandler(dm);
+	public ConnectionHandler mConnectionHandler = new ConnectionHandler(dm);
+	private List<Connection> mConnections;
+	private List<Panel> mPanels;
 	
 	public class LocalBinder extends Binder {
 		public CtrlService getService() {
@@ -29,10 +29,6 @@ public class CtrlService extends android.app.Service {
 		}
 	}
 	
-	public interface NewImageCallback {
-		void callback(Bitmap result);
-	}
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		Toast.makeText(this, "CtrlService Bound", Toast.LENGTH_LONG).show();
@@ -45,7 +41,8 @@ public class CtrlService extends android.app.Service {
 		Toast.makeText(this, "CtrlService Created", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onCreate");
 		
-		sockets = new ArrayList<Socket>();
+		mConnections = new ArrayList<Connection>();
+		mPanels = new ArrayList<Panel>();
 	}
 
 	@Override
@@ -56,34 +53,33 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
-	
-	public void receiveImage(/*SomeClass here ,*/NewImageCallback nic) {
-		Bitmap result = null; 
-		
-		nic.callback(result);
+	public void add(Connection connection) {
+		mConnections.add(connection);
 	}
 	
-	
-	public void setSockets(List<Socket> sockets) {
-		CtrlService.sockets = sockets;
+	public void add(Panel panel) {
+		mPanels.add(panel);
 	}
 	
-	public void addSocket(Socket socket) {
-			sockets.add(socket);
+	public void remove(Connection connection) {
+		mConnections.remove(connection);
 	}
 	
-	public void addSocket(String hostname, int port) {
-		try {
-			sockets.add(new Socket(hostname, port));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void remove(Panel panel) {
+		mPanels.remove(panel);
+	}
+	
+	public int connections() {
+		return mConnections.size();
+	}
+	
+	public int panels() {
+		return mPanels.size();
+	}
+	
+	public void createTunnels() {
+		for(int id = 0; id < mConnections.size(); id++) {
+			mConnectionHandler.add(new CameraTunnel(mConnections.get(id), mPanels.get(id), dm, id));
 		}
-	}
-	
-	public void removeSocket(Socket socket) {
-		if (sockets.contains(socket))
-			sockets.remove(socket);
 	}
 }
