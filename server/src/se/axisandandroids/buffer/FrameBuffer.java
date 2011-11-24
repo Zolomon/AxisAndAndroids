@@ -53,15 +53,17 @@ public class FrameBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}		
-		//if (nAvailable == 0) notifyAll();
+		if (nAvailable == 0) notifyAll();
 		
 		//buffer[nextToPut].x = x;
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
 		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
-		++nAvailable;
+		++nAvailable;				
 		
-		notifyAll();
+		//notifyAll();
+				
+		//System.out.printf("Buffering Capacty At: %5.2f percent, %d Frames ... \n", 100*nAvailable/(double)MAXSIZE, nAvailable);
 	}
 
 
@@ -171,6 +173,7 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		notifyAll();
 	}
 	
 	public synchronized void awaitBuffered(long maxtime) {
@@ -186,6 +189,7 @@ public class FrameBuffer {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
 		}
+		notifyAll();
 	}
 	
 

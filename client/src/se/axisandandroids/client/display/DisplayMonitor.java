@@ -15,7 +15,6 @@ public class DisplayMonitor {
 
 	public DisplayMonitor() {}
 
-
 	private final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long showtime_old = 0;
@@ -51,7 +50,7 @@ public class DisplayMonitor {
 			 * 1) The right time.
 			 * 2) timestamp less than all other timestamps.				*/
 			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0 
-					&& timestamp > timestamps.peek()) {
+					|| timestamp > timestamps.peek()) {
 				wait(diffTime);		
 			}
 
@@ -61,7 +60,9 @@ public class DisplayMonitor {
 		}
 
 		/* SHOW TIME */
-		showtime_new = System.currentTimeMillis();		
+		long t = System.currentTimeMillis();
+		long mistake = t - showtime_new;
+		showtime_new = t;		
 		
 		/* Time between this frame and the last shown */		
 		if ((showtime_new - showtime_old) < DELAY_SYNCMODE_THRESHOLD_MS) {
@@ -72,11 +73,12 @@ public class DisplayMonitor {
 		
 		/* Update for next Frame */
 		timestamp_old = timestamp;
-		showtime_old = showtime_new;		
+		showtime_old = showtime_new - mistake;		
 		
 		/* Calculate and return delay */
 		return showtime_new - timestamp; // The real delay
 	}
+	
 
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;

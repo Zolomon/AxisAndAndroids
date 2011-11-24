@@ -1,7 +1,6 @@
 package se.axisandandroids.desktop.client;
 
 
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -90,11 +89,9 @@ public class DesktopClient {
 		DesktopClient client = new DesktopClient(addr, port);
 
 		client.runDesktopClient();
-		
-		
+				
 		// WAIT for threads to finish before disconnecting !!!
 		//client.disconnect();
-
 
 	}
 
