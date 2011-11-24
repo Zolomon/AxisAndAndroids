@@ -18,34 +18,34 @@ public class CameraServer {
 	private CameraMonitor cm;
 	private CameraThread ct;
 	private ServerReceiveThread receiveThread;
-	private ServerSendThread sendThread;	
+	private ServerSendThread sendThread;
 	private Axis211A myCamera;
 	private JPEGHTTPServerThread httpServer;
 	private MotionDetector md;
-	private String host = "argus-5.student.lth.se";
+	private String host = "argus-8.student.lth.se";
 	private int cameraPort = 4321;
-
 
 	public static void main(String[] args) {
 
 		int listenPort = default_port;
 		boolean http = false;
 
-
 		for (int argc = 0; argc < args.length; ++argc) {
-			if (args[argc].equals("-http")) http = true;
+			if (args[argc].equals("-http"))
+				http = true;
 			else if (args[argc].equals("-help")) {
 				System.out.println("Usage: CameraServer [options] [port]");
 				System.out.println("Options:");
-				System.out.println("\t-http  - Run tiny http server as well as camera server.");
+				System.out
+						.println("\t-http  - Run tiny http server as well as camera server.");
 				System.out.println("\t-help  - Show help.");
 				System.exit(0);
-			} 
-			else listenPort = Integer.parseInt(args[argc]);			
+			} else
+				listenPort = Integer.parseInt(args[argc]);
 		}
 
-
-		System.out.println("Big brother is watching you all, Axis and Androids...");
+		System.out
+				.println("Big brother is watching you all, Axis and Androids...");
 
 		CameraServer serv = new CameraServer(listenPort, http);
 		serv.listenForConnection();
@@ -53,7 +53,7 @@ public class CameraServer {
 
 	public CameraServer(int listenPort, boolean http) {
 		this.listenPort = listenPort;
-		
+
 		myCamera = new Axis211A(host, cameraPort);
 		md = new MotionDetector(host, cameraPort);
 
@@ -61,7 +61,7 @@ public class CameraServer {
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
 			httpServer.start();
 		}
-		
+
 		try {
 			servSocket = new ServerSocket(listenPort);
 		} catch (IOException e) {
@@ -87,7 +87,7 @@ public class CameraServer {
 			System.out.printf("Serving client: %s\n", clientSocket
 					.getInetAddress().toString());
 
-			/* Handle the client some way !!! */ 
+			/* Handle the client some way !!! */
 
 			// With a thread object if multi-client:
 			// new ClientHandler(Connection client).start();
@@ -103,11 +103,10 @@ public class CameraServer {
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
-		//		md = new MotionDetector(host, 4321);
 		ct = new CameraThread(cm, sendThread.mailbox, myCamera, md);
 		receiveThread.start();
 		sendThread.start();
-		ct.start();		
+		ct.start();
 	}
 
 }

@@ -12,7 +12,7 @@ public class CameraMonitor {
 	}
 
 	public synchronized boolean setDisplayMode(int display_mode) {
-		System.out.println("Currect dislay mode " + this.display_mode + "trying to change to " + display_mode);
+		System.out.println("Currect dislay mode " + this.display_mode + " trying to change to " + display_mode);
 		if (display_mode != Protocol.DISP_MODE.MOVIE
 				&& display_mode != Protocol.DISP_MODE.IDLE
 				&& display_mode != Protocol.DISP_MODE.AUTO) {
