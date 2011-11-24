@@ -6,7 +6,6 @@ import se.lth.cs.fakecamera.*;
 public class CameraMonitor {
 
 	private int display_mode;
-	private int sync_mode;
 
 	public CameraMonitor() {
 		display_mode = Protocol.DISP_MODE.AUTO;
