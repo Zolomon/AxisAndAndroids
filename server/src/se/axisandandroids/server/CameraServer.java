@@ -13,7 +13,7 @@ import se.lth.cs.cameraproxy.MotionDetector;
 public class CameraServer {
 
 	private final static int default_port = 6000;
-	private int port;
+	private int listenPort;
 	private ServerSocket servSocket = null;
 	private Connection con;
 	private CameraMonitor cm;
@@ -22,8 +22,9 @@ public class CameraServer {
 	private ServerSendThread sendThread;	
 	private Axis211A myCamera;
 	private JPEGHTTPServerThread httpServer;
-	private String host = "argus-5.student.lth.se";
 	private MotionDetector md;
+	private String host = "argus-5.student.lth.se";
+	private int cameraPort = 4321;
 
 	
 	public static void main(String[] args) {
@@ -56,13 +57,13 @@ public class CameraServer {
 	}
 
 	public CameraServer(int port, boolean http, boolean fake) {
-		this.port = port;
+		listenPort = port;
 		
 		if (fake) {
 			//myCamera = new se.lth.cs.fakecamera.Axis211A();
 		} else {
-			myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
-			md = new se.lth.cs.cameraproxy.MotionDetector(host, 4321);
+			myCamera = new se.lth.cs.cameraproxy.Axis211A(host, cameraPort);
+			md = new se.lth.cs.cameraproxy.MotionDetector(host, cameraPort);
 			}
 		
 		if (http) {
@@ -80,14 +81,14 @@ public class CameraServer {
 
 	private void listenForConnection() {
 
-		System.out.printf("Listening on port: %d\n", port);
+		System.out.printf("Listening on port: %d\n", listenPort);
 
 		while (true) {
 			Socket clientSocket = null;
 			try {
 				clientSocket = servSocket.accept();
 			} catch (IOException e) {
-				System.out.printf("Accept failed: %d", port);
+				System.out.printf("Accept failed: %d", listenPort);
 				System.exit(1);
 			}
 
