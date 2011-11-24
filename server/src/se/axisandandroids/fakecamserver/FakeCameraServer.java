@@ -1,4 +1,4 @@
-package se.axisandandroids.server;
+package se.axisandandroids.fakecamserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,38 +6,36 @@ import java.net.Socket;
 
 import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
-import se.lth.cs.cameraproxy.Axis211A;
-import se.lth.cs.cameraproxy.MotionDetector;
+import se.axisandandroids.server.CameraMonitor;
+import se.axisandandroids.server.ServerReceiveThread;
+import se.axisandandroids.server.ServerSendThread;
+import se.lth.cs.fakecamera.*;
 
-public class CameraServer {
+public class FakeCameraServer {
 
 	private final static int default_port = 6000;
-	private int listenPort;
+	private int port;
 	private ServerSocket servSocket = null;
 	private Connection con;
 	private CameraMonitor cm;
-	private CameraThread ct;
+	private FakeCameraThread ct;
 	private ServerReceiveThread receiveThread;
 	private ServerSendThread sendThread;	
 	private Axis211A myCamera;
-	private JPEGHTTPServerThread httpServer;
+	private String host = "localhost";
 	private MotionDetector md;
-	private String host = "argus-5.student.lth.se";
-	private int cameraPort = 4321;
 
 
 	public static void main(String[] args) {
 
 		int defport = default_port;
 		boolean http = false;
-
+		boolean fake = false;
 
 		for (int argc = 0; argc < args.length; ++argc) {
-			if (args[argc].equals("-http")) http = true;
-			else if (args[argc].equals("-help")) {
+			if (args[argc].equals("-help")) {
 				System.out.println("Usage: CameraServer [options] [port]");
-				System.out.println("Options:");
-				System.out.println("\t-http  - Run tiny http server as well as camera server.");
+				System.out.println("Options:");			
 				System.out.println("\t-help  - Show help.");
 				System.exit(0);
 			} 
@@ -47,19 +45,16 @@ public class CameraServer {
 
 		System.out.println("Big brother is watching you all, Axis and Androids...");
 
-		CameraServer serv = new CameraServer(defport, http);
+		FakeCameraServer serv = new FakeCameraServer(defport, http, fake);
 		serv.listenForConnection();
 	}
 
-	public CameraServer(int port, boolean http) {
+	public FakeCameraServer(int port, boolean http, boolean fake) {
 		this.port = port;
-		myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
-		md = new se.lth.cs.cameraproxy.MotionDetector(host, 4321);
 
-		if (http) {
-			httpServer = new JPEGHTTPServerThread(8080, myCamera);
-			httpServer.start();
-		}
+		myCamera = new Axis211A();
+		md = new MotionDetector();
+
 		try {
 			servSocket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -71,14 +66,14 @@ public class CameraServer {
 
 	private void listenForConnection() {
 
-		System.out.printf("Listening on port: %d\n", listenPort);
+		System.out.printf("Listening on port: %d\n", port);
 
 		while (true) {
 			Socket clientSocket = null;
 			try {
 				clientSocket = servSocket.accept();
 			} catch (IOException e) {
-				System.out.printf("Accept failed: %d", listenPort);
+				System.out.printf("Accept failed: %d", port);
 				System.exit(1);
 			}
 
@@ -101,8 +96,7 @@ public class CameraServer {
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
-		//		md = new MotionDetector(host, 4321);
-		ct = new CameraThread(cm, sendThread.mailbox, myCamera, md);
+		ct = new FakeCameraThread(cm, sendThread.mailbox, myCamera, md);
 		receiveThread.start();
 		sendThread.start();
 		ct.start();		
