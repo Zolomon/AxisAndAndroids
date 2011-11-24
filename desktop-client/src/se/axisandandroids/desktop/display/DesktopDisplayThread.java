@@ -22,7 +22,8 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
-	private GUI gui;
+	private GUI gui;	
+	protected final int BUFFERSIZE = 30;
 	
 	public DesktopDisplayThread(DisplayMonitor disp_monitor) {
 		super(disp_monitor);
@@ -30,13 +31,15 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	}
 
 	protected void showImage(long delay, int len) {				
-		System.out.printf("Delay: %d\n", delay);				
-		byte[] correct_length_jpeg = new byte[len];
-		System.arraycopy(jpeg, 0, correct_length_jpeg, 0, len);		
-		gui.refreshImage(correct_length_jpeg);
+		//System.out.printf("Delay: %d\n", delay);
+		
+		// jpeg is Axis211A.IMAGE_BUFFER_SIZE but it seems to works without correction
+		gui.refreshImage(jpeg); 
 	}
 
 }	
+
+
 
 class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -66,6 +69,7 @@ class GUI extends JFrame {
 		}
 	}
 } // end class GUI
+
 
 class ImagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;

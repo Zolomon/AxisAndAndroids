@@ -8,6 +8,7 @@ import se.lth.cs.fakecamera.Axis211A;
 public class DisplayThreadSkeleton extends Thread {
 			
 		protected final int BUFFERSIZE = 30;
+		protected final int INITIAL_BUFFER_WAIT_MS = 1500;
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		protected final byte[] jpeg = new byte[FRAMESIZE];
 
@@ -29,6 +30,8 @@ public class DisplayThreadSkeleton extends Thread {
 			int len = 0;
 			long delay = -1;
 			long timestamp = -1;
+			
+			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
 			
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);

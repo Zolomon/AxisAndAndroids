@@ -53,12 +53,15 @@ public class FrameBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}		
-		if (nAvailable == 0) notifyAll();
+		//if (nAvailable == 0) notifyAll();
+		
 		//buffer[nextToPut].x = x;
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
 		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
+		
+		notifyAll();
 	}
 
 
@@ -113,10 +116,9 @@ public class FrameBuffer {
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
 		
-		//if (nAvailable == MAXSIZE) notifyAll();
+		if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
 		return data;
 	}
 	
@@ -161,6 +163,31 @@ public class FrameBuffer {
 		/* Return copy of the frame. */
 		return f;
 	}
+	
+	public synchronized void awaitFilled() {
+		try {
+			while (nAvailable < MAXSIZE) wait();
+		} catch (InterruptedException e) {
+			System.err.println("Get got interrupted");
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void awaitBuffered(long maxtime) {
+		try {
+			long t0 = System.currentTimeMillis();
+			long t;
+			while ((t = System.currentTimeMillis() - t0) < maxtime 
+					&& nAvailable < MAXSIZE) {
+				wait(t);
+				System.out.printf("Buffering Capacty At: %5.2f percent, waited %d ms, ... \n", 100*nAvailable/(double)MAXSIZE, t);
+			}
+		} catch (InterruptedException e) {
+			System.err.println("Get got interrupted");
+			e.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * Return frame data of the next frame in buffer without removing it.

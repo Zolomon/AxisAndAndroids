@@ -44,9 +44,9 @@ public class CameraThread extends Thread {
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
 					int len = receiveJPEG();
-					mailbox
-							.put(new Frame(jpeg, len,
-									Axis211A.IMAGE_BUFFER_SIZE));
+					
+					mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));
+//					mailbox.putOverwriting(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
 					periodReceive();

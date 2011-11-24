@@ -25,7 +25,11 @@ public class DisplayMonitor {
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 
 		/* No old showtime exists for ANY frame, display now! */
-		if (showtime_old <= 0) return System.currentTimeMillis() - timestamp;
+		if (showtime_old <= 0) {
+			timestamp_old = timestamp;
+			showtime_old = System.currentTimeMillis();
+			return System.currentTimeMillis() - timestamp;			
+		}
 
 		/* Calculate showtime for this thread in relation to what has been shown last. */
 		long showtime_new = showtime_old + (timestamp - timestamp_old);				
@@ -57,23 +61,21 @@ public class DisplayMonitor {
 		}
 
 		/* SHOW TIME */
+		showtime_new = System.currentTimeMillis();		
 		
-		/* Time between this frame and the last shown */
-		long time_between_frames = System.currentTimeMillis() - showtime_old;
-		
-		if (time_between_frames < DELAY_SYNCMODE_THRESHOLD_MS) {
+		/* Time between this frame and the last shown */		
+		if ((showtime_new - showtime_old) < DELAY_SYNCMODE_THRESHOLD_MS) {
 			sync_mode = Protocol.SYNC_MODE.SYNC;
 		} else {
 			sync_mode = Protocol.SYNC_MODE.ASYNC;
 		}
-										
+		
 		/* Update for next Frame */
 		timestamp_old = timestamp;
-		showtime_old = showtime_new;
+		showtime_old = showtime_new;		
 		
-		/* Calculate delay and determine sync mode */
-		long delay = System.currentTimeMillis() - timestamp; 	// The real delay		
-		return delay; 											// Return delay to show
+		/* Calculate and return delay */
+		return showtime_new - timestamp; // The real delay
 	}
 
 	public synchronized void setDispMode(int disp_mode) {
