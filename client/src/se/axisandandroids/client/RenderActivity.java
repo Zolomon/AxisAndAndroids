@@ -13,19 +13,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
 	private CtrlService mService;
-	private boolean mBound;
-	private ImageView mDisplay;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.display_grid);
-		mDisplay = (ImageView) findViewById(R.id.ivDisplay);
 	}
 
 	@Override
@@ -56,12 +52,10 @@ public class RenderActivity extends Activity {
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mBound = true;
 			mService.dm.connect();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
-			mBound = false;
 		}
 	};	
 
