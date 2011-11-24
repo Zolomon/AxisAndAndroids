@@ -1,4 +1,4 @@
-package se.axisandandroids.client.display;
+package se.axisandandroids.desktop.display;
 
 
 import java.awt.BorderLayout;
