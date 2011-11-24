@@ -55,7 +55,6 @@ public class RenderActivity extends Activity {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mService.dm.connect();
 
 			final GridView gv = (GridView) findViewById(R.id.gridview);
 			LayoutInflater inflater = LayoutInflater.from(RenderActivity.this);

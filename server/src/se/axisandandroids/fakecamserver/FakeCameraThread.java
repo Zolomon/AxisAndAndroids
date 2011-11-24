@@ -1,12 +1,14 @@
-package se.axisandandroids.server;
+package se.axisandandroids.fakecamserver;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
-import se.axisandandroids.networking.Protocol; 
-import se.lth.cs.cameraproxy.Axis211A;
-import se.lth.cs.cameraproxy.MotionDetector;
+import se.axisandandroids.networking.Protocol;
+import se.axisandandroids.server.CameraMonitor;
+import se.lth.cs.fakecamera.Axis211A;
+import se.lth.cs.fakecamera.MotionDetector;
 
-public class CameraThread extends Thread {
+
+public class FakeCameraThread extends Thread {
 
 	private byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];;
 	private CameraMonitor camera_monitor;
@@ -24,7 +26,7 @@ public class CameraThread extends Thread {
 	 * @param mailbox
 	 * @param md
 	 */
-	public CameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox,
+	public FakeCameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox,
 			Axis211A cam, MotionDetector md) {
 		myCamera = cam;
 		this.camera_monitor = camera_monitor;
