@@ -3,10 +3,9 @@ package se.axisandandroids.server;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
 
-import se.axisandandroids.networking.Protocol;
-//import se.lth.cs.fakecamera.Axis211A;
+import se.axisandandroids.networking.Protocol; //import se.lth.cs.fakecamera.Axis211A;
 import se.lth.cs.cameraproxy.Axis211A;
-import se.lth.cs.fakecamera.MotionDetector;
+import se.lth.cs.cameraproxy.MotionDetector;
 
 public class CameraThread extends Thread {
 
@@ -19,32 +18,38 @@ public class CameraThread extends Thread {
 	private Axis211A myCamera;
 
 	/**
-	 * Create a CameraThread with task to Fetch images from a camera, proxy-camera
-	 * or fake camera and post it to one sendthread.
+	 * Create a CameraThread with task to Fetch images from a camera,
+	 * proxy-camera or fake camera and post it to one sendthread.
+	 * 
 	 * @param camera_monitor
 	 * @param mailbox
+	 * @param md
 	 */
-	public CameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox, Axis211A cam){
+	public CameraThread(CameraMonitor camera_monitor, CircularBuffer mailbox,
+			Axis211A cam, MotionDetector md) {
 		myCamera = cam;
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
+		this.md = md;
 
-		//		myCamera = new Axis211A(host, port);
-		md = new MotionDetector();
+		// myCamera = new Axis211A(host, port);
+		// md = new MotionDetector();
 		time_intervall = 5000;
 	}
 
 	public void run() {
 		if (cameraConnect()) {
-			while(! interrupted()) {
-				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
+			while (!interrupted()) {
+				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
 					periodReceive();
 				}
-				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE){
+				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
 					int len = receiveJPEG();
-					mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));	
+					mailbox
+							.put(new Frame(jpeg, len,
+									Axis211A.IMAGE_BUFFER_SIZE));
 				}
-				while(camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO){
+				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
 					periodReceive();
 					checkForMotion();
 				}
@@ -52,18 +57,16 @@ public class CameraThread extends Thread {
 		}
 	}
 
-	private void periodReceive(){
+	private void periodReceive() {
 		long t, dt;
 		t = System.currentTimeMillis();
-
 
 		/* Periodic Activity */
 		int len = receiveJPEG();
 		mailbox.put(new Frame(jpeg, len, Axis211A.IMAGE_BUFFER_SIZE));
 
-
 		t += time_intervall;
-		dt = t - System.currentTimeMillis();				
+		dt = t - System.currentTimeMillis();
 		try {
 			if (dt > 0) {
 				sleep(dt);
@@ -73,28 +76,28 @@ public class CameraThread extends Thread {
 		}
 	}
 
-	private int receiveJPEG(){
-		int len = 0;		
-		len = myCamera.getJPEG(jpeg,0);
+	private int receiveJPEG() {
+		int len = 0;
+		len = myCamera.getJPEG(jpeg, 0);
 		return len;
 	}
 
-	private boolean cameraConnect(){
-		if (! myCamera.connect()) {
+	private boolean cameraConnect() {
+		if (!myCamera.connect()) {
 			System.out.println("Failed to connect to camera!");
 			System.exit(1);
 			return false;
-		} else{
+		} else {
 			System.out.println("Camera connected!");
 			return true;
 		}
 	}
 
-	private void checkForMotion(){
-		if(md.detect()){
+	private void checkForMotion() {
+		if (md.detect()) {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 			System.out.println("Motion detected!");
-		}
+		} else
+			System.out.println("No motion");
 	}
-
 }

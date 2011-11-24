@@ -8,6 +8,7 @@ import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
 //import se.lth.cs.fakecamera.Axis211A;
 import se.lth.cs.cameraproxy.Axis211A;
+import se.lth.cs.cameraproxy.MotionDetector;
 
 public class CameraServer {
 
@@ -21,7 +22,8 @@ public class CameraServer {
 	private ServerSendThread sendThread;	
 	private Axis211A myCamera;
 	private JPEGHTTPServerThread httpServer;
-	private String host = "argus-2.student.lth.se";
+	private String host = "argus-5.student.lth.se";
+	private MotionDetector md;
 
 	
 	public static void main(String[] args) {
@@ -59,8 +61,9 @@ public class CameraServer {
 		if (fake) {
 			//myCamera = new se.lth.cs.fakecamera.Axis211A();
 		} else {
-			myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 6000);
-		}
+			myCamera = new se.lth.cs.cameraproxy.Axis211A(host, 4321);
+			md = new se.lth.cs.cameraproxy.MotionDetector(host, 4321);
+			}
 		
 		if (http) {
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
@@ -107,7 +110,8 @@ public class CameraServer {
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
-		ct = new CameraThread(cm, sendThread.mailbox, myCamera);
+//		md = new MotionDetector(host, 4321);
+		ct = new CameraThread(cm, sendThread.mailbox, myCamera, md);
 		receiveThread.start();
 		sendThread.start();
 		ct.start();		
