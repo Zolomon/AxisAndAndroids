@@ -4,8 +4,7 @@ import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.server.CameraMonitor;
-import se.lth.cs.fakecamera.Axis211A;
-import se.lth.cs.fakecamera.MotionDetector;
+import se.lth.cs.fakecamera.*;
 
 
 public class FakeCameraThread extends Thread {
