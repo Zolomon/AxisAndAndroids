@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import se.axisandandroids.client.display.DisplayMonitor;
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.networking.Connection;
 
 
@@ -17,9 +18,9 @@ public class ConnectionHandler {
 		tunnels = new ArrayList<CameraTunnel>();
 	}
 	
-	public void add(Connection c) {		
+	public void add(CameraTunnel tunnel) {		
 		int id = -1; // tunnels.size(); // NOT IMPLEMENTED !!!
-		CameraTunnel ct = new CameraTunnel(c, disp_monitor, id);
+		CameraTunnel ct = tunnel;
 		tunnels.add(ct);	
 	}
 	

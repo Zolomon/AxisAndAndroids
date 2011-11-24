@@ -1,5 +1,6 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import android.app.Activity;
@@ -10,22 +11,22 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.GridView;
+import android.widget.TableLayout;
 
 public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
 	private CtrlService mService;
-	private boolean mBound;
-	private ImageView mDisplay;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.display_grid);
-		mDisplay = (ImageView) findViewById(R.id.ivDisplay);
 	}
 
 	@Override
@@ -52,24 +53,38 @@ public class RenderActivity extends Activity {
 	private ServiceConnection mConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			mBound = true;
 			mService.dm.connect();
+
+			final GridView gv = (GridView) findViewById(R.id.gridview);
+			LayoutInflater inflater = LayoutInflater.from(RenderActivity.this);
+
+			for (int i = 0; i < mService.connections(); i++) {
+				final Panel theInflatedPanel = (Panel) inflater.inflate(
+						R.layout.panel, null);
+
+				gv.addView(theInflatedPanel);
+				mService.add(theInflatedPanel);
+			}
+			
+			mService.createTunnels();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
-			mBound = false;
 		}
-	};	
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.client_menu, menu);
 		return true;
+	}
+
+	protected Panel createPanel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

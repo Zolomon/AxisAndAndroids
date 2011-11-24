@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
@@ -31,11 +32,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 	private static final String TAG = ClientActivity.class.getSimpleName();
 
 	private CtrlService mService;
-	private boolean mBound;
-	private ConnectionHandler ch;
-	Button btnConnect, btnDisconnect;
-	LayoutInflater linflater;
-	TableLayout tl;
+	private ConnectionHandler mConnectionHandler;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -76,7 +73,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String port = etPort.getText().toString();
 		
 		try {
-			ch.add(new Connection(host, Integer.parseInt(port)));			
+			mService.add(new Connection(host, Integer.parseInt(port)));			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -132,12 +129,10 @@ public class ClientActivity extends Activity implements OnClickListener {
 			// LocalService instance
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
-			ch = mService.ch;
-			mBound = true;
+			mConnectionHandler = mService.mConnectionHandler;
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
-			mBound = false;
 		}
 	};
 
