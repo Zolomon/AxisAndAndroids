@@ -27,8 +27,7 @@ public class DisplayMonitor {
 
 		long showtime_new = showtime_old + (timestamp - timestamp_old);
 		long diffTime = showtime_new - System.currentTimeMillis();
-		while (diffTime > 0) {
-				diffTime = showtime_new - System.currentTimeMillis();
+		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
 				wait(diffTime);		
 		}
 
