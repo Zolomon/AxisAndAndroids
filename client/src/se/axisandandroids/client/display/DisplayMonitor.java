@@ -1,5 +1,7 @@
 package se.axisandandroids.client.display;
 
+import java.util.PriorityQueue;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import se.lth.cs.fakecamera.Axis211A;
@@ -23,10 +25,13 @@ public class DisplayMonitor {
 
 	
 	/* Generalize this for other than 2 DisplayThreads !!! */
-	private final long[] timestamps = new long[2];
-	private final long[] showtime_old = new long[2];
-	private final long[] timestamp_old = new long[2];
+	//private final long[] timestamps = new long[2];
 	
+	private final long[] showtime_old = new long[2]; // genaralize
+	private final long[] timestamp_old = new long[2]; // genaralize
+	
+	private PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
+
 	
 	public synchronized long syncFrames(int id, long timestamp) throws InterruptedException {
 		
@@ -47,18 +52,22 @@ public class DisplayMonitor {
 		} else if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 			
 			/* Generalize this for other than 2 DisplayThreads !!! */
-			timestamps[id] = timestamp; // Register timestamp for comparision	
-			long first_timestamp = timestamps[0] < timestamps[1] ? timestamps[0] : timestamps[1];
+			//timestamps[id] = timestamp; // Register timestamp for comparision	
+			//long first_timestamp = timestamps[0] < timestamps[1] ? timestamps[0] : timestamps[1];
 
+			timestamps.offer(timestamp); // Register timestamp in queue	
+					
 			/* Wait until it is:
 			 * 1) The right time.
 			 * 2) timestamp less than all other timestamps.				*/
 			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0 
-					&& timestamp <= first_timestamp) {
+					&& timestamp > timestamps.peek()) {
 				wait(diffTime);		
 			}
 			
-			timestamps[id] = Long.MAX_VALUE; // This timestamp is done
+			timestamps.remove(); // This timestamp is done
+			//timestamps[id] = Long.MAX_VALUE; // This timestamp is done
+			
 			notifyAll();
 		}
 		

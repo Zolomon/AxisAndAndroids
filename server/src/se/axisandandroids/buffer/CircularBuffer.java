@@ -147,7 +147,7 @@ public class CircularBuffer {
 		fb2.printBuffer();
 
 		Object img2 = fb2.get();
-		//		System.out.println( ((Frame) img2).toString() );
+		System.out.println( ((Frame) img2).toString() );
 
 	}
 }
