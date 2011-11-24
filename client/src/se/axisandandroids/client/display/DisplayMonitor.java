@@ -73,7 +73,7 @@ public class DisplayMonitor {
 		
 		/* Update for next Frame */
 		timestamp_old = timestamp;
-		showtime_old = showtime_new - mistake;		
+		showtime_old = showtime_new - mistake; // UNTESTED FOR MULTIPLE DISPLAYS !!!
 		
 		/* Calculate and return delay */
 		return showtime_new - timestamp; // The real delay
