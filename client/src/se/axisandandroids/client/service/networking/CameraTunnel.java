@@ -23,11 +23,24 @@ public class CameraTunnel {
 		this.id = id;
 		this.connection  = c;				
 		this.disp_monitor = disp_monitor;
-		this.mNewImageCallback = p.getNewImageCallback();
-		
+		this.mNewImageCallback = p.getNewImageCallback();		
 		createThreads();
 	}
 	
+	
+	/**
+	 * For DESKTOP client which has no Panel.
+	 * @param c
+	 * @param disp_monitor
+	 * @param id
+	 */
+	public CameraTunnel(Connection c, DisplayMonitor disp_monitor, int id) {
+		this.id = id;
+		this.connection  = c;				
+		this.disp_monitor = disp_monitor;
+		createThreads();
+	}
+			
 	private void createThreads() {		
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
 		disp_thread = new DisplayThread(disp_monitor, mNewImageCallback);		

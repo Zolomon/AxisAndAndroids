@@ -30,7 +30,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	}
 
 	protected void showImage(long delay, int len) {				
-		System.out.printf("ShowTime!!! Delay: %d", delay);				
+		System.out.printf("Delay: %d", delay);				
 		byte[] correct_length_jpeg = new byte[len];
 		System.arraycopy(jpeg, 0, correct_length_jpeg, 0, len);		
 		gui.refreshImage(correct_length_jpeg);

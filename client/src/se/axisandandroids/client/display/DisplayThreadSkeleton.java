@@ -7,9 +7,9 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 10;
+		protected final int BUFFERSIZE = 30;
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
-		protected byte[] jpeg = new byte[FRAMESIZE];
+		protected final byte[] jpeg = new byte[FRAMESIZE];
 
 		protected DisplayMonitor disp_monitor;
 		public FrameBuffer mailbox;

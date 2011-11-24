@@ -10,7 +10,7 @@ import se.axisandandroids.networking.SendThreadSkeleton;
 
 public class ClientSendThread extends SendThreadSkeleton {
 
-	private final int BUFFERSIZE = 1;
+	private final int BUFFERSIZE = 5;
 	public CircularBuffer mailbox;
 
 	public ClientSendThread(Connection c) {

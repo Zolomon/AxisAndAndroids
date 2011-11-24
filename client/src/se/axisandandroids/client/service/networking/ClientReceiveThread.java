@@ -14,7 +14,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	private DisplayMonitor disp_monitor;
 	private FrameBuffer frame_buffer;	
-	private byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+	private final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
 	
 	/**
@@ -47,6 +47,8 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 			return;
 		}
 
+		System.out.println("handleImage() got: " + len + " bytes.");
+		
 		/* Post jpeg to displayThreads buffer */			
 		frame_buffer.put(jpeg, len);
 	}

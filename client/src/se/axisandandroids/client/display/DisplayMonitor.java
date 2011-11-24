@@ -13,8 +13,7 @@ public class DisplayMonitor {
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;
 
 
-	public DisplayMonitor() {
-	}
+	public DisplayMonitor() {}
 
 
 	private final long DELAY_SYNCMODE_THRESHOLD_MS = 200;

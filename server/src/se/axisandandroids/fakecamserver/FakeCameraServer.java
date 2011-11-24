@@ -87,19 +87,19 @@ public class FakeCameraServer {
 
 			// OR if only one client...
 
-			servClient(clientSocket);
+			servClient(clientSocket);						
 		}
 	}
 
 	private void servClient(Socket clientSock) {
-		con = new Connection(clientSock);
+		con = new Connection(clientSock);		
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
 		ct = new FakeCameraThread(cm, sendThread.mailbox, myCamera, md);
 		receiveThread.start();
 		sendThread.start();
-		ct.start();		
+		ct.start();
 	}
 
 }
