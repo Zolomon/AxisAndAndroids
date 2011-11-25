@@ -53,7 +53,7 @@ public class FrameBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}		
-		if (nAvailable == 0) notifyAll();
+		//if (nAvailable == 0) notifyAll();
 		
 		//buffer[nextToPut].x = x;
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
@@ -61,7 +61,7 @@ public class FrameBuffer {
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;				
 		
-		//notifyAll();
+		notifyAll();
 				
 		//System.out.printf("Buffering Capacty At: %5.2f percent, %d Frames ... \n", 100*nAvailable/(double)MAXSIZE, nAvailable);
 	}
@@ -118,9 +118,11 @@ public class FrameBuffer {
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
 		
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
+		
+		notifyAll();		
 		return data;
 	}
 	

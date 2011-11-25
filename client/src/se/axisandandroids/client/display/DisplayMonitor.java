@@ -1,12 +1,9 @@
 package se.axisandandroids.client.display;
 
 import java.util.PriorityQueue;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import se.lth.cs.fakecamera.Axis211A;
-
 import se.axisandandroids.networking.Protocol;
+
+
 
 public class DisplayMonitor {
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
@@ -15,69 +12,79 @@ public class DisplayMonitor {
 
 	public DisplayMonitor() {}
 
-	private final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
-	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long showtime_old = 0;
-	private long timestamp_old = 0;	
 
+	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
+	private final long DELAY_TERM = 0;
+	private final long MAXERROR = 200;
+
+	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
+	private long t0 = 0;
+	private long lag = 0;
 
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 
 		/* No old showtime exists for ANY frame, display now! */
-		if (showtime_old <= 0) {
-			timestamp_old = timestamp;
-			showtime_old = System.currentTimeMillis();
-			return System.currentTimeMillis() - timestamp;			
+		if (t0 <= 0) {
+			t0 = System.currentTimeMillis();
+			lag = t0 - timestamp;
+			lag += DELAY_TERM;
+			return t0 - timestamp;	
 		}
 
-		/* Calculate showtime for this thread in relation to what has been shown last. */
-		long showtime_new = showtime_old + (timestamp - timestamp_old);				
+		timestamps.offer(timestamp); // Register timestamp in queue	
+
+		/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
+		long showtime_new = lag + timestamp;				
 		long diffTime;	// Time to showtime_new
-
-		if (sync_mode == Protocol.SYNC_MODE.ASYNC) {
-
-			/* Wait until it is:
-			 * 1) The right time.										*/
-			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
-				wait(diffTime);		
-			}
-
-		} else if (sync_mode == Protocol.SYNC_MODE.SYNC) {
-
-			timestamps.offer(timestamp); // Register timestamp in queue	
-
-			/* Wait until it is:
-			 * 1) The right time.
-			 * 2) timestamp less than all other timestamps.				*/
-			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0 
-					|| timestamp > timestamps.peek()) {
-				wait(diffTime);		
-			}
-
-			timestamps.remove(); // This timestamp is done
-
-			notifyAll();
+	
+		/* Wait until it is:
+		 * 1) The right time.
+		 * 2) timestamp less than all other timestamps.				*/
+		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
+			wait(diffTime);		
+		} 
+		
+		while (timestamp > timestamps.peek()) {
+			wait();
 		}
 
-		/* SHOW TIME */
-		long t = System.currentTimeMillis();
-		long mistake = t - showtime_new;
-		showtime_new = t;		
+		timestamps.remove(); // This timestamp is done
 		
-		/* Time between this frame and the last shown */		
-		if ((showtime_new - showtime_old) < DELAY_SYNCMODE_THRESHOLD_MS) {
+		notifyAll();
+		
+		/* SHOW TIME */
+		showtime_new = System.currentTimeMillis();
+
+		if (Math.abs(showtime_new - (lag + timestamp)) > MAXERROR) {
+			System.err.println("Error got a bit big increasing the lag.");
+			lag += DELAY_TERM;
+		}
+
+		
+		long delay = showtime_new - timestamp;
+		
+		/* Time between this frame and the last shown */						// RESOLVE
+		if (Math.abs(other_delay - delay) >= DELAY_SYNCMODE_THRESHOLD_MS) {	
+			sync_mode = Protocol.SYNC_MODE.AUTO;
+		}
+		other_delay = delay;		
+
+		/* Calculate and return delay */
+		return delay; // The real delay
+	}
+	
+	private long other_delay = 0;
+	
+	public synchronized int chooseSyncMode(long delay) {		
+		if (Math.abs(other_delay - delay) < DELAY_SYNCMODE_THRESHOLD_MS) {
 			sync_mode = Protocol.SYNC_MODE.SYNC;
 		} else {
-			sync_mode = Protocol.SYNC_MODE.ASYNC;
+			sync_mode = Protocol.SYNC_MODE.AUTO;
 		}
-		
-		/* Update for next Frame */
-		timestamp_old = timestamp;
-		showtime_old = showtime_new - mistake; // UNTESTED FOR MULTIPLE DISPLAYS !!!
-		
-		/* Calculate and return delay */
-		return showtime_new - timestamp; // The real delay
+		other_delay = delay;
+		return sync_mode;
 	}
+
 	
 
 	public synchronized void setDispMode(int disp_mode) {
@@ -87,5 +94,8 @@ public class DisplayMonitor {
 	public synchronized void setSyncMode(int sync_mode) {
 		this.sync_mode = sync_mode;
 	}
+	
+	public synchronized int getDispMode() { return disp_mode; }
+	public synchronized int getSyncMode() { return sync_mode; }
 
 }
