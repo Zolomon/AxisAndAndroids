@@ -13,7 +13,7 @@ public class DisplayMonitor {
 	public DisplayMonitor() {}
 
 
-	private final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
+	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	private final long DELAY_TERM = 0;
 	private final long MAXERROR = 200;
 
@@ -60,20 +60,22 @@ public class DisplayMonitor {
 			lag += DELAY_TERM;
 		}
 
+		
+		long delay = showtime_new - timestamp;
+		
 		/* Time between this frame and the last shown */		
-		/*
-		if ((showtime_new - showtime_old) < DELAY_SYNCMODE_THRESHOLD_MS) {
-			sync_mode = Protocol.SYNC_MODE.SYNC;
-		} else {
+		if (Math.abs(other_delay - delay) >= DELAY_SYNCMODE_THRESHOLD_MS) {	
 			sync_mode = Protocol.SYNC_MODE.ASYNC;
-		}*/
+		}
+		other_delay = delay;		
 
 		/* Calculate and return delay */
-		return showtime_new - timestamp; // The real delay
+		return delay; // The real delay
 	}
 	
 	private long other_delay = 0;
 	
+	/*
 	public synchronized int chooseSyncMode(long delay) {		
 		if (Math.abs(other_delay - delay) < DELAY_SYNCMODE_THRESHOLD_MS) {
 			sync_mode = Protocol.SYNC_MODE.SYNC;
@@ -83,6 +85,7 @@ public class DisplayMonitor {
 		other_delay = delay;
 		return sync_mode;
 	}
+	*/
 
 
 	public synchronized void setDispMode(int disp_mode) {

@@ -31,7 +31,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	}
 
 	protected void showImage(long delay, int len) {				
-		System.out.printf("Delay: %d\t Sync: %d \n", delay, disp_monitor.getSyncMode());
+		System.out.printf("Thread: %d\t Delay: %d\t Sync: %d \n", this.getId(), delay, disp_monitor.getSyncMode());
 		
 		// jpeg is Axis211A.IMAGE_BUFFER_SIZE but it seems to works without correction
 		gui.refreshImage(jpeg); 

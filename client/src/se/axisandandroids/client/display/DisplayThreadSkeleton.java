@@ -35,13 +35,11 @@ public class DisplayThreadSkeleton extends Thread {
 			
 			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
 			
-			int sync = disp_monitor.getSyncMode();
-
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
 								
-				try {	
+				try {
 					if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
 					} else {
@@ -50,15 +48,16 @@ public class DisplayThreadSkeleton extends Thread {
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted");
 					e.printStackTrace();
-				}								
+				}
+				
 				showImage(delay, len); // Override for Platform Dependent show image
-				sync = disp_monitor.chooseSyncMode(delay); 
 			}
 		}
 		
 		
 		private long t0 = 0;
 		private long lag = 0;
+		private long other_delay = 0;
 		
 		protected synchronized long asyncFrames(long timestamp) throws InterruptedException {
 			/* No old showtime exists for ANY frame, display now! */
@@ -78,7 +77,14 @@ public class DisplayThreadSkeleton extends Thread {
 				wait(diffTime);		
 			} 		
 			
-			return System.currentTimeMillis() - timestamp; // The real delay
+			long delay = System.currentTimeMillis() - timestamp;
+			
+			if (Math.abs(other_delay - delay) < disp_monitor.DELAY_SYNCMODE_THRESHOLD_MS) {
+				disp_monitor.setSyncMode(Protocol.SYNC_MODE.SYNC);
+			} 
+			other_delay = delay;
+			
+			return delay; // The real delay
 		}
 		
 		
@@ -107,9 +113,6 @@ public class DisplayThreadSkeleton extends Thread {
 						   (   (long)jpeg[28+offset]		  & 0x000000ff ); 
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
-			//System.out.printf("Seconds: %d\n", seconds);
-			//System.out.printf("Hundreths: %d\n", hundreths);
-					
 			return 1000*seconds + 10*hundreths;
 		}
 		
