@@ -57,7 +57,7 @@ public class DisplayThreadSkeleton extends Thread {
 		
 		private long t0 = 0;
 		private long lag = 0;
-		private long other_delay = 0;
+		//private long other_delay = 0; 															// RESOLVE
 		
 		protected synchronized long asyncFrames(long timestamp) throws InterruptedException {
 			/* No old showtime exists for ANY frame, display now! */
@@ -79,10 +79,14 @@ public class DisplayThreadSkeleton extends Thread {
 			
 			long delay = System.currentTimeMillis() - timestamp;
 			
+			
+			//disp_monitor.chooseSyncMode(delay);			
+			/*
 			if (Math.abs(other_delay - delay) < disp_monitor.DELAY_SYNCMODE_THRESHOLD_MS) {
 				disp_monitor.setSyncMode(Protocol.SYNC_MODE.SYNC);
 			} 
 			other_delay = delay;
+			*/
 			
 			return delay; // The real delay
 		}
@@ -103,10 +107,10 @@ public class DisplayThreadSkeleton extends Thread {
 		 * Extract timestamp from image byte array.
 		 * @return timestamp in ms.
 		 */
-		protected long getTimestamp() {		
+		protected long getTimestamp() {
+			
+			/* Decode Timestamp */ /*
 			int offset = 0;
-
-			/* Decode Timestamp */
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 						   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
 						   ( ( (long)jpeg[27+offset]) << 8  ) & 0x0000ff00 | 
@@ -114,6 +118,11 @@ public class DisplayThreadSkeleton extends Thread {
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
 			return 1000*seconds + 10*hundreths;
+			*/
+			
+			return 1000L*(((jpeg[25]<0?256+jpeg[25]:jpeg[25])<<24)+((jpeg[26]<0?256+jpeg[26]:jpeg[26])<<16)+
+					((jpeg[27]<0?256+jpeg[27]:jpeg[27])<<8)+(jpeg[28]<0?256+jpeg[28]:jpeg[28]))+
+					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);
 		}
 		
 		

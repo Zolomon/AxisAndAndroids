@@ -63,9 +63,9 @@ public class DisplayMonitor {
 		
 		long delay = showtime_new - timestamp;
 		
-		/* Time between this frame and the last shown */		
+		/* Time between this frame and the last shown */						// RESOLVE
 		if (Math.abs(other_delay - delay) >= DELAY_SYNCMODE_THRESHOLD_MS) {	
-			sync_mode = Protocol.SYNC_MODE.ASYNC;
+			sync_mode = Protocol.SYNC_MODE.AUTO;
 		}
 		other_delay = delay;		
 
@@ -75,18 +75,17 @@ public class DisplayMonitor {
 	
 	private long other_delay = 0;
 	
-	/*
 	public synchronized int chooseSyncMode(long delay) {		
 		if (Math.abs(other_delay - delay) < DELAY_SYNCMODE_THRESHOLD_MS) {
 			sync_mode = Protocol.SYNC_MODE.SYNC;
 		} else {
-			sync_mode = Protocol.SYNC_MODE.ASYNC;
+			sync_mode = Protocol.SYNC_MODE.AUTO;
 		}
 		other_delay = delay;
 		return sync_mode;
 	}
-	*/
 
+	
 
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;

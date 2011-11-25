@@ -7,8 +7,8 @@ public class CameraMonitor {
 	private int display_mode;
 
 	public CameraMonitor() {
-		//display_mode = Protocol.DISP_MODE.AUTO;
-		display_mode = Protocol.DISP_MODE.MOVIE;
+		display_mode = Protocol.DISP_MODE.AUTO;
+		//display_mode = Protocol.DISP_MODE.MOVIE;
 	}
 
 	public synchronized boolean setDisplayMode(int display_mode) {

@@ -60,7 +60,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
-		if (sync_mode != -1) {
+		if (sync_mode != -1) {			
 			disp_monitor.setSyncMode(sync_mode);
 		}
 	}
