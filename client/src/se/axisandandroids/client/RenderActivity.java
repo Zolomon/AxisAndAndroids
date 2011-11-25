@@ -1,8 +1,5 @@
 package se.axisandandroids.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
@@ -19,13 +16,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 public class RenderActivity extends Activity {
 	private static final String TAG = RenderActivity.class.getSimpleName();
 	private CtrlService mService;
-	private List<Panel> mPanels;
 	private LinearLayout mLinearLayout;
 	private LayoutInflater mLayoutInflater;
 	
@@ -43,8 +38,6 @@ public class RenderActivity extends Activity {
 		boolean res = getApplicationContext().bindService(intent, mConnection,
 				Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "" + res);
-		
-		mPanels = new ArrayList<Panel>();
 	}
 
 	@Override
@@ -63,35 +56,31 @@ public class RenderActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 
-			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
-			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
-
-			for (int i = 0; i < mService.connections(); i++) {
-				addPanel(mLinearLayout, mLayoutInflater);
-			}
-			
-			mService.createTunnels();
+//			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
+//			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
+//
+//			for (int i = 0; i < mService.connections(); i++) {
+//				addPanel(mLinearLayout, mLayoutInflater);
+//			}
+//			
+//			mService.createTunnels();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
 		}
 	};
 	
-	protected void onResume() {
-		
-	};
-	
 	private void addPanel(final LinearLayout gv, LayoutInflater inflater) {
 		final FrameLayout theInflatedPanel = (FrameLayout) inflater.inflate(
 				R.layout.panel, null);
 		Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
-
-		if(!mPanels.contains(panel)) {
-			gv.addView(theInflatedPanel); // add it to the view
-			mService.add(panel);		  // store the panel
-			mService.createTunnel(panel, 1); // create the tunnel;
-			mPanels.add(panel);	 // Store it
-		}	
+//
+//		if(!mPanels.contains(panel)) {
+//			gv.addView(theInflatedPanel); // add it to the view
+//			mService.add(panel);		  // store the panel
+//			mService.createTunnel(panel, 1); // create the tunnel;
+//			mPanels.add(panel);	 // Store it
+//		}	
 	}
 
 	@Override
