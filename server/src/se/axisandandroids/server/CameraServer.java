@@ -28,6 +28,8 @@ public class CameraServer {
 	public static void main(String[] args) {
 
 		int listenPort = default_port;
+		int camport = 4321;
+		String camhost = "argus-8.student.lth.se";
 		boolean http = false;
 
 		for (int argc = 0; argc < args.length; ++argc) {
@@ -40,19 +42,25 @@ public class CameraServer {
 						.println("\t-http  - Run tiny http server as well as camera server.");
 				System.out.println("\t-help  - Show help.");
 				System.exit(0);
-			} else
-				listenPort = Integer.parseInt(args[argc]);
+			} else if (args[argc].equals("-camera")) {
+				camhost = args[++argc];
+				camport = Integer.parseInt(args[++argc]);
+			}
+			else listenPort = Integer.parseInt(args[argc]);
 		}
 
 		System.out
 				.println("Big brother is watching you all, Axis and Androids...");
 
-		CameraServer serv = new CameraServer(listenPort, http);
+		CameraServer serv = new CameraServer(listenPort, camhost, camport, http);
 		serv.listenForConnection();
 	}
 
-	public CameraServer(int listenPort, boolean http) {
+	public CameraServer(int listenPort, String camhost, int camport, boolean http) {
 		this.listenPort = listenPort;
+		
+		this.host = camhost;
+		this.cameraPort = camport;
 
 		myCamera = new Axis211A(host, cameraPort);
 		md = new MotionDetector(host, cameraPort);
