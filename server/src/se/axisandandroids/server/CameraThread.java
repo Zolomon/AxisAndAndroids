@@ -2,6 +2,7 @@ package se.axisandandroids.server;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Frame;
+import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Protocol; 
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
@@ -96,6 +97,10 @@ public class CameraThread extends Thread {
 		if (md.detect()) {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 			System.out.println("Motion detected!");
+			
+			
+			// test
+			mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
 		} else
 			System.out.println("No motion");
 	}

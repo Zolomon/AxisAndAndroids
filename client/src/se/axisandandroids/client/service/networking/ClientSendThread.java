@@ -5,17 +5,27 @@ import java.io.IOException;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.ModeChange;
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
 
 public class ClientSendThread extends SendThreadSkeleton {
 
+	private DisplayMonitor disp_monitor;
+
 	private final int BUFFERSIZE = 5;
 	public CircularBuffer mailbox;
 
-	public ClientSendThread(Connection c) {
+
+	public ClientSendThread(Connection c, DisplayMonitor disp_monitor) {
 		super(c);
 		mailbox = new CircularBuffer(BUFFERSIZE);
+		this.disp_monitor = disp_monitor;
+		disp_monitor.subscribeMailbox(mailbox);
+	}
+	
+	public void close() {
+		disp_monitor.unsubscribeMailbox(mailbox);
 	}
 
 	protected void perform() {

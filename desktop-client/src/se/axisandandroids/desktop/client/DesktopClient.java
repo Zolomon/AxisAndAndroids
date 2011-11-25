@@ -53,7 +53,7 @@ public class DesktopClient {
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
 		DesktopDisplayThread disp_thread = new DesktopDisplayThread(dm);		
 		ClientReceiveThread recv_thread = new ClientReceiveThread(c, dm, disp_thread.mailbox);
-		ClientSendThread send_thread = new ClientSendThread(c);
+		ClientSendThread send_thread = new ClientSendThread(c, dm);
 
 		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
 		disp_thread.start();
@@ -63,9 +63,7 @@ public class DesktopClient {
 
 
 	public static void main(String[] args) {
-
-		
-		
+				
 		int nCameras = args.length/2;	
 		
 		if (nCameras == 0) {
