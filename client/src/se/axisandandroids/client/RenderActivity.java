@@ -71,11 +71,11 @@ public class RenderActivity extends Activity {
 			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
 			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
 
-			for (Connection c : mService.mConnectionHandler.connections) {
+			for (Connection c : mService.mConnectionHandler.connectionIterator()) {
 				addPanel(c);
 			}
 
-			mService.mConnectionHandler.connections.clear();
+			mService.mConnectionHandler.clearConnections();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {

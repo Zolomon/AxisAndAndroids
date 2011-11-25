@@ -16,10 +16,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	private static int id;
 	private int myId;
 	private Bitmap mBitmap;
-	private DisplayMonitor mDisplayMonitor;
 	private ViewThread mThread;
 	private Paint mPaintHUDText;
 	private NewImageCallback mNewImageCallback;
+	private String timeSinceLastImage;
 
 	public Panel(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -63,10 +63,6 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		return mNewImageCallback;
 	}
 	
-	public void setDisplayMonitor(DisplayMonitor displayMonitor) {
-		mDisplayMonitor = displayMonitor;
-	}
-	
 	public synchronized void setBitmap(Bitmap bitmap) {
 		mBitmap = bitmap;
 	}
@@ -80,6 +76,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private void doDrawHUD(long elapsedTime, Canvas canvas) {
 		canvas.drawText("FPS: " + Math.round(1000f / elapsedTime), 20, 20, mPaintHUDText);
+		canvas.drawText("Delay: " + timeSinceLastImage, 20, 30, mPaintHUDText);
 	}
 
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {

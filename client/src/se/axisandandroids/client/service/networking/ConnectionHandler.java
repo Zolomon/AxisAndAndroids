@@ -1,7 +1,9 @@
 package se.axisandandroids.client.service.networking;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
@@ -9,7 +11,7 @@ import se.axisandandroids.networking.Connection;
 public class ConnectionHandler {
 
 	private HashMap<Integer, CameraTunnel> tunnels;
-	public ArrayList<Connection> connections; 
+	private ArrayList<Connection> connections; 
 	
 	public ConnectionHandler(DisplayMonitor disp_monitor) {
 		tunnels = new HashMap<Integer, CameraTunnel>();
@@ -38,5 +40,17 @@ public class ConnectionHandler {
 
 	public int tunnels() {
 		return tunnels.size();
+	}
+	
+	public void addConnection(Connection c) {
+		connections.add(c);
+	}
+	
+	public void clearConnections() {
+		connections.clear();
+	}
+	
+	public List<Connection> connectionIterator() {
+		return Collections.unmodifiableList(connections);
 	}
 }

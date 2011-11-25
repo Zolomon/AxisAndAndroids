@@ -48,6 +48,7 @@ public class CameraTunnel {
 		disp_thread = new DisplayThread(disp_monitor, mNewImageCallback);		
 		recv_thread = new ClientReceiveThread(connection, disp_monitor, disp_thread.mailbox);
 		send_thread = new ClientSendThread(connection);
+		startThreads();
 	}
 	
 	private void startThreads() {		
