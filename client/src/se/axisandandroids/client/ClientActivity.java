@@ -1,13 +1,8 @@
 package se.axisandandroids.client;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
-import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
@@ -77,7 +72,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 
 		try {
 			System.out.println("Trying to connect to: " + host + ":" + port);
-			mService.mConnectionHandler.connections.add(new Connection(host, Integer.parseInt(port)));
+			mService.mConnectionHandler.addConnection(new Connection(host, Integer.parseInt(port)));
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {

@@ -1,7 +1,5 @@
 package se.axisandandroids.client.service.networking;
 
-import java.io.IOException;
-
 import se.axisandandroids.client.display.DisplayMonitor;
 
 public class ConnectionHandlerStatic {

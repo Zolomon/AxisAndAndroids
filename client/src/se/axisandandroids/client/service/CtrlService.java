@@ -5,7 +5,6 @@ import java.util.List;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.display.Panel;
-import se.axisandandroids.client.service.networking.CameraTunnel;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
 import se.axisandandroids.networking.Connection;
 import android.content.Intent;

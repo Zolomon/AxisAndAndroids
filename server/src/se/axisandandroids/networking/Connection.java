@@ -28,7 +28,6 @@ public class Connection {
 
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
-		System.out.println("New connection: " + this);
 	}
 
 	public Connection(Socket sock) {
