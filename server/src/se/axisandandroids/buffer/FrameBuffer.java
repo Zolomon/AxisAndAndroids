@@ -118,9 +118,11 @@ public class FrameBuffer {
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
 		
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
+		
+		notifyAll();		
 		return data;
 	}
 	
