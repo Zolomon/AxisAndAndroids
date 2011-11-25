@@ -85,6 +85,7 @@ public class CameraServer {
 
 		while (true) {
 			Socket clientSocket = null;
+			
 			try {
 				clientSocket = servSocket.accept();
 			} catch (IOException e) {

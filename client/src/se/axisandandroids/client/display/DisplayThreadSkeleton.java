@@ -83,7 +83,7 @@ public class DisplayThreadSkeleton extends Thread {
 			long delay = System.currentTimeMillis() - timestamp;
 			
 			
-			disp_monitor.chooseSyncMode(delay);			
+			//disp_monitor.chooseSyncMode(delay);			
 			/*
 			if (Math.abs(other_delay - delay) < disp_monitor.DELAY_SYNCMODE_THRESHOLD_MS) {
 				disp_monitor.setSyncMode(Protocol.SYNC_MODE.SYNC);

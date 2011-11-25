@@ -6,6 +6,7 @@ public class DisplayThread extends DisplayThreadSkeleton {
 	
 	private NewImageCallback mNewImageCallback;
 
+	
 	public DisplayThread(DisplayMonitor disp_monitor, NewImageCallback callback) {
 		super(disp_monitor);
 		mNewImageCallback = callback;
@@ -15,9 +16,9 @@ public class DisplayThread extends DisplayThreadSkeleton {
 		super(disp_monitor);
 	}
 
-	protected void showImage(long delay, int len) {
+	protected void showImage(long delay, int len) {		
 		mNewImageCallback.newImage(BitmapFactory.decodeByteArray(jpeg, 0, len));
-		System.out.printf("ShowTime!!! Delay: %d", delay);
+		//System.out.printf("Delay: %d", delay);
 	}
 
 }
