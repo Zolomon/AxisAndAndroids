@@ -26,6 +26,7 @@ public class DisplayThreadSkeleton extends Thread {
 			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
 		}
 				
+		
 		@Override
 		public void run() {
 			int len = 0;
@@ -34,11 +35,12 @@ public class DisplayThreadSkeleton extends Thread {
 			
 			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
 			
+			int sync = disp_monitor.getSyncMode();
+
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
-				
-				
+								
 				try {	
 					if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
@@ -50,6 +52,7 @@ public class DisplayThreadSkeleton extends Thread {
 					e.printStackTrace();
 				}								
 				showImage(delay, len); // Override for Platform Dependent show image
+				sync = disp_monitor.chooseSyncMode(delay); 
 			}
 		}
 		
@@ -88,6 +91,7 @@ public class DisplayThreadSkeleton extends Thread {
 			// Override for Platform Dependent show image
 			System.out.printf("Delay: %d\n", delay);
 		}
+		
 		
 		/**
 		 * Extract timestamp from image byte array.
