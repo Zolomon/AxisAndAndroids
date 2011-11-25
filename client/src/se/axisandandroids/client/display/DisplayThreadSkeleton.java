@@ -2,6 +2,7 @@ package se.axisandandroids.client.display;
 
 
 import se.axisandandroids.buffer.FrameBuffer;
+import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
 
@@ -36,14 +37,45 @@ public class DisplayThreadSkeleton extends Thread {
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
-				try {
-					delay = disp_monitor.syncFrames(timestamp);
+				
+				
+				try {	
+					if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
+						delay = disp_monitor.syncFrames(timestamp);
+					} else {
+						delay = asyncFrames(timestamp);
+					}										
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted");
 					e.printStackTrace();
-				}				
+				}								
 				showImage(delay, len); // Override for Platform Dependent show image
 			}
+		}
+		
+		
+		private long t0 = 0;
+		private long lag = 0;
+		
+		protected synchronized long asyncFrames(long timestamp) throws InterruptedException {
+			/* No old showtime exists for ANY frame, display now! */
+			if (t0 <= 0) {
+				t0 = System.currentTimeMillis();
+				lag = t0 - timestamp;
+				return t0 - timestamp;	
+			}
+			
+			/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
+			long showtime = lag + timestamp;				
+			long diffTime;	// Time to showtime_new
+		
+			/* Wait until it is:
+			 * 1) The right time. */
+			while ((diffTime = showtime - System.currentTimeMillis()) > 0) {
+				wait(diffTime);		
+			} 		
+			
+			return System.currentTimeMillis() - timestamp; // The real delay
 		}
 		
 		
