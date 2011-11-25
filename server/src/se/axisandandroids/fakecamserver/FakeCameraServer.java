@@ -80,12 +80,8 @@ public class FakeCameraServer {
 			System.out.printf("Serving client: %s\n", clientSocket
 					.getInetAddress().toString());
 
+			
 			/* Handle the client some way !!! */ 
-
-			// With a thread object if multi-client:
-			// new ClientHandler(Connection client).start();
-
-			// OR if only one client...
 
 			servClient(clientSocket);						
 		}

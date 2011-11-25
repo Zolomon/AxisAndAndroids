@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 
 public class Connection {
+	
 	private String host;
 	private int port;
 	private static int id;
@@ -21,6 +22,9 @@ public class Connection {
 
 	private InputStream is;									
 	private OutputStream os;
+	
+	private final byte[] sendintbuffer = new byte[4];
+	private final byte[] readintbuffer = new byte[4]; 
 
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
@@ -42,11 +46,11 @@ public class Connection {
 		}
 		connect();
 	}
-	
+
 	public int getId() {
 		return myId;
 	}
-	
+
 	private void connect() {
 		try {
 			is = sock.getInputStream();
@@ -59,11 +63,17 @@ public class Connection {
 	}
 
 
-	public void disconnect() throws IOException {
+	public void disconnect() {
 		System.out.printf("Disconnected: %s\n", sock.getInetAddress().toString());
-		// Disconnect Message ???
-		sock.close();
-		sock = null; // etc...
+		try {
+			is.close();
+			os.close();
+			sock.close();
+		} catch (IOException e) {
+			System.err.println("IO-error");
+			System.exit(1);
+		}		
+		sock = null; // etc... // other threads
 	}
 
 
@@ -91,8 +101,8 @@ public class Connection {
 			while (bytes_read < len) {
 				status = is.read(b, bytes_read, len - bytes_read);
 				/* 	1) Blocking until data available. 
-			 	2) -1 if EOF. 
-			 	3) 0 if nothing read.			 */
+			 		2) -1 if EOF. 
+			 		3) 0 if nothing read.			 */
 				if (status > 0) {
 					bytes_read += status;		
 				}
@@ -122,9 +132,6 @@ public class Connection {
 		return recvInt();
 	}
 
-
-	private byte[] sendintbuffer = new byte[4];
-
 	public void sendInt(int nbr) throws IOException {
 		sendintbuffer[0] = (byte) ( (nbr & 0xff000000) >> 24 );
 		sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
@@ -133,17 +140,12 @@ public class Connection {
 		os.write(sendintbuffer, 0, sendintbuffer.length);
 		os.flush();
 
-		/*
-		os.write( (nbr & 0xff000000) >> 24 	);
+		/*	os.write( (nbr & 0xff000000) >> 24 	);
 		os.write( (nbr & 0x00ff0000) >> 16 	);
 		os.write( (nbr & 0x0000ff00) >> 8	);
 		os.write( (nbr & 0x000000ff) 		);
-		os.flush();
-		 */
+		os.flush();								*/
 	}
-
-
-	private byte[] readintbuffer = new byte[4]; 
 
 	public int recvInt() throws IOException {	
 		int status = 0;
