@@ -1,6 +1,5 @@
 package se.axisandandroids.desktop.client;
 
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -17,7 +16,6 @@ public class DesktopClient {
 
 	private Socket socket;
 	private InetAddress host;	
-	private final static int default_port = 6000;
 	private int port;
 
 	public DesktopClient(InetAddress host, int port) {
@@ -44,13 +42,10 @@ public class DesktopClient {
 		System.out.println("Client disconnected.");
 	}
 
-	public void runDesktopClient() {		
+	public void runDesktopClient(DisplayMonitor dm) {		
 
 		System.out.println("** Desktop Client");
 
-		DisplayMonitor dm = new DisplayMonitor();	
-		
-		
 		// Display 0
 		int id = 0;
 		Connection c = new Connection(socket);
@@ -59,37 +54,61 @@ public class DesktopClient {
 		DesktopDisplayThread disp_thread = new DesktopDisplayThread(dm);		
 		ClientReceiveThread recv_thread = new ClientReceiveThread(c, dm, disp_thread.mailbox);
 		ClientSendThread send_thread = new ClientSendThread(c);
-		
+
 		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
 		disp_thread.start();
 		recv_thread.start();
-		send_thread.start();
-		
+		send_thread.start();						
 	}		
 
 
 	public static void main(String[] args) {
-		InetAddress addr = null;
-		int port = default_port;
 
-		try {
-			addr = InetAddress.getByName("localhost");
-			if (args.length >= 1) {
-				addr = InetAddress.getByName(args[0]);
+		
+		
+		int nCameras = args.length/2;	
+		
+		if (nCameras == 0) {
+			InetAddress addr = null;
+			try {
+				addr = InetAddress.getByName("localhost");			
+			} catch (UnknownHostException e) {
+				System.err.println("Unknown host.");
+				System.exit(1);
 			}
-		} catch (UnknownHostException e) {
-			System.err.println("Unknown host.");
-			System.exit(1);
+			DisplayMonitor dm = new DisplayMonitor();	
+			DesktopClient client0 = new DesktopClient(addr, 6000);
+			client0.runDesktopClient(dm);
+			return;
+		}
+		
+		String[] hosts = new String[nCameras];
+		int[] ports = new int[nCameras];
+		InetAddress[] addrs = new InetAddress[nCameras];
+
+		for (int i = 0; i < nCameras; ++i) {
+			hosts[i] = args[2*i];
+			ports[i] = Integer.parseInt(args[2*i+1]);
+
+			try {
+				addrs[i] = InetAddress.getByName(hosts[i]);			
+			} catch (UnknownHostException e) {
+				System.err.println("Unknown host.");
+				System.exit(1);
+			}
 		}
 
-		if (args.length >= 2) {
-			port = Integer.parseInt(args[1]);
+
+		/* THE FUN STARTS HERE */
+		DisplayMonitor dm = new DisplayMonitor();	
+
+		for (int i = 0; i < nCameras; ++i) {
+			System.out.println("Connecting to Camera: " + i);
+			DesktopClient client0 = new DesktopClient(addrs[i], ports[i]);
+			client0.runDesktopClient(dm);
 		}
 
-		DesktopClient client = new DesktopClient(addr, port);
-
-		client.runDesktopClient();
-				
+		
 		// WAIT for threads to finish before disconnecting !!!
 		//client.disconnect();
 
