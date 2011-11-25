@@ -15,70 +15,62 @@ public class DisplayMonitor {
 
 	public DisplayMonitor() {}
 
+	private final long DELAY_TERM_MS = 0;
 	private final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long showtime_old = 0;
-	private long timestamp_old = 0;	
+	private long showtime = 0;
+
+	private long t0 = 0;
+	private long lag = 0;
 
 
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
+		timestamps.offer(timestamp); // Register timestamp in queue	
 
 		/* No old showtime exists for ANY frame, display now! */
-		if (showtime_old <= 0) {
-			timestamp_old = timestamp;
-			showtime_old = System.currentTimeMillis();
-			return System.currentTimeMillis() - timestamp;			
+		if (showtime <= 0) {
+			t0 = System.currentTimeMillis();
+			lag = DELAY_TERM_MS + t0 - timestamp;
+			return lag;			
 		}
 
 		/* Calculate showtime for this thread in relation to what has been shown last. */
-		long showtime_new = showtime_old + (timestamp - timestamp_old);				
-		long diffTime;	// Time to showtime_new
+		long showtime = lag + timestamp;				
+		long diffTime;	// Time until showtime
 
-		if (sync_mode == Protocol.SYNC_MODE.ASYNC) {
 
-			/* Wait until it is:
-			 * 1) The right time.										*/
-			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
-				wait(diffTime);		
-			}
-
-		} else if (sync_mode == Protocol.SYNC_MODE.SYNC) {
-
-			timestamps.offer(timestamp); // Register timestamp in queue	
-
-			/* Wait until it is:
-			 * 1) The right time.
-			 * 2) timestamp less than all other timestamps.				*/
-			while ((diffTime = showtime_new - System.currentTimeMillis()) > 0 
-					|| timestamp > timestamps.peek()) {
-				wait(diffTime);		
-			}
-
-			timestamps.remove(); // This timestamp is done
-
-			notifyAll();
+		/* Wait until it is:
+		 * 1) The right time.										*/
+		while ((diffTime = showtime - System.currentTimeMillis()) > 0) {
+			wait(diffTime);		
 		}
 
+		/* 2) timestamp less than all other timestamps.				*/
+		//	while (timestamp > timestamps.peek()) wait();
+		
 		/* SHOW TIME */
-		long t = System.currentTimeMillis();
-		long mistake = t - showtime_new;
-		showtime_new = t;		
+		showtime = System.currentTimeMillis();
+
 		
 		/* Time between this frame and the last shown */		
+		/*
 		if ((showtime_new - showtime_old) < DELAY_SYNCMODE_THRESHOLD_MS) {
 			sync_mode = Protocol.SYNC_MODE.SYNC;
+			//showtime_old = 0;
 		} else {
 			sync_mode = Protocol.SYNC_MODE.ASYNC;
-		}
-		
+		}*/
 		/* Update for next Frame */
-		timestamp_old = timestamp;
-		showtime_old = showtime_new - mistake; // UNTESTED FOR MULTIPLE DISPLAYS !!!
+		//showtime_old = showtime_new;
+
+		
+		timestamps.remove(); // This timestamp is done
+		notifyAll();
 		
 		/* Calculate and return delay */
-		return showtime_new - timestamp; // The real delay
+		return showtime - timestamp; // The real delay
 	}
-	
+
 
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;
