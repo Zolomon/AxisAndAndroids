@@ -11,6 +11,8 @@ import java.net.UnknownHostException;
 public class Connection {
 	private String host;
 	private int port;
+	private static int id;
+	private int myId;
 	private Socket sock;		
 
 	// Input and output should be independent!
@@ -27,6 +29,7 @@ public class Connection {
 
 	public Connection(Socket sock) {
 		this.sock = sock;	
+		myId = Connection.id++;
 		System.out.println("Is connected: " + sock.isConnected() + " Closed: " + sock.isClosed());
 		try {
 			//sock.setSoTimeout(10000);
@@ -38,6 +41,10 @@ public class Connection {
 			System.exit(1);
 		}
 		connect();
+	}
+	
+	public int getId() {
+		return myId;
 	}
 	
 	private void connect() {

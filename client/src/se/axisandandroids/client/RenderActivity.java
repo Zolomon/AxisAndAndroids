@@ -3,6 +3,8 @@ package se.axisandandroids.client;
 import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
+import se.axisandandroids.client.service.networking.CameraTunnel;
+import se.axisandandroids.networking.Connection;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,7 +25,7 @@ public class RenderActivity extends Activity {
 	private CtrlService mService;
 	private LinearLayout mLinearLayout;
 	private LayoutInflater mLayoutInflater;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +42,16 @@ public class RenderActivity extends Activity {
 		Log.d(TAG, "" + res);
 	}
 
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+//		for (Connection c : mService.mConnectionHandler.connections) {
+//			addPanel(c);
+//		}
+//
+//		mService.mConnectionHandler.connections.clear();
+//	}
+	
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -56,31 +68,28 @@ public class RenderActivity extends Activity {
 			LocalBinder binder = (LocalBinder) service;
 			mService = binder.getService();
 
-//			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
-//			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
-//
-//			for (int i = 0; i < mService.connections(); i++) {
-//				addPanel(mLinearLayout, mLayoutInflater);
-//			}
-//			
-//			mService.createTunnels();
+			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
+			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
+
+			for (Connection c : mService.mConnectionHandler.connections) {
+				addPanel(c);
+			}
+
+			mService.mConnectionHandler.connections.clear();
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
 		}
 	};
-	
-	private void addPanel(final LinearLayout gv, LayoutInflater inflater) {
-		final FrameLayout theInflatedPanel = (FrameLayout) inflater.inflate(
-				R.layout.panel, null);
+
+	private void addPanel(Connection c) {
+		final FrameLayout theInflatedPanel = (FrameLayout) mLayoutInflater
+				.inflate(R.layout.panel, null);
 		Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
-//
-//		if(!mPanels.contains(panel)) {
-//			gv.addView(theInflatedPanel); // add it to the view
-//			mService.add(panel);		  // store the panel
-//			mService.createTunnel(panel, 1); // create the tunnel;
-//			mPanels.add(panel);	 // Store it
-//		}	
+
+		mService.mConnectionHandler.add(c.getId(), new CameraTunnel(c, panel,
+				mService.dm, c.getId()));
+		mLinearLayout.addView(theInflatedPanel);
 	}
 
 	@Override

@@ -53,46 +53,66 @@ public class CtrlService extends android.app.Service {
 	}
 	
 	/* public methods for client */
-	public void add(Connection connection) {
-		mConnections.add(connection);
-		System.out.println("Connection added:" + connection);
-	}
 	
-	public void add(Panel panel) {
-		mPanels.add(panel);
-		System.out.println("Panel added");
-	}
 	
-	public void remove(Connection connection) {
-		mConnections.remove(connection);
-	}
 	
-	public void remove(Panel panel) {
-		mPanels.remove(panel);
-	}
 	
-	public int connections() {
-		return mConnections.size();
-	}
 	
-	public int panels() {
-		return mPanels.size();
-	}	
 	
-	public void createTunnels() {
-		for(int id = 0; id < mConnections.size(); id++) {
-			mConnectionHandler.add(id, new CameraTunnel(mConnections.get(id), mPanels.get(id), dm, id));
-			System.out.println("Tunnel added:" + mConnections.get(id));
-		}
-	}
 	
-	public void createTunnel(Connection connection, Panel panel, int id) {
-		mConnectionHandler.add(id, new CameraTunnel(connection, panel, dm, id));
-		System.out.println("Tunnel added:" + mConnections.get(id));
-	}
-
-	public void createTunnel(Panel panel, int id) {
-		Connection c = mConnections.get(id);
-		createTunnel(c, panel, id);
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	public void add(Connection connection) {
+//		mConnections.add(connection);
+//		System.out.println("Connection added:" + connection);
+//	}
+//	
+//	public void add(Panel panel) {
+//		mPanels.add(panel);
+//		System.out.println("Panel added");
+//	}
+//	
+//	public void remove(Connection connection) {
+//		mConnections.remove(connection);
+//	}
+//	
+//	public void remove(Panel panel) {
+//		mPanels.remove(panel);
+//	}
+//	
+//	public int connections() {
+//		return mConnections.size();
+//	}
+//	
+//	public int panels() {
+//		return mPanels.size();
+//	}	
+//	
+//	public void createTunnels() {
+//		for(int id = 0; id < mConnections.size(); id++) {
+//			mConnectionHandler.add(id, new CameraTunnel(mConnections.get(id), mPanels.get(id), dm, id));
+//			System.out.println("Tunnel added:" + mConnections.get(id));
+//		}
+//	}
+//	
+//	public void createTunnel(Connection connection, Panel panel, int id) {
+//		mConnectionHandler.add(id, new CameraTunnel(connection, panel, dm, id));
+//		System.out.println("Tunnel added:" + mConnections.get(id));
+//	}
+//
+//	public void createTunnel(Panel panel, int id) {
+//		Connection c = mConnections.get(id);
+//		createTunnel(c, panel, id);
+//	}
 }
