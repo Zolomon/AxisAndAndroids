@@ -1,16 +1,25 @@
 package se.axisandandroids.client.display;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.networking.Protocol;
 
 
 
 public class DisplayMonitor {
+	
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;
+	
+	private LinkedList<CircularBuffer> mailboxes;
 
 
-	public DisplayMonitor() {}
+	public DisplayMonitor() {
+		 mailboxes = new LinkedList<CircularBuffer>();
+	}
 
 
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
@@ -83,6 +92,23 @@ public class DisplayMonitor {
 		}
 		other_delay = delay;
 		return sync_mode;
+	}
+	
+	
+	
+	public synchronized void subscribeMailbox(CircularBuffer mailbox) {
+		mailboxes.add(mailbox);
+	}
+	
+	public synchronized void unsubscribeMailbox(CircularBuffer mailbox) {
+		mailboxes.remove(mailbox);		
+	}
+	
+	public synchronized void postToAllMailboxes(Object msg) {		
+		Iterator<CircularBuffer> iter = mailboxes.iterator();
+		while (iter.hasNext()) {
+			iter.next().put(msg);
+		}	
 	}
 
 	

@@ -59,8 +59,7 @@ public class FrameBuffer {
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
 		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
-		++nAvailable;				
-		
+		++nAvailable;						
 		notifyAll();
 				
 		//System.out.printf("Buffering Capacty At: %5.2f percent, %d Frames ... \n", 100*nAvailable/(double)MAXSIZE, nAvailable);

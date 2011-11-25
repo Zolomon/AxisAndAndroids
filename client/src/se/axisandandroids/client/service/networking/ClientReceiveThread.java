@@ -7,6 +7,7 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
 import se.axisandandroids.buffer.FrameBuffer;
+import se.axisandandroids.buffer.ModeChange;
 import se.lth.cs.fakecamera.Axis211A;
 
 
@@ -78,13 +79,8 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		}
 		if (disp_mode != -1) {
 			disp_monitor.setDispMode(disp_mode);			
-			if (disp_mode == Protocol.DISP_MODE.MOVIE) {
-				// ---------------------------------------->>> FORWARD TO ALL OTHER CAMERAS 
-				// Put something in ALL sendthread mailboxes.
-				
-				//Protocol.COMMAND.DISP_MODE
-				//Protocol.DISP_MODE.MOVIE				
-				// ---------------------------------------->>> FORWARD TO ALL OTHER CAMERAS 
+			if (disp_mode == Protocol.DISP_MODE.MOVIE) {			
+				disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));				
 			}
 		}
 	}
