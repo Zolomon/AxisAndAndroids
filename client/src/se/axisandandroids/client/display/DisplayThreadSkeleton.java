@@ -59,7 +59,10 @@ public class DisplayThreadSkeleton extends Thread {
 		private long lag = 0;
 		//private long other_delay = 0; 															// RESOLVE
 		
-		protected synchronized long asyncFrames(long timestamp) throws InterruptedException {
+		
+		
+		
+		protected synchronized long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?
 			/* No old showtime exists for ANY frame, display now! */
 			if (t0 <= 0) {
 				t0 = System.currentTimeMillis();
