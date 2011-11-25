@@ -1,15 +1,19 @@
 package se.axisandandroids.client.service.networking;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import se.axisandandroids.client.display.DisplayMonitor;
+import se.axisandandroids.networking.Connection;
 
 public class ConnectionHandler {
 
 	private HashMap<Integer, CameraTunnel> tunnels;
-
+	public ArrayList<Connection> connections; 
+	
 	public ConnectionHandler(DisplayMonitor disp_monitor) {
 		tunnels = new HashMap<Integer, CameraTunnel>();
+		connections = new ArrayList<Connection>();
 	}
 
 	public void add(int id, CameraTunnel tunnel) {
@@ -35,5 +39,4 @@ public class ConnectionHandler {
 	public int tunnels() {
 		return tunnels.size();
 	}
-
 }

@@ -13,7 +13,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class Panel extends SurfaceView implements SurfaceHolder.Callback {
-
+	private static int id;
+	private int myId;
 	private Bitmap mBitmap;
 	private DisplayMonitor mDisplayMonitor;
 	private ViewThread mThread;
@@ -36,6 +37,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	private void init() {
+		myId = Panel.id++;
 		mBitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.ic_launcher);
 		
@@ -53,6 +55,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		mPaintHUDText.setTextSize(20);
 	}
 	
+	public int getId() {
+		return myId;
+	}
+	
 	public NewImageCallback getNewImageCallback() {
 		return mNewImageCallback;
 	}
@@ -67,7 +73,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void doDraw(long elapsedTime, Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
-		//canvas.drawBitmap(mBitmap, 10, 10, null);
+		canvas.drawBitmap(mBitmap, 10, 10, null);
 		
 		doDrawHUD(elapsedTime, canvas);
 	}
