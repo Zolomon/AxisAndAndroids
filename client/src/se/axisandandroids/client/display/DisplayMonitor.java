@@ -68,7 +68,8 @@ public class DisplayMonitor {
 
 		/* Calculate and return delay */
 		long delay = System.currentTimeMillis() - timestamp;						
-		//chooseSyncMode(Thread.currentThread().getId(), delay);
+		
+		chooseSyncMode(Thread.currentThread().getId(), delay);
 	
 		return delay; // The real delay
 	}
