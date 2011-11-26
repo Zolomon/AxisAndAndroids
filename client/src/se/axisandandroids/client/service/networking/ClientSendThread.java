@@ -41,8 +41,11 @@ public class ClientSendThread extends SendThreadSkeleton {
 			} else if (command instanceof Command) {
 				c.sendInt(((Command) command).cmd);
 			}
-		} catch (IOException e) {
+		} catch (IOException e) {					// ACTION
+			System.err.println("Send fail");
 			e.printStackTrace();
+			System.out.println("Flushing mailbox");
+			mailbox.flush();
 		}
 	}
 

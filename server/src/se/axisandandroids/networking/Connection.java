@@ -26,6 +26,7 @@ public class Connection {
 	private final byte[] sendintbuffer = new byte[4];
 	private final byte[] readintbuffer = new byte[4]; 
 
+	
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
 	}

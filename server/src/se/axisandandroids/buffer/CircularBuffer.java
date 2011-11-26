@@ -86,6 +86,11 @@ public class CircularBuffer {
 		}	
 		System.out.println("");
 	}	
+	
+	public synchronized void flush() {		
+		nAvailable = 0;
+		notifyAll();
+	}
 
 	public static void main(String[] args) {
 		int BUFFMAX = 10;

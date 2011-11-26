@@ -12,7 +12,6 @@ public class CameraMonitor {
 	}
 
 	public synchronized boolean setDisplayMode(int display_mode) {
-		System.out.println("Currect dislay mode " + this.display_mode + " trying to change to " + display_mode);
 		if (display_mode != Protocol.DISP_MODE.MOVIE
 				&& display_mode != Protocol.DISP_MODE.IDLE
 				&& display_mode != Protocol.DISP_MODE.AUTO) {
@@ -29,17 +28,4 @@ public class CameraMonitor {
 		return display_mode;
 	}
 
-	// public synchronized boolean setSyndMode(int sync_mode){
-	// if(sync_mode != Protocol.SYNC_MODE.ASYNC || sync_mode !=
-	// Protocol.SYNC_MODE.SYNC || sync_mode != Protocol.SYNC_MODE.AUTO)
-	// System.out.println("Invalid Sync mode!");
-	// else{
-	// this.sync_mode = sync_mode;
-	// return true;
-	// }
-	// }
-	//	
-	// public synchronized int getSyncMode(){
-	// return sync_mode;
-	// }
 }

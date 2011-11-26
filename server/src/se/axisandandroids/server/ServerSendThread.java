@@ -58,8 +58,10 @@ public class ServerSendThread extends SendThreadSkeleton {
 					c.sendInt(((Command) command).cmd);
 				}
 			} catch (IOException e) {
-				System.err.println("Send Fail.");
+				System.err.println("Send Fail.");		// ACTION
 				e.printStackTrace();
+				System.out.println("Disconnection this Connection");
+				c.disconnect();
 				System.exit(1);
 			}
 		}
@@ -71,9 +73,11 @@ public class ServerSendThread extends SendThreadSkeleton {
 		try {
 			// 4) Send Image via connection.
 			c.sendImage(jpeg, 0, len);
-		} catch (IOException e) {
+		} catch (IOException e) {						// ACTION
 			System.err.println("Send Fail.");
-			e.printStackTrace();
+			e.printStackTrace();			
+			System.out.println("Disconnection this Connection");
+			c.disconnect();
 			System.exit(1);
 		}
 	}	

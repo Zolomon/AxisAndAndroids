@@ -42,14 +42,16 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 			if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
 				delay = disp_monitor.syncFrames(timestamp);
 			} else {
-				delay = asyncFrames(timestamp);
-				//delay = asyncAsFastAsPossible(timestamp);								
-			}										
-		} catch (InterruptedException e) {
-			System.err.println("syncFrames got interrupted");
+				//delay = asyncFrames(timestamp);
+				delay = asyncAsFastAsPossible(timestamp);								
+			}					
+			showFirstImage(timestamp, delay, len);
+		} catch (InterruptedException e) {							// ACTION
+			System.err.println("syncFrames got interrupted!");
 			e.printStackTrace();
-		}		
-		showFirstImage(timestamp, delay, len);
+			System.out.println("Flushing mailbox");
+			mailbox.flush();
+		} 
 
 		
 		/* -------------------------------------- Get all other Images */
@@ -65,22 +67,24 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 				} else {
 					//delay = asyncFrames(timestamp);
 					delay = asyncAsFastAsPossible(timestamp);								
-				}										
+				}		
+				showImage(timestamp, delay, len, sync_mode);
 			} catch (InterruptedException e) {
 				System.err.println("syncFrames got interrupted");
-				e.printStackTrace();
+				e.printStackTrace();				
+				System.out.println("Flushing mailbox");
+				mailbox.flush();
 			}			
-			showImage(timestamp, delay, len, sync_mode);
 		}
 	}
 
 	protected void showFirstImage(long timestamp, long delay, int len) {				
-		//System.out.printf("Thread: %d\t Delay: %d\t Sync: %d\t Timestamp %d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);
+		System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t Timestamp: %15d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
 		gui.firstImage(this, jpeg, delay); 
 	}
 			
 	protected void showImage(long timestamp, long delay, int len, int sync_mode) {				
-		//System.out.printf("Thread: %d\t Delay: %d\t Sync: %d\t Timestamp %d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
+		//System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t Timestamp: %15d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
 		gui.refreshImage(this, jpeg, delay); 
 		gui.refreshSyncButtonText();
 	}

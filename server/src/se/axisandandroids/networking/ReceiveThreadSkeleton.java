@@ -16,7 +16,7 @@ public class ReceiveThreadSkeleton extends Thread {
 			try {
 				recvCommand();
 			} catch (IOException e) {
-				System.err.println("IO error");
+				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
 				System.exit(1);
 			}
 		}

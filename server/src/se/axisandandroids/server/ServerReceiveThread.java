@@ -35,10 +35,9 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 	protected void handleDispMode() {
 		try {
 			int disp_mode = c.recvDisplayMode();	
-			System.out.println("Got Display Mode Change Message: " + disp_mode);
 			camera_monitor.setDisplayMode(disp_mode);
 		} catch (IOException e) {
-			System.err.println("Could not receive display mode.");
+			System.err.println("Could not receive display mode.");			// ACTION
 			e.printStackTrace();
 		}
 	}

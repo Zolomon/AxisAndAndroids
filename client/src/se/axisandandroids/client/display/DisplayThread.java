@@ -24,7 +24,6 @@ public class DisplayThread extends DisplayThreadSkeleton {
 	protected void showImage(long timestamp, long delay, int len, int sync_mode) {		
 		mNewImageCallback.newImage(BitmapFactory.decodeByteArray(jpeg, 0, len));
 		//System.out.printf("Delay: %d", delay);
-
 	}
 
 }

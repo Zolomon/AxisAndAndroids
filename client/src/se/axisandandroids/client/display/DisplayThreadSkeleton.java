@@ -9,7 +9,7 @@ import se.lth.cs.fakecamera.Axis211A;
 public class DisplayThreadSkeleton extends Thread {
 			
 		protected final int BUFFERSIZE = 10;
-		protected final int INITIAL_BUFFER_WAIT_MS = 500;
+		protected final int INITIAL_BUFFER_WAIT_MS = 400;
 				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		protected final byte[] jpeg = new byte[FRAMESIZE];
@@ -52,8 +52,10 @@ public class DisplayThreadSkeleton extends Thread {
 					}							
 						
 				} catch (InterruptedException e) {
-					System.err.println("syncFrames got interrupted");
+					System.err.println("syncFrames got interrupted!");
 					e.printStackTrace();
+					System.out.println("Flushing mailbox");
+					mailbox.flush();
 				}
 				
 				showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
@@ -103,7 +105,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 */
 		protected void showImage(long timestamp, long delay, int len, int sync_mode) {
 			// Override for Platform Dependent show image
-			System.out.printf("Delay: 	  %d\tSync Mode: %d\n", delay, sync_mode);
+			System.out.printf("Delay: 	  %d\tSync Mode: 	 %d\n", delay, sync_mode);
 		}
 		
 		/**

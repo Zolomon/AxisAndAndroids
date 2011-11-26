@@ -19,7 +19,7 @@ public class DesktopClient {
 	private InetAddress host;	
 	private int port;
 	private LinkedList<Thread> threads = new LinkedList<Thread>();
-	
+
 
 	public DesktopClient(InetAddress host, int port) {
 		this.host = host;
@@ -34,7 +34,7 @@ public class DesktopClient {
 			System.err.println("Unknown host.");
 			System.exit(1);
 		} catch (IOException e) {
-			System.err.println("io-exception.");
+			System.err.println("Socket ioexception.");
 			System.exit(1);
 		}
 		System.out.println("Connection Setup Complete: " + host +":"+port);
@@ -52,7 +52,7 @@ public class DesktopClient {
 		Connection c = new Connection(socket);
 
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");	
-		
+
 		DesktopDisplayThread disp_thread;
 		if (gui == null) {
 			disp_thread = new DesktopDisplayThread(dm);
@@ -67,14 +67,14 @@ public class DesktopClient {
 		disp_thread.start();
 		recv_thread.start();
 		send_thread.start();
-		*/						
-		
+		 */						
+
 		threads.add(disp_thread);
 		threads.add(recv_thread);
 		threads.add(send_thread);	
 
 	}		
-	
+
 	public void startThreads() {
 		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
 		for (Thread t : threads) 
@@ -83,9 +83,9 @@ public class DesktopClient {
 
 
 	public static void main(String[] args) {
-				
+
 		int nCameras = args.length/2;	
-		
+
 		if (nCameras == 0) {
 			InetAddress addr = null;
 			try {
@@ -97,9 +97,9 @@ public class DesktopClient {
 			DisplayMonitor dm = new DisplayMonitor();	
 			DesktopClient client0 = new DesktopClient(addr, 6000);
 			client0.runDesktopClient(dm, null);
-			return;
+			System.exit(0);
 		}
-		
+
 		String[] hosts = new String[nCameras];
 		int[] ports = new int[nCameras];
 		InetAddress[] addrs = new InetAddress[nCameras];
@@ -120,22 +120,31 @@ public class DesktopClient {
 		DisplayMonitor dm = new DisplayMonitor();	
 		DesktopGUI gui = new DesktopGUI(dm);
 		DesktopClient[] clients = new DesktopClient[nCameras]; 
-		
+
 		for (int i = 0; i < nCameras; ++i) {
 			System.out.println("Connecting to Camera Server: " + i);
 			clients[i] = new DesktopClient(addrs[i], ports[i]);
 			clients[i].runDesktopClient(dm, gui);
 		}
-		
+
 		gui.packItUp();
-				
+
 		for (int i = 0; i < nCameras; ++i) {
 			clients[i].startThreads();
 		}
-		
-		
+
+
 		// WAIT for threads to finish before disconnecting !!!
-		//client.disconnect();
+		try {
+			Thread.currentThread().join();
+			for (int i = 0; i < nCameras; ++i) {
+				clients[i].disconnect();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 
 	}
 

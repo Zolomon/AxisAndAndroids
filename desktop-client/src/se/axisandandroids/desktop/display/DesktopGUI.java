@@ -26,9 +26,8 @@ public class DesktopGUI extends JFrame {
 	private DisplayMonitor dm;
 	private final HashMap<Integer, ImagePanel> imagePanels = new HashMap<Integer, ImagePanel>();
 
-	JPanel imageAreaPanel;
-	JPanel controlAreaPanel;
-
+	private JPanel imageAreaPanel;
+	private JPanel controlAreaPanel;
 	private JButton syncModeButton;
 	private JButton dispModeButton;
 

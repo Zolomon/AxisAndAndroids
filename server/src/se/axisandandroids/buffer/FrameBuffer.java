@@ -257,6 +257,11 @@ public class FrameBuffer {
 		System.out.println("");
 	}	
 
+	public synchronized void flush() {		
+		nAvailable = 0;
+		notifyAll();
+	}
+	
 	public static void main(String[] args) { /* Test Module */
 		int BUFFMAX = 10;
 		final FrameBuffer fb = new FrameBuffer(BUFFMAX);
