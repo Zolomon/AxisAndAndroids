@@ -6,17 +6,22 @@ import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
-import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
+import se.lth.cs.cameraproxy.Axis211A;
 
 
 public class ServerSendThread extends SendThreadSkeleton {
 
-	protected final int BUFFERSIZE = 10;
-	public CircularBuffer mailbox; // Command mailbox for this ServerSendThread.
-	//public FrameBuffer frame_buffer;
+	protected final int BUFFERSIZE = 5;
+	protected final int COMMAND_BUFFERSIZE = 3;
+	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 	
+	
+	public CircularBuffer mailbox; 		// Command mailbox for this ServerSendThread.
+	public FrameBuffer frame_buffer;	// Image mailbox
+
+	private byte[] jpeg = new byte[FRAMESIZE];
 	// In a multi client setup a list with subscribing clients connection 
 	// objects would be appropriate or some MultiConnection object. 
 
@@ -26,39 +31,46 @@ public class ServerSendThread extends SendThreadSkeleton {
 	 */
 	public ServerSendThread(Connection c) {
 		super(c);
-		mailbox = new CircularBuffer(BUFFERSIZE);
+		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
+		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);	
 	}
 
+
+
 	protected void perform() {
-		// 1) Wait for message with commands to be put in buffer.
-		Object command = mailbox.get();
-		
-		
-		if (command instanceof Command) {
-			System.out.println(">>>> MODE CHANGE <<<<");
-		}
-//		
-//		if (command == null) {
-//			System.out.println("COMMAND = NULL, SOMETHING IS VERY WRONG");
-//		}
-//		
+
 		// Possible:
 		// 		- image
 		//		- motion detected => display mode to movie change
 
-		try {
-			// 2) Send commands and/or images via connection object.			
-			if (command instanceof Frame) {
-				c.sendImage(((Frame) command).x, 0, ((Frame) command).len);
-			} else if (command instanceof ModeChange) {
-				System.out.println("Server Sending Mode Change.");
-				c.sendInt(((ModeChange) command).cmd);
-				c.sendInt(((ModeChange) command).mode);
-			} else if (command instanceof Command) {
-				c.sendInt(((Command) command).cmd);
-			} else {
-				System.out.println("Unknown Command!");
+
+		// 1) Check for message with commands.
+		Object command = mailbox.tryGet();
+		
+		if (command != null) {
+			try {
+				// 2) Send commands via connection object.			
+				if (command instanceof ModeChange) {
+					System.out.println("Server Sending Mode Change.");
+					c.sendInt(((ModeChange) command).cmd);
+					c.sendInt(((ModeChange) command).mode);
+				} else if (command instanceof Command) {
+					c.sendInt(((Command) command).cmd);
+				}
+			} catch (IOException e) {
+				System.err.println("Send Fail.");
+				e.printStackTrace();
+				System.exit(1);
 			}
+		}
+
+		// 3) Wait for image message.
+
+		int len = frame_buffer.get(jpeg);
+
+		try {
+			// 4) Send Image via connection.
+			c.sendImage(jpeg, 0, len);
 		} catch (IOException e) {
 			System.err.println("Send Fail.");
 			e.printStackTrace();

@@ -8,7 +8,7 @@ import se.axisandandroids.networking.Protocol;
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
 	private DesktopGUI gui;	
-	protected final int BUFFERSIZE = 10;
+	protected final int BUFFERSIZE = 5;
 	
 	
 	public DesktopDisplayThread(DisplayMonitor disp_monitor) {
@@ -35,15 +35,15 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		
 		mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
 		
-		/* First Image is Special */
+		/* -------------------------------------  First Image is Special */
 		len = mailbox.get(jpeg);
 		timestamp = getTimestamp();		
 		try {
 			if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
 				delay = disp_monitor.syncFrames(timestamp);
 			} else {
-				//delay = asyncFrames(timestamp);
-				delay = asyncAsFastAsPossible(timestamp);								
+				delay = asyncFrames(timestamp);
+				//delay = asyncAsFastAsPossible(timestamp);								
 			}										
 		} catch (InterruptedException e) {
 			System.err.println("syncFrames got interrupted");
@@ -52,13 +52,15 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		showFirstImage(timestamp, delay, len);
 
 		
-		/* Get all other Images */
+		/* -------------------------------------- Get all other Images */
 		while (! interrupted()) {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
 			
+			int sync_mode = disp_monitor.getSyncMode();
+
 			try {
-				if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
+				if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 					delay = disp_monitor.syncFrames(timestamp);
 				} else {
 					//delay = asyncFrames(timestamp);
@@ -68,7 +70,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 				System.err.println("syncFrames got interrupted");
 				e.printStackTrace();
 			}			
-			showImage(timestamp, delay, len);
+			showImage(timestamp, delay, len, sync_mode);
 		}
 	}
 
@@ -76,10 +78,11 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		//System.out.printf("Thread: %d\t Delay: %d\t Sync: %d\t Timestamp %d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);
 		gui.firstImage(this, jpeg, delay); 
 	}
-	
-	protected void showImage(long timestamp, long delay, int len) {				
+			
+	protected void showImage(long timestamp, long delay, int len, int sync_mode) {				
 		//System.out.printf("Thread: %d\t Delay: %d\t Sync: %d\t Timestamp %d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
 		gui.refreshImage(this, jpeg, delay); 
+		gui.refreshSyncButtonText();
 	}
 
 }	

@@ -4,6 +4,10 @@ import android.graphics.BitmapFactory;
 
 public class DisplayThread extends DisplayThreadSkeleton {
 	
+	
+	protected final int BUFFERSIZE = 5;
+
+	
 	private NewImageCallback mNewImageCallback;
 
 	
@@ -17,7 +21,7 @@ public class DisplayThread extends DisplayThreadSkeleton {
 	}
 
 	@Override 
-	protected void showImage(long timestamp, long delay, int len) {		
+	protected void showImage(long timestamp, long delay, int len, int sync_mode) {		
 		mNewImageCallback.newImage(BitmapFactory.decodeByteArray(jpeg, 0, len));
 		//System.out.printf("Delay: %d", delay);
 

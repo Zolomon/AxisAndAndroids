@@ -40,6 +40,10 @@ public class FrameBuffer {
 			buffer[i] = new Frame(FRAMESIZE);
 		}
 	}
+	
+	public synchronized int nAvailable() {
+		return nAvailable;
+	}
 
 	/**
 	 * Put a frame in the buffer, blocks until it is put there.
@@ -54,14 +58,14 @@ public class FrameBuffer {
 			e.printStackTrace();
 		}		
 		//if (nAvailable == 0) notifyAll();
-		
+
 		//buffer[nextToPut].x = x;
 		System.arraycopy(x, 0, buffer[nextToPut].x, 0, len);	
 		buffer[nextToPut].len = len;
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;						
 		notifyAll();
-				
+
 		//System.out.printf("Buffering Capacty At: %5.2f percent, %d Frames ... \n", 100*nAvailable/(double)MAXSIZE, nAvailable);
 	}
 
@@ -78,9 +82,10 @@ public class FrameBuffer {
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);		
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
+		notifyAll();
 		return data;
 	}
 
@@ -94,9 +99,10 @@ public class FrameBuffer {
 		}
 		/* Return copy of the frame. */
 		Frame frame = new Frame(buffer[nextToGet]);
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
+		notifyAll();
 		return frame;
 	}
 
@@ -116,15 +122,15 @@ public class FrameBuffer {
 		/* Return a copy with correct length. */
 		byte[] data = new byte[buffer[nextToGet].len];
 		System.arraycopy(buffer[nextToGet].x, 0, data, 0, buffer[nextToGet].len);
-		
+
 		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		
+
 		notifyAll();		
 		return data;
 	}
-	
+
 	/**
 	 * Returns the data of next frame from buffer, blocks until available.
 	 * @return a byte array with frame data. Note that all data in the 
@@ -140,12 +146,15 @@ public class FrameBuffer {
 		/* Write data to jpeg. */
 		int len = buffer[nextToGet].len;
 		System.arraycopy(buffer[nextToGet].x, 0, jpeg, 0, len);		
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
-		--nAvailable;		
+		--nAvailable;
+		notifyAll();
+		
+
 		return len;
 	}
-	
+
 
 	/**
 	 * Returns the next frame from buffer, blocks until available.
@@ -159,14 +168,15 @@ public class FrameBuffer {
 			e.printStackTrace();
 		}
 		Frame f = new Frame(buffer[nextToGet]);
-		if (nAvailable == MAXSIZE) notifyAll();
+		//if (nAvailable == MAXSIZE) notifyAll();
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-
+		 notifyAll();
+		 
 		/* Return copy of the frame. */
 		return f;
 	}
-	
+
 	public synchronized void awaitFilled() {
 		try {
 			while (nAvailable < MAXSIZE) wait();
@@ -176,7 +186,7 @@ public class FrameBuffer {
 		}
 		notifyAll();
 	}
-	
+
 	public synchronized void awaitBuffered(long maxtime) {
 		try {
 			long t0 = System.currentTimeMillis();
@@ -192,7 +202,7 @@ public class FrameBuffer {
 		}
 		notifyAll();
 	}
-	
+
 
 	/**
 	 * Return frame data of the next frame in buffer without removing it.
@@ -246,7 +256,7 @@ public class FrameBuffer {
 		}	
 		System.out.println("");
 	}	
-			
+
 	public static void main(String[] args) { /* Test Module */
 		int BUFFMAX = 10;
 		final FrameBuffer fb = new FrameBuffer(BUFFMAX);

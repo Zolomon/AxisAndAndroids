@@ -16,8 +16,7 @@ public class DisplayMonitor {
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
-	private final long DELAY_TERM = 0;
-//	private final long MAXERROR = 200;
+	private final long DELAY_TERM = 100;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long t0 = 0;
@@ -25,11 +24,7 @@ public class DisplayMonitor {
 	
 
 	public DisplayMonitor() {}
-
-
-	
-
-	
+		
 	public synchronized void putTimestamp(long timestamp) {
 		timestamps.offer(timestamp);
 	}
@@ -38,6 +33,7 @@ public class DisplayMonitor {
 		return timestamps.poll();
 	}
 		
+	
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 		
 		/* No old showtime exists for ANY frame, display now! */
@@ -56,44 +52,31 @@ public class DisplayMonitor {
 	
 		/* Wait until it is:
 		 * 1) The right time.
-		 * 2) timestamp less than all other timestamps.				*/
+		 * 2) timestamp less than all other timestamps.				*/		
+		while (timestamp > timestamps.peek()) {
+			wait();
+		}
 		
 		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
 			Thread.sleep(diffTime);		
 		} 
-		
-		while (timestamp > timestamps.peek()) {
-			wait();
-		}
-				
-		
-		
+											
 		/* SHOW TIME */
-		showtime_new = System.currentTimeMillis();
-
-		/*
-		if (Math.abs(showtime_new - (lag + timestamp)) > MAXERROR) {
-			System.err.println("Error got a bit big increasing the lag.");
-			lag += DELAY_TERM;
-		}
-		*/
-
 		timestamps.remove();
 		notifyAll();
 
 		/* Calculate and return delay */
-		long delay = showtime_new - timestamp;						
+		long delay = System.currentTimeMillis() - timestamp;						
 		chooseSyncMode(Thread.currentThread().getId(), delay);
 	
-
 		return delay; // The real delay
 	}
 		
 	
 	long id_last = 0;
-	long delay_last = 0;
+	long delay_last = 0;	
 	
-	public synchronized void chooseSyncMode(Long id, Long delay) {							
+	public synchronized int chooseSyncMode(Long id, Long delay) {	// RESOLVE !!!						
 		if (id != id_last) {
 			long dist = Math.abs(delay_last - delay);
 			if (dist >= DELAY_SYNCMODE_THRESHOLD_MS) {
@@ -104,6 +87,7 @@ public class DisplayMonitor {
 			id_last = Thread.currentThread().getId();
 			delay_last = delay;		
 		}		
+		return sync_mode;
 	}
 	
 	

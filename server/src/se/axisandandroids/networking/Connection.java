@@ -33,7 +33,6 @@ public class Connection {
 	public Connection(Socket sock) {
 		this.sock = sock;	
 		myId = Connection.id++;
-		System.out.println("Is connected: " + sock.isConnected() + " Closed: " + sock.isClosed());
 		try {
 			//sock.setSoTimeout(10000);
 			sock.setTcpNoDelay(true);

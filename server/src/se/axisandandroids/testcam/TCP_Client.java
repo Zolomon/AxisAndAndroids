@@ -259,7 +259,7 @@ public class TCP_Client {
 		public void refreshImage() {		
 			//			System.out.println("** Refreshing Image ------------------------- ");			
 			while (play) {
-				int cmd, len = 0;
+				int cmd;
 
 				try {			
 					//				System.out.println("Waiting for Answer");
@@ -268,7 +268,7 @@ public class TCP_Client {
 					//					con.sendDisplayMode(Protocol.DISP_MODE.IDLE);
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
-						len = con.recvImage(jpeg);	
+						con.recvImage(jpeg);	
 					} else if (cmd == Protocol.COMMAND.NOTOK) {
 						System.err.println("Server says not ok!");
 						System.exit(1);

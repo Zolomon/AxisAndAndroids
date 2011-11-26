@@ -16,7 +16,7 @@ public class DisplayThreadSkeleton extends Thread {
 
 		protected DisplayMonitor disp_monitor;
 		public FrameBuffer mailbox;
-		public volatile long delay;
+		public long delay;
 				
 		/**
 		 * DisplayThread superclass.
@@ -35,25 +35,28 @@ public class DisplayThreadSkeleton extends Thread {
 			long delay = -1;
 			long timestamp = -1;
 			
-			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
+			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);									
 			
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
 				
+				int sync_mode = disp_monitor.getSyncMode();
+
 				try {
-					if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
+					if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
 					} else {
 						//delay = asyncFrames(timestamp);
 						delay = asyncAsFastAsPossible(timestamp);								
-					}										
+					}							
+						
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted");
 					e.printStackTrace();
 				}
 				
-				showImage(timestamp, delay, len); // Override for Platform Dependent show image
+				showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
 			}
 		}
 		
@@ -67,6 +70,7 @@ public class DisplayThreadSkeleton extends Thread {
 		private long t0 = 0;
 		private long lag = 0;		
 						
+		
 		protected long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?
 						
 			/* No old showtime exists for ANY frame, display now! */
@@ -97,11 +101,10 @@ public class DisplayThreadSkeleton extends Thread {
 		 * Override this for platform dependent GUI.
 		 * @param delay, show time delay.
 		 */
-		protected void showImage(long timestamp, long delay, int len) {
+		protected void showImage(long timestamp, long delay, int len, int sync_mode) {
 			// Override for Platform Dependent show image
-			System.out.printf("Delay: %d\n", delay);
+			System.out.printf("Delay: 	  %d\tSync Mode: %d\n", delay, sync_mode);
 		}
-		
 		
 		/**
 		 * Extract timestamp from image byte array.

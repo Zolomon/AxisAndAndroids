@@ -31,6 +31,8 @@ public class JPEGHTTPClient {
 }
 
 class ImagePanel extends JPanel {
+	private static final long serialVersionUID = 1L;
+	
 	ImageIcon icon;
 
 	public ImagePanel() {
@@ -62,7 +64,8 @@ class ButtonHandler implements ActionListener {
 }
 
 class GUI extends JFrame {
-
+	private static final long serialVersionUID = 1L;
+	
 	ImagePanel imagePanel;
 	JButton button;
 	boolean firstCall = true;
