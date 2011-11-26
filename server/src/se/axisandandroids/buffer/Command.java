@@ -21,11 +21,6 @@ public class Command {
 }
 
 
-
-
-
-/* Autoboxing around an image contained in a byte[]. This is meant to be
- * put in the buffer.														*/
 class FrameCommand extends Command {
 	
 	public int len;

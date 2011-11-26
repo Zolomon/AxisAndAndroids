@@ -96,11 +96,8 @@ public class CameraThread extends Thread {
 	private void checkForMotion() {
 		if (md.detect()) {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
-			System.out.println("Motion detected!");
-			
-			
-			// test
 			mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
+			System.out.println("Motion detected!");
 		} else
 			System.out.println("No motion");
 	}

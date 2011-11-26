@@ -13,9 +13,9 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
-	private DisplayMonitor disp_monitor;
-	private FrameBuffer frame_buffer;	
-	private final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+	protected DisplayMonitor disp_monitor;
+	protected FrameBuffer frame_buffer;	
+	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 
 	
 	/**
@@ -55,15 +55,13 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	 * Force a synchronization mode for debugging.
 	 */
 	protected void handleSyncMode() {
-		int sync_mode = -1;
+		System.out.println("Handling Sync Mode.");
 		try {
-			sync_mode = c.recvSyncMode();
+			int sync_mode = c.recvSyncMode();
+			disp_monitor.setSyncMode(sync_mode);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
-		if (sync_mode != -1) {			
-			disp_monitor.setSyncMode(sync_mode);
-		}
 	}
 
 	/**

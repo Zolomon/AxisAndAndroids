@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
@@ -18,11 +18,13 @@ public class DesktopClient {
 	private Socket socket;
 	private InetAddress host;	
 	private int port;
+	private LinkedList<Thread> threads = new LinkedList<Thread>();
+	
 
 	public DesktopClient(InetAddress host, int port) {
 		this.host = host;
 		this.port = port;
-		connect();
+		connect();		
 	}
 
 	public void connect() {
@@ -43,24 +45,41 @@ public class DesktopClient {
 		System.out.println("Client disconnected.");
 	}
 
-	public void runDesktopClient(DisplayMonitor dm) {		
+	public void runDesktopClient(DisplayMonitor dm, DesktopGUI gui) {		
 
 		System.out.println("** Desktop Client");
 
-		// Display 0
-		int id = 0;
 		Connection c = new Connection(socket);
 
-		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
-		DesktopDisplayThread disp_thread = new DesktopDisplayThread(dm);		
-		ClientReceiveThread recv_thread = new ClientReceiveThread(c, dm, disp_thread.mailbox);
+		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");	
+		
+		DesktopDisplayThread disp_thread;
+		if (gui == null) {
+			disp_thread = new DesktopDisplayThread(dm);
+		} else {
+			disp_thread = new DesktopDisplayThread(dm, gui);
+		}		
+		DesktopReceiveThread recv_thread = new DesktopReceiveThread(c, dm, disp_thread.mailbox, gui);
 		ClientSendThread send_thread = new ClientSendThread(c, dm);
 
+		/*
 		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
 		disp_thread.start();
 		recv_thread.start();
-		send_thread.start();						
+		send_thread.start();
+		*/						
+		
+		threads.add(disp_thread);
+		threads.add(recv_thread);
+		threads.add(send_thread);	
+
 	}		
+	
+	public void startThreads() {
+		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
+		for (Thread t : threads) 
+			t.start();		
+	}
 
 
 	public static void main(String[] args) {
@@ -77,7 +96,7 @@ public class DesktopClient {
 			}
 			DisplayMonitor dm = new DisplayMonitor();	
 			DesktopClient client0 = new DesktopClient(addr, 6000);
-			client0.runDesktopClient(dm);
+			client0.runDesktopClient(dm, null);
 			return;
 		}
 		
@@ -99,14 +118,21 @@ public class DesktopClient {
 
 		/* THE FUN STARTS HERE */
 		DisplayMonitor dm = new DisplayMonitor();	
-
+		DesktopGUI gui = new DesktopGUI(dm);
+		DesktopClient[] clients = new DesktopClient[nCameras]; 
 		
 		for (int i = 0; i < nCameras; ++i) {
 			System.out.println("Connecting to Camera Server: " + i);
-			DesktopClient client0 = new DesktopClient(addrs[i], ports[i]);
-			client0.runDesktopClient(dm);
+			clients[i] = new DesktopClient(addrs[i], ports[i]);
+			clients[i].runDesktopClient(dm, gui);
 		}
-
+		
+		gui.packItUp();
+				
+		for (int i = 0; i < nCameras; ++i) {
+			clients[i].startThreads();
+		}
+		
 		
 		// WAIT for threads to finish before disconnecting !!!
 		//client.disconnect();

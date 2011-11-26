@@ -1,6 +1,5 @@
 package se.axisandandroids.client.display;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -110,6 +109,7 @@ public class DisplayMonitor {
 	
 	
 	public synchronized void subscribeMailbox(CircularBuffer mailbox) {
+		System.out.println("SendThread mailbox subscribed");
 		mailboxes.add(mailbox);
 	}
 	
@@ -118,7 +118,7 @@ public class DisplayMonitor {
 	}
 	
 	public synchronized void postToAllMailboxes(Object msg) {	
-		System.out.println("Posting command to all ClientSendThreads.");
+		System.out.println("Posting command to all ClientSendThreads...");
 		for (CircularBuffer mb : mailboxes) {
 			mb.put(msg);
 		}

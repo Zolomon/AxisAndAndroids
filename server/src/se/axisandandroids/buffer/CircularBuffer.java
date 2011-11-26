@@ -26,6 +26,10 @@ public class CircularBuffer {
 		if (++nextToPut == MAXSIZE) nextToPut = 0;
 		++nAvailable;
 		notifyAll();
+		
+		if (x instanceof Command) {
+			System.out.println(">>>> Command put in buffer <<<<");
+		}
 	}
 
 	public synchronized void putOverwriting(Object x) {
@@ -53,6 +57,10 @@ public class CircularBuffer {
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
 		notifyAll();
+		
+		if (ret instanceof Command) {
+			System.out.println(">>>> Command taken from buffer <<<<");
+		}
 		return ret;
 	}
 

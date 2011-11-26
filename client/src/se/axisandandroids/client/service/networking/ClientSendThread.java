@@ -34,11 +34,12 @@ public class ClientSendThread extends SendThreadSkeleton {
 
 		try {
 			// 2) Send commands via connection object
-			if (command instanceof Command) {
-				c.sendInt(((Command) command).cmd);
-			} else if (command instanceof ModeChange) {
+			if (command instanceof ModeChange) {
+				System.out.println("Dispatching Mode Change " + ((ModeChange) command).mode);
 				c.sendInt(((ModeChange) command).cmd);
 				c.sendInt(((ModeChange) command).mode);
+			} else if (command instanceof Command) {
+				c.sendInt(((Command) command).cmd);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

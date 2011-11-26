@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.Command;
+import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.buffer.Frame;
 import se.axisandandroids.networking.Connection;
@@ -14,7 +15,8 @@ public class ServerSendThread extends SendThreadSkeleton {
 
 	protected final int BUFFERSIZE = 10;
 	public CircularBuffer mailbox; // Command mailbox for this ServerSendThread.
-
+	//public FrameBuffer frame_buffer;
+	
 	// In a multi client setup a list with subscribing clients connection 
 	// objects would be appropriate or some MultiConnection object. 
 
@@ -30,6 +32,11 @@ public class ServerSendThread extends SendThreadSkeleton {
 	protected void perform() {
 		// 1) Wait for message with commands to be put in buffer.
 		Object command = mailbox.get();
+		
+		
+		if (command instanceof Command) {
+			System.out.println(">>>> MODE CHANGE <<<<");
+		}
 //		
 //		if (command == null) {
 //			System.out.println("COMMAND = NULL, SOMETHING IS VERY WRONG");
@@ -44,11 +51,14 @@ public class ServerSendThread extends SendThreadSkeleton {
 			if (command instanceof Frame) {
 				c.sendImage(((Frame) command).x, 0, ((Frame) command).len);
 			} else if (command instanceof ModeChange) {
+				System.out.println("Server Sending Mode Change.");
 				c.sendInt(((ModeChange) command).cmd);
 				c.sendInt(((ModeChange) command).mode);
 			} else if (command instanceof Command) {
 				c.sendInt(((Command) command).cmd);
-			} 
+			} else {
+				System.out.println("Unknown Command!");
+			}
 		} catch (IOException e) {
 			System.err.println("Send Fail.");
 			e.printStackTrace();
