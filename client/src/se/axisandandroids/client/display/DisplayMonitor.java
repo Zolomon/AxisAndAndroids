@@ -1,6 +1,6 @@
 package se.axisandandroids.client.display;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -14,24 +14,33 @@ public class DisplayMonitor {
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;
 	
-	private LinkedList<CircularBuffer> mailboxes;
-
-
-	public DisplayMonitor() {
-		 mailboxes = new LinkedList<CircularBuffer>();
-	}
-
+	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	private final long DELAY_TERM = 0;
-	private final long MAXERROR = 200;
+//	private final long MAXERROR = 200;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long t0 = 0;
 	private long lag = 0;
+	
 
+	public DisplayMonitor() {}
+
+
+	
+
+	
+	public synchronized void putTimestamp(long timestamp) {
+		timestamps.offer(timestamp);
+	}
+	
+	public synchronized long pollTimestamp() {
+		return timestamps.poll();
+	}
+		
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
-
+		
 		/* No old showtime exists for ANY frame, display now! */
 		if (t0 <= 0) {
 			t0 = System.currentTimeMillis();
@@ -40,7 +49,7 @@ public class DisplayMonitor {
 			return t0 - timestamp;	
 		}
 
-		timestamps.offer(timestamp); // Register timestamp in queue	
+		timestamps.offer(timestamp);
 
 		/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
 		long showtime_new = lag + timestamp;				
@@ -49,49 +58,53 @@ public class DisplayMonitor {
 		/* Wait until it is:
 		 * 1) The right time.
 		 * 2) timestamp less than all other timestamps.				*/
+		
 		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
-			wait(diffTime);		
+			Thread.sleep(diffTime);		
 		} 
 		
 		while (timestamp > timestamps.peek()) {
 			wait();
 		}
-
-		timestamps.remove(); // This timestamp is done
+				
 		
-		notifyAll();
 		
 		/* SHOW TIME */
 		showtime_new = System.currentTimeMillis();
 
+		/*
 		if (Math.abs(showtime_new - (lag + timestamp)) > MAXERROR) {
 			System.err.println("Error got a bit big increasing the lag.");
 			lag += DELAY_TERM;
 		}
+		*/
 
-		
-		long delay = showtime_new - timestamp;
-		
-		/* Time between this frame and the last shown */						// RESOLVE
-		if (Math.abs(other_delay - delay) >= DELAY_SYNCMODE_THRESHOLD_MS) {	
-			sync_mode = Protocol.SYNC_MODE.AUTO;
-		}
-		other_delay = delay;		
+		timestamps.remove();
+		notifyAll();
 
 		/* Calculate and return delay */
+		long delay = showtime_new - timestamp;						
+		chooseSyncMode(Thread.currentThread().getId(), delay);
+	
+
 		return delay; // The real delay
 	}
+		
 	
-	private long other_delay = 0;
+	long id_last = 0;
+	long delay_last = 0;
 	
-	public synchronized int chooseSyncMode(long delay) {		
-		if (Math.abs(other_delay - delay) < DELAY_SYNCMODE_THRESHOLD_MS) {
-			sync_mode = Protocol.SYNC_MODE.SYNC;
-		} else {
-			sync_mode = Protocol.SYNC_MODE.AUTO;
-		}
-		other_delay = delay;
-		return sync_mode;
+	public synchronized void chooseSyncMode(Long id, Long delay) {							
+		if (id != id_last) {
+			long dist = Math.abs(delay_last - delay);
+			if (dist >= DELAY_SYNCMODE_THRESHOLD_MS) {
+				sync_mode = Protocol.SYNC_MODE.AUTO;
+			} else {
+				sync_mode = Protocol.SYNC_MODE.SYNC;
+			}
+			id_last = Thread.currentThread().getId();
+			delay_last = delay;		
+		}		
 	}
 	
 	
@@ -104,14 +117,12 @@ public class DisplayMonitor {
 		mailboxes.remove(mailbox);		
 	}
 	
-	public synchronized void postToAllMailboxes(Object msg) {		
-		Iterator<CircularBuffer> iter = mailboxes.iterator();
-		while (iter.hasNext()) {
-			iter.next().put(msg);
-		}	
+	public synchronized void postToAllMailboxes(Object msg) {	
+		System.out.println("Posting command to all ClientSendThreads.");
+		for (CircularBuffer mb : mailboxes) {
+			mb.put(msg);
+		}
 	}
-
-	
 
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;

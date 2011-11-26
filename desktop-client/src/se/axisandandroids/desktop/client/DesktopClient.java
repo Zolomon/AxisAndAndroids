@@ -10,6 +10,7 @@ import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
+import se.axisandandroids.desktop.display.DesktopGUI;
 
 
 public class DesktopClient {
@@ -87,7 +88,6 @@ public class DesktopClient {
 		for (int i = 0; i < nCameras; ++i) {
 			hosts[i] = args[2*i];
 			ports[i] = Integer.parseInt(args[2*i+1]);
-
 			try {
 				addrs[i] = InetAddress.getByName(hosts[i]);			
 			} catch (UnknownHostException e) {
@@ -100,8 +100,9 @@ public class DesktopClient {
 		/* THE FUN STARTS HERE */
 		DisplayMonitor dm = new DisplayMonitor();	
 
+		
 		for (int i = 0; i < nCameras; ++i) {
-			System.out.println("Connecting to Camera: " + i);
+			System.out.println("Connecting to Camera Server: " + i);
 			DesktopClient client0 = new DesktopClient(addrs[i], ports[i]);
 			client0.runDesktopClient(dm);
 		}

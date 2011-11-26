@@ -71,18 +71,14 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	 * display mode MOVIE and it is handled here and forwarded to other cameras.
 	 */
 	protected void handleDispMode() {
-		int disp_mode = -1;
+		System.out.println("Handling Display Mode.");
 		try {
-			disp_mode = c.recvDisplayMode();
+			int disp_mode = c.recvDisplayMode();
+			disp_monitor.setDispMode(disp_mode);			
+			disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));				
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		if (disp_mode != -1) {
-			disp_monitor.setDispMode(disp_mode);			
-			if (disp_mode == Protocol.DISP_MODE.MOVIE) {			
-				disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));				
-			}
-		}
+		}			
 	}
 
 	protected void handleConnected() {

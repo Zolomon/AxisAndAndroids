@@ -15,6 +15,7 @@ public class FakeCameraServer {
 
 	private final static int default_port = 6000;
 	private int port;
+	private int nClients = 0;
 	private ServerSocket servSocket = null;
 	private Connection con;
 	private CameraMonitor cm;
@@ -22,15 +23,11 @@ public class FakeCameraServer {
 	private ServerReceiveThread receiveThread;
 	private ServerSendThread sendThread;	
 	private Axis211A myCamera;
-	private String host = "localhost";
 	private MotionDetector md;
 
 
 	public static void main(String[] args) {
-
-		int defport = default_port;
-		boolean http = false;
-		boolean fake = false;
+		int port = default_port;
 
 		for (int argc = 0; argc < args.length; ++argc) {
 			if (args[argc].equals("-help")) {
@@ -39,17 +36,15 @@ public class FakeCameraServer {
 				System.out.println("\t-help  - Show help.");
 				System.exit(0);
 			} 
-			else defport = Integer.parseInt(args[argc]);			
+			else port = Integer.parseInt(args[argc]);			
 		}
 
-
 		System.out.println("Big brother is watching you all, Axis and Androids...");
-
-		FakeCameraServer serv = new FakeCameraServer(defport, http, fake);
+		FakeCameraServer serv = new FakeCameraServer(port);
 		serv.listenForConnection();
 	}
 
-	public FakeCameraServer(int port, boolean http, boolean fake) {
+	public FakeCameraServer(int port) {
 		this.port = port;
 
 		myCamera = new Axis211A();
@@ -61,6 +56,7 @@ public class FakeCameraServer {
 			System.out.printf("Could not listen on port: %d", port);
 			System.exit(1);
 		}
+		
 		System.out.println("Camera Server up and running...");
 	}
 
@@ -70,19 +66,19 @@ public class FakeCameraServer {
 
 		while (true) {
 			Socket clientSocket = null;
-			try {
+			System.out.println("Ready to accept...");
+			try {				
 				clientSocket = servSocket.accept();
 			} catch (IOException e) {
-				System.out.printf("Accept failed: %d", port);
+				System.out.printf("Accept failed: %d\n", port);
 				System.exit(1);
 			}
 
-			System.out.printf("Serving client: %s\n", clientSocket
-					.getInetAddress().toString());
-
+			System.out.printf("Serving client %d: %s\n", ++nClients, 
+					clientSocket.getInetAddress().toString());
+			
 			
 			/* Handle the client some way !!! */ 
-
 			servClient(clientSocket);						
 		}
 	}

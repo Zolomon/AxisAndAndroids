@@ -12,6 +12,10 @@ import se.lth.cs.cameraproxy.MotionDetector;
 public class CameraServer {
 
 	private final static int default_port = 6000;
+	private final static String default_camhost  = "argus-8.student.lth.se";
+	private final static int default_camport = 4321;
+	private int nClients = 0;
+	
 	private int listenPort;
 	private ServerSocket servSocket = null;
 	private Connection con;
@@ -22,25 +26,26 @@ public class CameraServer {
 	private Axis211A myCamera;
 	private JPEGHTTPServerThread httpServer;
 	private MotionDetector md;
-	private String host = "argus-8.student.lth.se";
-	private int cameraPort = 4321;
-
+	
+	
+	
 	public static void main(String[] args) {
 
-		int listenPort = default_port;
-		int camport = 4321;
-		String camhost = "argus-8.student.lth.se";
-		boolean http = false;
+		int listenPort 	= default_port;
+		int camport 	= default_camport;
+		String camhost	= default_camhost;
+		boolean http 	= false;
 
+		
 		for (int argc = 0; argc < args.length; ++argc) {
 			if (args[argc].equals("-http"))
 				http = true;
 			else if (args[argc].equals("-help")) {
 				System.out.println("Usage: CameraServer [options] [port]");
 				System.out.println("Options:");
-				System.out
-						.println("\t-http  - Run tiny http server as well as camera server.");
-				System.out.println("\t-help  - Show help.");
+				System.out.println("\t-camera <host> <port> - Show help.");
+				System.out.println("\t-http - Run tiny http server as well as camera server.");
+				System.out.println("\t-help - Show help.");
 				System.exit(0);
 			} else if (args[argc].equals("-camera")) {
 				camhost = args[++argc];
@@ -49,25 +54,23 @@ public class CameraServer {
 			else listenPort = Integer.parseInt(args[argc]);
 		}
 
-		System.out
-				.println("Big brother is watching you all, Axis and Androids...");
+		System.out.println("Big brother is watching you all, Axis and Androids...");
 
+		
 		CameraServer serv = new CameraServer(listenPort, camhost, camport, http);
 		serv.listenForConnection();
 	}
 
 	public CameraServer(int listenPort, String camhost, int camport, boolean http) {
-		this.listenPort = listenPort;
-		
-		this.host = camhost;
-		this.cameraPort = camport;
+		this.listenPort = listenPort;		
 
-		myCamera = new Axis211A(host, cameraPort);
-		md = new MotionDetector(host, cameraPort);
+		myCamera = new Axis211A(camhost, camport);
+		md = new MotionDetector(camhost, camport);
 
 		if (http) {
 			httpServer = new JPEGHTTPServerThread(8080, myCamera);
 			httpServer.start();
+			System.out.println("HTTP server started.");
 		}
 
 		try {
@@ -79,6 +82,7 @@ public class CameraServer {
 		System.out.println("Camera Server up and running...");
 	}
 
+	
 	private void listenForConnection() {
 
 		System.out.printf("Listening on port: %d\n", listenPort);
@@ -93,8 +97,8 @@ public class CameraServer {
 				System.exit(1);
 			}
 
-			System.out.printf("Serving client: %s\n", clientSocket
-					.getInetAddress().toString());
+			System.out.printf("Serving client %d: %s\n", ++nClients, 
+					clientSocket.getInetAddress().toString());
 
 			/* Handle the client some way !!! */
 
@@ -107,6 +111,7 @@ public class CameraServer {
 		}
 	}
 
+	
 	private void servClient(Socket clientSock) {
 		con = new Connection(clientSock);
 		cm = new CameraMonitor();
@@ -117,5 +122,6 @@ public class CameraServer {
 		sendThread.start();
 		ct.start();
 	}
+	
 
 }

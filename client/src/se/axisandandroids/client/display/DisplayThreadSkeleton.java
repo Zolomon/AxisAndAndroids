@@ -8,14 +8,15 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 30;
-		protected final int INITIAL_BUFFER_WAIT_MS = 1500;
+		protected final int BUFFERSIZE = 10;
+		protected final int INITIAL_BUFFER_WAIT_MS = 500;
+				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		protected final byte[] jpeg = new byte[FRAMESIZE];
 
 		protected DisplayMonitor disp_monitor;
 		public FrameBuffer mailbox;
-				
+		public volatile long delay;
 				
 		/**
 		 * DisplayThread superclass.
@@ -24,6 +25,7 @@ public class DisplayThreadSkeleton extends Thread {
 		public DisplayThreadSkeleton(DisplayMonitor disp_monitor) {
 			this.disp_monitor = disp_monitor;
 			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
+			this.setPriority(MAX_PRIORITY);			
 		}
 				
 		
@@ -38,31 +40,35 @@ public class DisplayThreadSkeleton extends Thread {
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
-								
+				
 				try {
 					if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
 					} else {
-						delay = asyncFrames(timestamp);
+						//delay = asyncFrames(timestamp);
+						delay = asyncAsFastAsPossible(timestamp);								
 					}										
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted");
 					e.printStackTrace();
 				}
 				
-				showImage(delay, len); // Override for Platform Dependent show image
+				showImage(timestamp, delay, len); // Override for Platform Dependent show image
 			}
 		}
 		
 		
+		protected long asyncAsFastAsPossible(long timestamp) {
+			delay = System.currentTimeMillis() - timestamp;
+			disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
+			return delay;
+		}
+		
 		private long t0 = 0;
-		private long lag = 0;
-		//private long other_delay = 0; 															// RESOLVE
-		
-		
-		
-		
-		protected synchronized long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?
+		private long lag = 0;		
+						
+		protected long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?
+						
 			/* No old showtime exists for ANY frame, display now! */
 			if (t0 <= 0) {
 				t0 = System.currentTimeMillis();
@@ -77,20 +83,11 @@ public class DisplayThreadSkeleton extends Thread {
 			/* Wait until it is:
 			 * 1) The right time. */
 			while ((diffTime = showtime - System.currentTimeMillis()) > 0) {
-				wait(diffTime);		
+				sleep(diffTime);		
 			} 		
 			
-			long delay = System.currentTimeMillis() - timestamp;
-			
-			
-			//disp_monitor.chooseSyncMode(delay);			
-			/*
-			if (Math.abs(other_delay - delay) < disp_monitor.DELAY_SYNCMODE_THRESHOLD_MS) {
-				disp_monitor.setSyncMode(Protocol.SYNC_MODE.SYNC);
-			} 
-			other_delay = delay;
-			*/
-			
+			delay = System.currentTimeMillis() - timestamp;
+									
 			return delay; // The real delay
 		}
 		
@@ -100,7 +97,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 * Override this for platform dependent GUI.
 		 * @param delay, show time delay.
 		 */
-		protected void showImage(long delay, int len) {
+		protected void showImage(long timestamp, long delay, int len) {
 			// Override for Platform Dependent show image
 			System.out.printf("Delay: %d\n", delay);
 		}

@@ -17,7 +17,7 @@ public class DisplayThread extends DisplayThreadSkeleton {
 	}
 
 	@Override 
-	protected void showImage(long delay, int len) {		
+	protected void showImage(long timestamp, long delay, int len) {		
 		mNewImageCallback.newImage(BitmapFactory.decodeByteArray(jpeg, 0, len));
 		//System.out.printf("Delay: %d", delay);
 

@@ -13,7 +13,7 @@ public class ClientSendThread extends SendThreadSkeleton {
 
 	private DisplayMonitor disp_monitor;
 
-	private final int BUFFERSIZE = 5;
+	private final int BUFFERSIZE = 10;
 	public CircularBuffer mailbox;
 
 
