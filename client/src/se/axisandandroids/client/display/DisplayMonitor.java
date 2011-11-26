@@ -11,7 +11,7 @@ import se.axisandandroids.networking.Protocol;
 public class DisplayMonitor {
 	
 	private int disp_mode = Protocol.DISP_MODE.AUTO;
-	private int sync_mode = Protocol.SYNC_MODE.SYNC;
+	private int sync_mode = Protocol.SYNC_MODE.AUTO;
 
 	
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
