@@ -26,6 +26,7 @@ public class RenderActivity extends Activity {
 	private CtrlService mService;
 	private LinearLayout mLinearLayout;
 	private LayoutInflater mLayoutInflater;
+	private boolean mPaused;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,20 +43,37 @@ public class RenderActivity extends Activity {
 				Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "" + res);
 	}
-
-//	@Override
-//	protected void onResume() {
-//		super.onResume();
-//		for (Connection c : mService.mConnectionHandler.connections) {
-//			addPanel(c);
-//		}
-//
-//		mService.mConnectionHandler.connections.clear();
-//	}
 	
 	@Override
+	protected void onRestart() {
+		mService.playPanels();
+		super.onRestart();
+	}
+
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
+	// for (Connection c : mService.mConnectionHandler.connections) {
+	// addPanel(c);
+	// }
+	//
+	// mService.mConnectionHandler.connections.clear();
+	// }
+
+	@Override
 	protected void onStop() {
+		mService.pausePanels();
+		try {
+			//mService.disconnect();
+			unbindService(mConnection);
+		} catch (java.lang.IllegalArgumentException e) {
+			// Print to log or make toast that it failed
+		}
 		super.onStop();
+	}
+	
+	@Override
+	protected void onDestroy() {
 		// Unbind from the service
 		try {
 			mService.disconnect();
@@ -63,6 +81,7 @@ public class RenderActivity extends Activity {
 		} catch (java.lang.IllegalArgumentException e) {
 			// Print to log or make toast that it failed
 		}
+		super.onDestroy();
 	}
 
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -73,7 +92,8 @@ public class RenderActivity extends Activity {
 			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
 			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
 
-			for (Connection c : mService.mConnectionHandler.connectionIterator()) {
+			for (Connection c : mService.mConnectionHandler
+					.connectionIterator()) {
 				System.out.println("Connection ID: " + c.getId());
 				addPanel(c);
 			}
@@ -92,7 +112,8 @@ public class RenderActivity extends Activity {
 
 		mService.mConnectionHandler.add(c.getId(), new CameraTunnel(c, panel,
 				mService.dm, c.getId()));
-		mLinearLayout.addView(theInflatedPanel, new LayoutParams(LayoutParams.WRAP_CONTENT, 320));
+		mLinearLayout.addView(theInflatedPanel, new LayoutParams(
+				LayoutParams.WRAP_CONTENT, 320));
 	}
 
 	@Override

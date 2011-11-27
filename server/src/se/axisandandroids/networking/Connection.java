@@ -46,10 +46,7 @@ public class Connection {
 		this.sock = sock;	
 		myId = Connection.id++;
 		try {
-			//sock.setSoTimeout(10000);
 			sock.setTcpNoDelay(true);
-			//sock.setSendBufferSize(10*1024);
-			//sock.setReceiveBufferSize(10*1024);
 		} catch (SocketException e) {
 			System.err.println("Argh! socket slained without delay.");
 			System.exit(1);
@@ -80,6 +77,7 @@ public class Connection {
 	public void disconnect() {
 		System.out.printf("Disconnected: %s\n", sock.getInetAddress().toString());
 		try {
+			System.out.println("Is null: " + (is == null) +", "+ (os == null) +", "+ (sock == null));			
 			is.close();
 			os.close();
 			sock.close();

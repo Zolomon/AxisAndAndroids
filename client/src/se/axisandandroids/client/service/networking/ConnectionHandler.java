@@ -59,4 +59,16 @@ public class ConnectionHandler {
 	public List<Connection> connectionIterator() {
 		return Collections.unmodifiableList(connections);
 	}
+
+	public void playPanels() {
+		for(CameraTunnel c : tunnels.values()) {
+			c.playPanel();
+		}
+	}
+
+	public void pausePanels() {
+		for(CameraTunnel c : tunnels.values()) {
+			c.pausePanel();
+		}
+	}
 }
