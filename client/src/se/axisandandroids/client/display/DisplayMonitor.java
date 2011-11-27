@@ -3,15 +3,29 @@ package se.axisandandroids.client.display;
 import java.util.PriorityQueue;
 
 public class DisplayMonitor extends DisplayMonitorSkeleton {
-
+	private long t0;
+	private long lag;
+	private final long DELAY_TERM=10;
+	
 	public DisplayMonitor() {
 	}
 
 	@Override
 	public synchronized long syncFrames(long timestamp)
 			throws InterruptedException {
+		
+		long timestamp_new = timestamp; 
 
-		timestamps.offer(timestamp);
+		/* No old showtime exists for ANY frame, display now! */
+		
+		if (t0 <= 0) {
+			t0 = System.currentTimeMillis();
+			lag = t0 - timestamp;
+			lag += DELAY_TERM;
+			return t0 - timestamp;			
+		}
+		
+//		timestamps.offer(timestamp);
 
 		/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
 		long showtime_new = lag + timestamp;

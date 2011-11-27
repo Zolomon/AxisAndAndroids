@@ -10,7 +10,7 @@ public class DisplayMonitorSkeleton {
 	protected int disp_mode;
 	protected int sync_mode = Protocol.SYNC_MODE.AUTO;
 	protected final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
-	protected final long DELAY_SYNCMODE_THRESHOLD_MS = 100;
+	protected final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	protected long id_last = 0;
 	protected long delay_last = 0;
 
@@ -26,6 +26,7 @@ public class DisplayMonitorSkeleton {
 	 */
 	protected synchronized long syncFrames(long timestamp)
 			throws InterruptedException {
+		return System.currentTimeMillis() - timestamp;
 	}
 
 	protected synchronized int chooseSyncMode(long id, long delay) {
