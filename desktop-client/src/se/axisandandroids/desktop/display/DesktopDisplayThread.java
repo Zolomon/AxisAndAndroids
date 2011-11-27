@@ -38,6 +38,8 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		/* -------------------------------------  First Image is Special */
 		len = mailbox.get(jpeg);
 		timestamp = getTimestamp();
+		timestamp = timestamp - 3600000; // -------------------------------> GMT+1
+
 		int sync_mode;
 		
 		try {
@@ -66,7 +68,8 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		while (! interrupted()) {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
-			
+			timestamp = timestamp - 3600000; // -------------------------------> GMT+1
+
 
 			try {
 				sync_mode = disp_monitor.getSyncMode();
@@ -97,7 +100,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		}
 	}
 
-	protected void showFirstImage(long timestamp, long delay, int len) {				
+	protected void showFirstImage(long timestamp, long delay, int len) {			
 		System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t Timestamp: %15d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
 		gui.firstImage(this, jpeg, delay); 
 	}

@@ -18,12 +18,12 @@ public class DisplayMonitor {
 
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
-	public final long DELAY_SYNCMODE_THRESHOLD_MS = 100;
-	private final long DELAY_TERM = 10;
+	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
+	private final long DELAY_TERM = 20;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long t0 = 0;
-	private long lag = 0;
+	private long lag = 20;
 
 
 	public DisplayMonitor() {}
