@@ -27,10 +27,21 @@ public class Connection {
 	private final byte[] readintbuffer = new byte[4]; 
 
 	
+	/**
+	 * 
+	 * @param host
+	 * @param port
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
 	public Connection(String host, int port) throws UnknownHostException, IOException {
 		this(new Socket(host, port));
 	}
 
+	/**
+	 * Creates a new connection at the specified socket
+	 * @param sock The socket at which to create a connection.
+	 */
 	public Connection(Socket sock) {
 		this.sock = sock;	
 		myId = Connection.id++;
@@ -61,7 +72,9 @@ public class Connection {
 		System.out.printf("New Connection: %s\n", sock.getInetAddress().toString());
 	}
 
-
+/**
+ * Close the connection and kill the socket.
+ */
 	public void disconnect() {
 		System.out.printf("Disconnected: %s\n", sock.getInetAddress().toString());
 		try {
@@ -75,7 +88,11 @@ public class Connection {
 		sock = null; // etc... // other threads
 	}
 
-
+/** 
+ * Send an image.
+ * @param data A byte vector with the image-data
+ * @throws IOException
+ */
 	public void sendImage(byte[] data) throws IOException {		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);				
@@ -83,6 +100,13 @@ public class Connection {
 		os.flush();
 	}
 
+	/**
+	 * Send an image.
+	 * @param data A byte vector with data.
+	 * @param a This is the vector index at which the image begins.
+	 * @param b This is the vector index at which the image ends.
+	 * @throws IOException
+	 */
 	public void sendImage(byte[] data, int a, int b) throws IOException {
 		int len = b - a;		
 		sendInt(Protocol.COMMAND.IMAGE);
@@ -91,6 +115,12 @@ public class Connection {
 		os.flush();
 	}
 
+	/**
+	 * Receive an image.
+	 * @param b A byte vector with data.
+	 * @return The number of bytes read.
+	 * @throws IOException
+	 */
 	public int recvImage(byte[] b) throws IOException {				
 		int len = recvInt();				
 		int status = 0;
@@ -112,25 +142,46 @@ public class Connection {
 		}		
 		return bytes_read;
 	}
-
+/**
+ * Send display mode
+ * @param disp_mode An integer that specifies the display mode.
+ * @throws IOException
+ */
 	public void sendDisplayMode(int disp_mode) throws IOException {
 		sendInt(Protocol.COMMAND.DISP_MODE);
 		sendInt(disp_mode);
 	}
-
+/**
+ * Receive display mode.
+ * @return An integer specifies the display mode.
+ * @throws IOException
+ */
 	public int recvDisplayMode() throws IOException { 		
 		return recvInt();
 	}
 
+	/**
+	 * Send sync mode.
+	 * @param sync_mode An integer that specifies the sync mode.
+	 * @throws IOException
+	 */
 	public void sendSyncMode(int sync_mode) throws IOException {
 		sendInt(Protocol.COMMAND.SYNC_MODE);
 		sendInt(sync_mode);
 	}
-
+/**
+ * Receive sync mode.
+ * @return An integer specifies the sync mode.
+ * @throws IOException
+ */
 	public int recvSyncMode() throws IOException { 
 		return recvInt();
 	}
-
+/**
+ * Sends an integer to the buffer. This is used to send the sync and display modes.
+ * @param nbr The integer that specifies the mode.
+ * @throws IOException
+ */
 	public void sendInt(int nbr) throws IOException {
 		sendintbuffer[0] = (byte) ( (nbr & 0xff000000) >> 24 );
 		sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
@@ -145,7 +196,11 @@ public class Connection {
 		os.write( (nbr & 0x000000ff) 		);
 		os.flush();								*/
 	}
-
+/**
+ * Reads an integer from the buffer. This is used to receive the sync and display modes.
+ * @return The integer that specifies the mode. 
+ * @throws IOException
+ */
 	public int recvInt() throws IOException {	
 		int status = 0;
 		int bytes_read = 0;
@@ -174,11 +229,17 @@ public class Connection {
 		return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 		 */			
 	}		
-
+/**
+ * 
+ * @return A string with the host name
+ */
 	public String getHost() { 
 		return host; 
 	}
-
+/**
+ * 
+ * @return An integer with the port number.
+ */
 	public int getPort() { 
 		return port; 
 	}
