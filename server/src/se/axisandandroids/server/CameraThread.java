@@ -40,7 +40,7 @@ public class CameraThread extends Thread {
 		this.frame_buffer = frame_buffer;
 		this.md = md;
 	}
-
+/** While the camera is connected: receive images according to the display mode */
 	public void run() {
 		if (cameraConnect()) {
 			while (!interrupted()) {
@@ -101,7 +101,8 @@ public class CameraThread extends Thread {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 			mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
 			System.out.println("Motion detected!");
-		} else
+		} else {
 			System.out.println("No motion");
+		}
 	}
 }

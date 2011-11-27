@@ -37,14 +37,21 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		
 		/* -------------------------------------  First Image is Special */
 		len = mailbox.get(jpeg);
-		timestamp = getTimestamp();		
+		timestamp = getTimestamp();
+		int sync_mode;
+		
 		try {
-			if (disp_monitor.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
+			sync_mode = disp_monitor.getSyncMode();
+			if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 				delay = disp_monitor.syncFrames(timestamp);
-			} else {
+			} else if (sync_mode == Protocol.SYNC_MODE.AUTO){
 				//delay = asyncFrames(timestamp);
-				delay = asyncAsFastAsPossible(timestamp);								
-			}					
+				delay = asyncAsFastAsPossible(timestamp);	
+				disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
+			} else { // sync_mode == Protocol.SYNC_MODE.ASYNC
+				//delay = asyncFrames(timestamp);
+				delay = asyncAsFastAsPossible(timestamp);	
+			}						
 			showFirstImage(timestamp, delay, len);
 		} catch (InterruptedException e) {							// ACTION
 			System.err.println("syncFrames got interrupted!");
@@ -60,15 +67,19 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
 			
-			int sync_mode = disp_monitor.getSyncMode();
 
 			try {
+				sync_mode = disp_monitor.getSyncMode();
 				if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 					delay = disp_monitor.syncFrames(timestamp);
-				} else {
+				} else if (sync_mode == Protocol.SYNC_MODE.AUTO){
 					//delay = asyncFrames(timestamp);
-					delay = asyncAsFastAsPossible(timestamp);								
-				}		
+					delay = asyncAsFastAsPossible(timestamp);	
+					disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
+				} else { // sync_mode == Protocol.SYNC_MODE.ASYNC
+					//delay = asyncFrames(timestamp);
+					delay = asyncAsFastAsPossible(timestamp);	
+				}				
 				showImage(timestamp, delay, len, sync_mode);
 			} catch (InterruptedException e) {
 				System.err.println("syncFrames got interrupted");
@@ -87,14 +98,16 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	
 	private long timeforfps;
 	private long countforfps;
-	
+	private double fps = 1;
+
 	protected void showImage(long timestamp, long delay, int len, int sync_mode) {
-		++countforfps;		
+		++countforfps;
+		
 		if (countforfps % 100 == 0) {
+			fps = 1000*countforfps/(double)(System.currentTimeMillis() - timeforfps);
 			timeforfps = System.currentTimeMillis();
 			countforfps = 1;
 		}				
-		double fps = 1000*countforfps/(double)(1+System.currentTimeMillis() - timeforfps);
 		
 		System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t FPS: %10.2f\t Buffer Fill: %10d\n", 
 						   this.getId(), delay, disp_monitor.getSyncMode(), fps, mailbox.nAvailable());

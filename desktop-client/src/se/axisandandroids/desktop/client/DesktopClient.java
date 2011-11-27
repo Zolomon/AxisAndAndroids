@@ -21,12 +21,20 @@ public class DesktopClient {
 	private LinkedList<Thread> threads = new LinkedList<Thread>();
 
 
+	/**
+	 * Create a Desktop Client instance with one display.
+	 * @param host,	camera server host.
+	 * @param port, camera server host.
+	 */
 	public DesktopClient(InetAddress host, int port) {
 		this.host = host;
 		this.port = port;
 		connect();		
 	}
 
+	/**
+	 * Set up socket.
+	 */
 	public void connect() {
 		try {
 			socket = new Socket(host, port);
@@ -40,11 +48,22 @@ public class DesktopClient {
 		System.out.println("Connection Setup Complete: " + host +":"+port);
 	}
 
+	/**
+	 * Close socket.
+	 * @throws IOException
+	 */
 	public void disconnect() throws IOException {
 		socket.close();
 		System.out.println("Client disconnected.");
 	}
 
+	
+	/**
+	 * Create the Desktop Client instace's threads, add them to list threads
+	 * to await startup.
+	 * @param dm, display monitor.
+	 * @param gui, DesktopGUI instance.
+	 */
 	public void runDesktopClient(DisplayMonitor dm, DesktopGUI gui) {		
 
 		System.out.println("** Desktop Client");
@@ -75,6 +94,9 @@ public class DesktopClient {
 
 	}		
 
+	/**
+	 * Start threads in list threads.
+	 */
 	public void startThreads() {
 		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
 		for (Thread t : threads) 
@@ -82,11 +104,19 @@ public class DesktopClient {
 	}
 
 
+	
+	/**
+	 * Main program for Desktop Client. Has capability to start multiple
+	 * Desktop Client instances in a common DesktopGUI and a common DisplayMonitor.
+	 * Note: the GUI does not show up until first image is received.
+	 * @param args, [<camera_server_host> <port> [<camera_server_host> <port>]]
+	 */
 	public static void main(String[] args) {
 
 		int nCameras = args.length/2;	
 
 		if (nCameras == 0) {
+			/* No command line arguments, assume some defaults. */
 			InetAddress addr = null;
 			try {
 				addr = InetAddress.getByName("localhost");			
@@ -100,10 +130,10 @@ public class DesktopClient {
 			System.exit(0);
 		}
 
+		/* Command line argument parsing */
 		String[] hosts = new String[nCameras];
 		int[] ports = new int[nCameras];
 		InetAddress[] addrs = new InetAddress[nCameras];
-
 		for (int i = 0; i < nCameras; ++i) {
 			hosts[i] = args[2*i];
 			ports[i] = Integer.parseInt(args[2*i+1]);
@@ -114,7 +144,6 @@ public class DesktopClient {
 				System.exit(1);
 			}
 		}
-
 
 		/* THE FUN STARTS HERE */
 		DisplayMonitor dm = new DisplayMonitor();	
@@ -133,8 +162,7 @@ public class DesktopClient {
 			clients[i].startThreads();
 		}
 
-
-		// WAIT for threads to finish before disconnecting !!!
+		/* WAIT for threads to finish before disconnecting. */
 		try {
 			Thread.currentThread().join();
 			for (int i = 0; i < nCameras; ++i) {

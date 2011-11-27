@@ -32,6 +32,11 @@ public class DesktopGUI extends JFrame {
 	private JButton dispModeButton;
 
 	
+	/**
+	 * Create a DesktopGUI instance. DisplayThreads have to register to the
+	 * DesktopGUI for any action to occur.
+	 * @param dm, a DiplayMonitor for synchronizing.
+	 */
 	public DesktopGUI(DisplayMonitor dm) {
 		super();
 		this.dm = dm;
@@ -43,6 +48,14 @@ public class DesktopGUI extends JFrame {
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);		
 	}
 
+	
+	/**
+	 * Create a DesktopGUI instance. This constructor registers the specified 
+	 * DisplayThread automatically. Other DisplayThreads have to register to the
+	 * DesktopGUI if they should be included in the setup.
+	 * @param dm, a DiplayMonitor for synchronizing.
+	 * @param ddt, the DisplayThread.
+	 */
 	public DesktopGUI(DisplayMonitor dm, DesktopDisplayThread ddt) {
 		super();
 		this.dm = dm;
@@ -56,13 +69,17 @@ public class DesktopGUI extends JFrame {
 		this.registerDisplayThread(ddt);			
 	}
 	
+	/**
+	 * Pack up the GUI before show time. Call this when all DisplayThreads are
+	 * registered.
+	 */
 	public void packItUp() {
 		System.out.println("Packing...");
 		addButtons();
 		this.setLocationRelativeTo(null);				
 		this.pack();
 	}
-	
+		
 	private void addButtons() {
 		System.out.println("Adding buttons...");
 
@@ -75,6 +92,10 @@ public class DesktopGUI extends JFrame {
 		controlAreaPanel.add(syncModeButton);
 	}
 
+	/**
+	 * Register a DisplayThread to the DesktopGUI.
+	 * @param ddt, the DisplayThread.
+	 */
 	public void registerDisplayThread(DesktopDisplayThread ddt) {		
 		System.out.println("Register Display Thread");						
 		ImagePanel imagePanel = new ImagePanel();
@@ -82,6 +103,10 @@ public class DesktopGUI extends JFrame {
 		imageAreaPanel.add(imagePanel);				
 	}
 
+	/**
+	 * Deregister a DisplayThread from the DesktopGUI.
+	 * @param ddt, the DisplayThread.
+	 */
 	public void deregisterDisplayThread(DesktopDisplayThread ddt) {
 		System.out.println("Deregister Display Thread");
 		ImagePanel ip = imagePanels.get(ddt.hashCode());			
@@ -91,6 +116,13 @@ public class DesktopGUI extends JFrame {
 
 	private int firstImageCount = 0;
 	
+	
+	/**
+	 * Resolve special treating of first Image from respective DisplayThread.
+	 * @param ddt, DisplayThread.
+	 * @param jpeg, the image.
+	 * @param delay, the delay of image jpeg.
+	 */
 	public void firstImage(DesktopDisplayThread ddt, byte[] jpeg, long delay) {
 		imagePanels.get(ddt.hashCode()).refresh(jpeg, delay);		
 		if (++firstImageCount == imagePanels.size()) { 
@@ -99,6 +131,7 @@ public class DesktopGUI extends JFrame {
 			this.setVisible(true);
 		}
 	}
+	
 	
 	public void refreshImage(DesktopDisplayThread ddt, byte[] jpeg, long delay) {				
 		imagePanels.get(ddt.hashCode()).refresh(jpeg, delay);
