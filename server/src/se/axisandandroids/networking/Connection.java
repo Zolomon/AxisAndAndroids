@@ -251,4 +251,8 @@ public class Connection {
 		return host +":"+port;
 	}
 
+	public boolean isConnected() {
+		return sock != null && !sock.isClosed() && sock.isConnected(); 
+	}
+
 }

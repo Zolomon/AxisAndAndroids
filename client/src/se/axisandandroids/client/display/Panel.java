@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	private static int id;
@@ -20,6 +21,8 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint mPaintHUDText;
 	private NewImageCallback mNewImageCallback;
 	private String timeSinceLastImage;
+	private int mHeight;
+	private int mWidth;
 
 	public Panel(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -40,29 +43,29 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		myId = Panel.id++;
 		mBitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.ic_launcher);
-		
+
 		mNewImageCallback = new NewImageCallback() {
-			
+
 			public void newImage(Bitmap bitmap) {
 				mBitmap = bitmap;
 			}
 		};
-		
+
 		getHolder().addCallback(this);
 		mThread = new ViewThread(this);
 		mPaintHUDText = new Paint();
 		mPaintHUDText.setColor(Color.WHITE);
 		mPaintHUDText.setTextSize(20);
 	}
-	
+
 	public int getId() {
 		return myId;
 	}
-	
+
 	public NewImageCallback getNewImageCallback() {
 		return mNewImageCallback;
 	}
-	
+
 	public synchronized void setBitmap(Bitmap bitmap) {
 		mBitmap = bitmap;
 	}
@@ -70,12 +73,13 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	public void doDraw(long elapsedTime, Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
 		canvas.drawBitmap(mBitmap, 10, 10, null);
-		
+
 		doDrawHUD(elapsedTime, canvas);
 	}
-	
+
 	private void doDrawHUD(long elapsedTime, Canvas canvas) {
-		canvas.drawText("FPS: " + Math.round(1000f / elapsedTime), 20, 20, mPaintHUDText);
+		canvas.drawText("FPS: " + Math.round(1000f / elapsedTime), 20, 20,
+				mPaintHUDText);
 		canvas.drawText("Delay: " + timeSinceLastImage, 20, 30, mPaintHUDText);
 	}
 
@@ -96,11 +100,20 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 			mThread.setRunning(false);
 		}
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// Do stuff here when touched.
 		return super.onTouchEvent(event);
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		mHeight = 800 / id;
+		mWidth = 480 / id;
+
+		setMeasuredDimension(mWidth, mHeight);
+		mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
 	}
 }
 
@@ -110,7 +123,7 @@ class ViewThread extends Thread {
 	private boolean mRun = false;
 	private long mStartTime;
 	private long mElapsedTime;
-	
+
 	public ViewThread(Panel panel) {
 		mPanel = panel;
 		mHolder = mPanel.getHolder();
@@ -122,16 +135,17 @@ class ViewThread extends Thread {
 
 	@Override
 	public void run() {
-	    Canvas canvas = null;
-	    mStartTime = System.currentTimeMillis();
-	    while (mRun) {
-	        canvas = mHolder.lockCanvas();
-	        if (canvas != null) {
-	            mPanel.doDraw(mElapsedTime, canvas);
-	            mElapsedTime = System.currentTimeMillis() - mStartTime;
-	            mHolder.unlockCanvasAndPost(canvas);
-	        }
-	        mStartTime = System.currentTimeMillis();
-	    }
+		Canvas canvas = null;
+		System.out.println("Running ViewThread");
+		mStartTime = System.currentTimeMillis();
+		while (mRun) {
+			canvas = mHolder.lockCanvas();
+			if (canvas != null) {
+				mPanel.doDraw(mElapsedTime, canvas);
+				mElapsedTime = System.currentTimeMillis() - mStartTime;
+				mHolder.unlockCanvasAndPost(canvas);
+			}
+			mStartTime = System.currentTimeMillis();
+		}
 	}
 }

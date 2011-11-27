@@ -32,6 +32,12 @@ public class ConnectionHandler {
 		tunnels.remove(id);
 
 	}
+	
+	public void disconnect() {
+		for(CameraTunnel t : tunnels.values()) {
+			t.disconnect();
+		}
+	}
 
 	public void disconnect(int id) {
 		CameraTunnel c = tunnels.get(id);

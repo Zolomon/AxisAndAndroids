@@ -50,6 +50,10 @@ public class CtrlService extends android.app.Service {
 		Log.d(TAG, "onDestroy");
 		super.onDestroy();
 	}
+
+	public void disconnect() {
+		mConnectionHandler.disconnect();
+	}
 	
 	/* public methods for client */
 	
