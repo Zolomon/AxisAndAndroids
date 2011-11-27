@@ -270,9 +270,6 @@ public class TCP_Client {
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
 						len = con.recvImage(jpeg);	
-					} else if (cmd == Protocol.COMMAND.NOTOK) {
-						System.err.println("Server says not ok!");
-						System.exit(1);
 					} else {
 						System.err.println("Protocol Voilation!");
 						System.exit(1);

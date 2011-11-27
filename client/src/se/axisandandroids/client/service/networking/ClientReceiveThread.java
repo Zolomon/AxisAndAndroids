@@ -13,10 +13,9 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
-	protected DisplayMonitor disp_monitor;
-	protected FrameBuffer frame_buffer;	
+	protected final DisplayMonitor disp_monitor;
+	protected final FrameBuffer frame_buffer;	
 	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-
 	
 	/**
 	 * Create a ClientReceiveThread. 

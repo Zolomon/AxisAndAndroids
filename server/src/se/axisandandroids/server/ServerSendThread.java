@@ -13,15 +13,16 @@ import se.lth.cs.cameraproxy.Axis211A;
 
 public class ServerSendThread extends SendThreadSkeleton {
 
-	protected final int BUFFERSIZE = 5;
-	protected final int COMMAND_BUFFERSIZE = 3;
+	protected int BUFFERSIZE = 3;
+	protected int INITIAL_BUFFERWAIT_MS = 10;
+	protected int COMMAND_BUFFERSIZE = 3;
 	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
+		
+	public final CircularBuffer mailbox; 		// Command mailbox for this ServerSendThread.
+	public final FrameBuffer frame_buffer;		// Image mailbox
+	private final byte[] jpeg = new byte[FRAMESIZE];
 	
 	
-	public CircularBuffer mailbox; 		// Command mailbox for this ServerSendThread.
-	public FrameBuffer frame_buffer;	// Image mailbox
-
-	private byte[] jpeg = new byte[FRAMESIZE];
 	// In a multi client setup a list with subscribing clients connection 
 	// objects would be appropriate or some MultiConnection object. 
 
@@ -35,15 +36,15 @@ public class ServerSendThread extends SendThreadSkeleton {
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);	
 	}
 
-
-
+	public void run() {
+		frame_buffer.awaitBuffered(INITIAL_BUFFERWAIT_MS);
+		while (!interrupted()) {
+			perform();			
+		}		
+	}
+	
+	
 	protected void perform() {
-
-		// Possible:
-		// 		- image
-		//		- motion detected => display mode to movie change
-
-
 		// 1) Check for message with commands.
 		Object command = mailbox.tryGet();
 		
@@ -67,7 +68,6 @@ public class ServerSendThread extends SendThreadSkeleton {
 		}
 
 		// 3) Wait for image message.
-
 		int len = frame_buffer.get(jpeg);
 
 		try {

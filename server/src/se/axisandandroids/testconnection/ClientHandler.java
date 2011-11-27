@@ -224,7 +224,6 @@ public class ClientHandler extends Thread {
 				break;
 			default:
 				System.err.printf("Unknown Command %d\n", cmd);
-				con.sendInt(Protocol.COMMAND.NOTOK);
 				System.exit(1);
 				break;
 			}											

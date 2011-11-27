@@ -11,10 +11,9 @@ import se.axisandandroids.networking.SendThreadSkeleton;
 
 public class ClientSendThread extends SendThreadSkeleton {
 
-	private DisplayMonitor disp_monitor;
-
+	private final DisplayMonitor disp_monitor;
 	private final int BUFFERSIZE = 10;
-	public CircularBuffer mailbox;
+	public final CircularBuffer mailbox;
 
 
 	public ClientSendThread(Connection c, DisplayMonitor disp_monitor) {

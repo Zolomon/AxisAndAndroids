@@ -136,12 +136,12 @@ public class DesktopGUI extends JFrame {
 			icon = new ImageIcon();
 			JLabel label = new JLabel(icon);			
 			iconArea.add(label, BorderLayout.CENTER);
-			iconArea.setSize(200, 200);			
+			iconArea.setSize(320, 200);			
 			iconArea.setVisible(true);
 			delayLabel = new JLabel("Delay");			
 			this.add(iconArea, BorderLayout.CENTER);
 			this.add(delayLabel, BorderLayout.SOUTH);
-			this.setSize(250, 250);
+			this.setSize(320+50, 250);
 		}	
 		public void refresh(byte[] data, long delay) {
 			Image theImage = getToolkit().createImage(data);

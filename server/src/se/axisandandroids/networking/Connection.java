@@ -37,8 +37,8 @@ public class Connection {
 		try {
 			//sock.setSoTimeout(10000);
 			sock.setTcpNoDelay(true);
-			//sock.setSendBufferSize(1024);
-			//sock.setReceiveBufferSize(1024);
+			//sock.setSendBufferSize(10*1024);
+			//sock.setReceiveBufferSize(10*1024);
 		} catch (SocketException e) {
 			System.err.println("Argh! socket slained without delay.");
 			System.exit(1);

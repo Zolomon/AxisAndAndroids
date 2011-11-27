@@ -4,7 +4,7 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class FrameBuffer {
 
-	private Frame[] buffer;	
+	private final Frame[] buffer;	
 	private final int MAXSIZE;	
 	private final int FRAMESIZE;
 	private int nextToPut = 0;	
@@ -20,7 +20,10 @@ public class FrameBuffer {
 	public FrameBuffer(int MAXSIZE) {		
 		this.MAXSIZE = MAXSIZE;
 		this.FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;		
-		init_buffer();
+		buffer = new Frame[MAXSIZE];		
+		for (int i = 0; i < MAXSIZE; ++i) {
+			buffer[i] = new Frame(FRAMESIZE);
+		}
 	}
 
 	/**
@@ -31,15 +34,12 @@ public class FrameBuffer {
 	public FrameBuffer(int MAXSIZE, int FRAMESIZE) {		
 		this.MAXSIZE = MAXSIZE;
 		this.FRAMESIZE = FRAMESIZE;
-		init_buffer();
-	}
-
-	private void init_buffer() {
 		buffer = new Frame[MAXSIZE];		
 		for (int i = 0; i < MAXSIZE; ++i) {
 			buffer[i] = new Frame(FRAMESIZE);
 		}
 	}
+
 	
 	public synchronized int nAvailable() {
 		return nAvailable;

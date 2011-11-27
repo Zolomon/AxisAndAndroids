@@ -21,6 +21,7 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 								DesktopGUI gui) {
 		super(c, disp_monitor, frame_buffer);
 		this.gui = gui;
+		this.setPriority(MAX_PRIORITY);			
 	}
 
 	/**

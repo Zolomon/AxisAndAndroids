@@ -5,9 +5,6 @@ import android.graphics.BitmapFactory;
 public class DisplayThread extends DisplayThreadSkeleton {
 	
 	
-	protected final int BUFFERSIZE = 5;
-
-	
 	private NewImageCallback mNewImageCallback;
 
 	

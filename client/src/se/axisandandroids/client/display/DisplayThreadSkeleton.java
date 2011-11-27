@@ -8,14 +8,14 @@ import se.lth.cs.fakecamera.Axis211A;
 
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 10;
-		protected final int INITIAL_BUFFER_WAIT_MS = 400;
-				
+		protected final int BUFFERSIZE = 3;
+		protected final int INITIAL_BUFFER_WAIT_MS = 100;				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
+		
 		protected final byte[] jpeg = new byte[FRAMESIZE];
 
-		protected DisplayMonitor disp_monitor;
-		public FrameBuffer mailbox;
+		protected final DisplayMonitor disp_monitor;
+		public final FrameBuffer mailbox;
 		public long delay;
 				
 		/**
@@ -29,14 +29,17 @@ public class DisplayThreadSkeleton extends Thread {
 		}
 				
 		
+				
 		@Override
 		public void run() {
 			int len = 0;
 			long delay = -1;
 			long timestamp = -1;
 			
-			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);									
 			
+			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
+			
+						
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
@@ -97,13 +100,14 @@ public class DisplayThreadSkeleton extends Thread {
 			return delay; // The real delay
 		}
 		
+				
 		
 		/**
 		 * This is the place to show the image in jpeg[0:len].
 		 * Override this for platform dependent GUI.
 		 * @param delay, show time delay.
 		 */
-		protected void showImage(long timestamp, long delay, int len, int sync_mode) {
+		protected void showImage(long timestamp, long delay, int len, int sync_mode) {			
 			// Override for Platform Dependent show image
 			System.out.printf("Delay: 	  %d\tSync Mode: 	 %d\n", delay, sync_mode);
 		}
@@ -114,7 +118,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 */
 		protected long getTimestamp() {
 			
-			/* Decode Timestamp */ /*
+			/* Decode Timestamp */ // /*
 			int offset = 0;
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 						   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
@@ -123,11 +127,13 @@ public class DisplayThreadSkeleton extends Thread {
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
 			return 1000*seconds + 10*hundreths;
-			*/
+			//*/
 			
+			/*
 			return 1000L*(((jpeg[25]<0?256+jpeg[25]:jpeg[25])<<24)+((jpeg[26]<0?256+jpeg[26]:jpeg[26])<<16)+
 					((jpeg[27]<0?256+jpeg[27]:jpeg[27])<<8)+(jpeg[28]<0?256+jpeg[28]:jpeg[28]))+
 					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);
+			*/
 		}
 		
 		

@@ -8,7 +8,7 @@ import se.axisandandroids.networking.Protocol;
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
 	private DesktopGUI gui;	
-	protected final int BUFFERSIZE = 5;
+	protected final int INITIAL_BUFFER_WAIT_MS = 100;
 	
 	
 	public DesktopDisplayThread(DisplayMonitor disp_monitor) {
@@ -55,6 +55,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
 		
 		/* -------------------------------------- Get all other Images */
+		
 		while (! interrupted()) {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
@@ -83,8 +84,21 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		gui.firstImage(this, jpeg, delay); 
 	}
 			
-	protected void showImage(long timestamp, long delay, int len, int sync_mode) {				
-		//System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t Timestamp: %15d \n", this.getId(), delay, disp_monitor.getSyncMode(), timestamp);		
+	
+	private long timeforfps;
+	private long countforfps;
+	
+	protected void showImage(long timestamp, long delay, int len, int sync_mode) {
+		++countforfps;		
+		if (countforfps % 100 == 0) {
+			timeforfps = System.currentTimeMillis();
+			countforfps = 1;
+		}				
+		double fps = 1000*countforfps/(double)(1+System.currentTimeMillis() - timeforfps);
+		
+		System.out.printf("Thread: %4d\t Delay: %4d\t Sync: %4d\t FPS: %10.2f\t Buffer Fill: %10d\n", 
+						   this.getId(), delay, disp_monitor.getSyncMode(), fps, mailbox.nAvailable());
+
 		gui.refreshImage(this, jpeg, delay); 
 		gui.refreshSyncButtonText();
 	}

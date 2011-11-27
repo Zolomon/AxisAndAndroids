@@ -1,9 +1,11 @@
 package se.axisandandroids.client.display;
 
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.LongCircularBuffer;
 import se.axisandandroids.networking.Protocol;
 
 
@@ -16,12 +18,12 @@ public class DisplayMonitor {
 	
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
-	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
+	public final long DELAY_SYNCMODE_THRESHOLD_MS = 100;
 	private final long DELAY_TERM = 0;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long t0 = 0;
-	private long lag = 0;
+	private long lag = 20;
 	
 
 	public DisplayMonitor() {}
@@ -35,16 +37,19 @@ public class DisplayMonitor {
 	}
 		
 	
+	
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 		
 		/* No old showtime exists for ANY frame, display now! */
+		/*
 		if (t0 <= 0) {
 			t0 = System.currentTimeMillis();
 			lag = t0 - timestamp;
 			lag += DELAY_TERM;
 			return t0 - timestamp;	
 		}
-
+		*/
+		
 		timestamps.offer(timestamp);
 
 		/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
@@ -61,16 +66,17 @@ public class DisplayMonitor {
 		while (timestamp > timestamps.peek()) {
 			wait();
 		}
-											
+		
+													
 		/* SHOW TIME */
 		timestamps.remove();
 		notifyAll();
-
+			
 		/* Calculate and return delay */
 		long delay = System.currentTimeMillis() - timestamp;						
 		
 		chooseSyncMode(Thread.currentThread().getId(), delay);
-	
+		
 		return delay; // The real delay
 	}
 		
@@ -78,7 +84,42 @@ public class DisplayMonitor {
 	long id_last = 0;
 	long delay_last = 0;	
 	
-	public synchronized int chooseSyncMode(Long id, Long delay) {	// RESOLVE !!!						
+//	LinkedList<Long> delaylist = new LinkedList<Long>();
+//	LinkedList<Long> idlist = new LinkedList<Long>();
+	
+//	LongCircularBuffer delaylist = new LongCircularBuffer(40);
+	
+	public synchronized int chooseSyncMode(long id, long delay) {	// RESOLVE !!!		
+		
+		/*
+		delaylist.putOverwriting(delay);
+		if (delaylist.differenceFirstLast() >= DELAY_SYNCMODE_THRESHOLD_MS) {
+			sync_mode = Protocol.SYNC_MODE.AUTO;
+		} else {
+			sync_mode = Protocol.SYNC_MODE.SYNC;
+		}
+		*/
+		
+		/*
+		if (!idlist.isEmpty() && id == idlist.getLast()) {
+			long dist = Math.abs(delay - delaylist.getLast());	
+			if (dist >= DELAY_SYNCMODE_THRESHOLD_MS) {
+				sync_mode = Protocol.SYNC_MODE.AUTO;
+			} else {
+				sync_mode = Protocol.SYNC_MODE.SYNC;
+			}
+			idlist.removeLast();
+			delaylist.removeLast();					
+			while (!delaylist.isEmpty() && Math.abs(delay - delaylist.getLast()) > 2*DELAY_SYNCMODE_THRESHOLD_MS) {
+				idlist.removeLast();
+				delaylist.removeLast();							
+			}
+		}
+		idlist.addFirst(id);
+		delaylist.addFirst(delay);
+		*/
+		
+		
 		if (id != id_last) {
 			long dist = Math.abs(delay_last - delay);
 			if (dist >= DELAY_SYNCMODE_THRESHOLD_MS) {
@@ -88,7 +129,7 @@ public class DisplayMonitor {
 			}
 			id_last = Thread.currentThread().getId();
 			delay_last = delay;		
-		}		
+		}
 		return sync_mode;
 	}
 	

@@ -10,7 +10,7 @@ import se.lth.cs.cameraproxy.MotionDetector;
 public class CameraThread extends Thread {
 
 	
-	private long IDLE_PERIOD = 5000;
+	private final long IDLE_PERIOD = 5000;
 	private static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		
 	private CameraMonitor camera_monitor;

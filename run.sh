@@ -7,7 +7,7 @@ java -cp .:../lib/fakecamera.jar:../lib/media.jar se/axisandandroids/fakecamserv
 #java -cp .:../lib/fakecamera.jar:../lib/media.jar se/axisandandroids/fakecamserver/FakeCameraServer 6003 &
 cd ../..
 
-sleep 6
+sleep 2
 
 cd desktop-client/bin
 java -cp .:../../server/bin/:../../client/bin/classes/ se/axisandandroids/desktop/client/DesktopClient localhost 6000 localhost 6000 & #localhost 6002 localhost 6003 &
