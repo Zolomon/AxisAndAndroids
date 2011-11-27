@@ -19,11 +19,11 @@ public class DisplayMonitor {
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 100;
-	private final long DELAY_TERM = 0;
+	private final long DELAY_TERM = 10;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 	private long t0 = 0;
-	private long lag = 20;
+	private long lag = 0;
 	
 
 	public DisplayMonitor() {}
@@ -46,7 +46,7 @@ public class DisplayMonitor {
 			t0 = System.currentTimeMillis();
 			lag = t0 - timestamp;
 			lag += DELAY_TERM;
-			return t0 - timestamp;	
+			return t0 - timestamp;			
 		}
 		*/
 		
@@ -73,7 +73,9 @@ public class DisplayMonitor {
 		notifyAll();
 			
 		/* Calculate and return delay */
+		
 		long delay = System.currentTimeMillis() - timestamp;						
+		System.out.printf("Timestamp: %15d \t Time: %15d \t Delay: %8d \n", timestamp, System.currentTimeMillis(), delay);
 		
 		chooseSyncMode(Thread.currentThread().getId(), delay);
 		
