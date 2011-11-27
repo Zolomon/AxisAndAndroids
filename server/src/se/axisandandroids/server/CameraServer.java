@@ -48,6 +48,9 @@ public class CameraServer {
 			}
 			else if (args[argc].equals("-help")) {
 				System.out.println("Usage: CameraServer [options] [port]");
+				System.out.println("Default listen port is 6000");
+				System.out.println("Default camera host is 'argus-8.student.lth.se'");
+				System.out.println("Default camera port is 4321");
 				System.out.println("Options:");
 				System.out.println("\t-camera <host> <port> - Show help.");
 				System.out.println("\t-http <port> - Run tiny http server as well as camera server.");
