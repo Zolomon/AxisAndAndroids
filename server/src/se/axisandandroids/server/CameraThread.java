@@ -35,7 +35,7 @@ public class CameraThread extends Thread {
 				        FrameBuffer frame_buffer,
 				        Axis211A cam, MotionDetector md) {
 		myCamera = cam;
-		detectionSens = 0;
+		detectionSens = 0;  //Default for the cameras is 15, 0 is no motion and 100 is... a lot
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		this.frame_buffer = frame_buffer;
