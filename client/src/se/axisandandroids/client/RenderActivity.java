@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -57,6 +58,7 @@ public class RenderActivity extends Activity {
 		super.onStop();
 		// Unbind from the service
 		try {
+			mService.disconnect();
 			unbindService(mConnection);
 		} catch (java.lang.IllegalArgumentException e) {
 			// Print to log or make toast that it failed
@@ -72,6 +74,7 @@ public class RenderActivity extends Activity {
 			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
 
 			for (Connection c : mService.mConnectionHandler.connectionIterator()) {
+				System.out.println("Connection ID: " + c.getId());
 				addPanel(c);
 			}
 
@@ -89,7 +92,7 @@ public class RenderActivity extends Activity {
 
 		mService.mConnectionHandler.add(c.getId(), new CameraTunnel(c, panel,
 				mService.dm, c.getId()));
-		mLinearLayout.addView(theInflatedPanel);
+		mLinearLayout.addView(theInflatedPanel, new LayoutParams(LayoutParams.WRAP_CONTENT, 320));
 	}
 
 	@Override

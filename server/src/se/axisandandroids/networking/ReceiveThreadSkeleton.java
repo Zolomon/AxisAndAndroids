@@ -14,7 +14,8 @@ public class ReceiveThreadSkeleton extends Thread {
 	public void run() {
 		while (!interrupted()) {
 			try {
-				recvCommand();
+				if(c.isConnected())
+					recvCommand();
 			} catch (IOException e) {
 				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
 				System.exit(1);

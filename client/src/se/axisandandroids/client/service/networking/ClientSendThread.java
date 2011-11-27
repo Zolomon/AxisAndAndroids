@@ -24,7 +24,8 @@ public class ClientSendThread extends SendThreadSkeleton {
 	}
 	
 	public void close() {
-		disp_monitor.unsubscribeMailbox(mailbox);
+		//disp_monitor.unsubscribeMailbox(mailbox);
+		interrupt();
 	}
 
 	protected void perform() {
@@ -48,4 +49,11 @@ public class ClientSendThread extends SendThreadSkeleton {
 		}
 	}
 
+	@Override
+	public void interrupt() {
+		// handle shit:D
+		disp_monitor.unsubscribeMailbox(mailbox);
+		super.interrupt();
+	}
+	
 }

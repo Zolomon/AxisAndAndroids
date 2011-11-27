@@ -25,7 +25,7 @@ public class DisplayThreadSkeleton extends Thread {
 		public DisplayThreadSkeleton(DisplayMonitor disp_monitor) {
 			this.disp_monitor = disp_monitor;
 			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
-			this.setPriority(MAX_PRIORITY);			
+			//this.setPriority(MAX_PRIORITY);			
 		}
 				
 		
@@ -59,6 +59,12 @@ public class DisplayThreadSkeleton extends Thread {
 					e.printStackTrace();
 					System.out.println("Flushing mailbox");
 					mailbox.flush();
+					try {
+						join();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				
 				showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
