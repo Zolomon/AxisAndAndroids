@@ -14,9 +14,11 @@ public class CameraServer {
 	private final static int default_port = 6000;
 	private final static String default_camhost  = "argus-8.student.lth.se";
 	private final static int default_camport = 4321;
+	private final static int default_httpPort = 8080;
 	private int nClients = 0;
 	
 	private int listenPort;
+	private int httpPort;
 	private ServerSocket servSocket = null;
 	private Connection con;
 	private CameraMonitor cm;
@@ -34,18 +36,21 @@ public class CameraServer {
 
 		int listenPort 	= default_port;
 		int camport 	= default_camport;
+		int httpPort = default_httpPort;
 		String camhost	= default_camhost;
 		boolean http 	= false;
 
 		
 		for (int argc = 0; argc < args.length; ++argc) {
-			if (args[argc].equals("-http"))
+			if (args[argc].equals("-http")) {
 				http = true;
+				httpPort = Integer.parseInt(args[++argc]);
+			}
 			else if (args[argc].equals("-help")) {
 				System.out.println("Usage: CameraServer [options] [port]");
 				System.out.println("Options:");
 				System.out.println("\t-camera <host> <port> - Show help.");
-				System.out.println("\t-http - Run tiny http server as well as camera server.");
+				System.out.println("\t-http <port> - Run tiny http server as well as camera server.");
 				System.out.println("\t-help - Show help.");
 				System.exit(0);
 			} else if (args[argc].equals("-camera")) {
@@ -76,7 +81,7 @@ public class CameraServer {
 		md = new MotionDetector(camhost, camport);
 
 		if (http) {
-			httpServer = new JPEGHTTPServerThread(8080, myCamera);
+			httpServer = new JPEGHTTPServerThread(httpPort, myCamera);
 			httpServer.start();
 			System.out.println("HTTP server started.");
 		}

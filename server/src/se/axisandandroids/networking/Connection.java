@@ -60,7 +60,9 @@ public class Connection {
 	public int getId() {
 		return myId;
 	}
-
+/**
+ * Creates input and output streams on a socket.
+ */
 	private void connect() {
 		try {
 			is = sock.getInputStream();
