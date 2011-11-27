@@ -27,9 +27,7 @@ public class DisplayThreadSkeleton extends Thread {
 			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
 			this.setPriority(MAX_PRIORITY);			
 		}
-				
-		
-				
+										
 		@Override
 		public void run() {
 			int len = 0;
@@ -44,33 +42,35 @@ public class DisplayThreadSkeleton extends Thread {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
 				
-				int sync_mode = disp_monitor.getSyncMode();
-
 				try {
+					int sync_mode = disp_monitor.getSyncMode();
 					if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
-					} else {
+					} else if (sync_mode == Protocol.SYNC_MODE.AUTO){
 						//delay = asyncFrames(timestamp);
-						delay = asyncAsFastAsPossible(timestamp);								
-					}							
-						
+						delay = asyncAsFastAsPossible(timestamp);	
+						disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
+					} else { /* CASE: sync_mode == Protocol.SYNC_MODE.ASYNC */
+						//delay = asyncFrames(timestamp);
+						delay = asyncAsFastAsPossible(timestamp);	
+					}		
+					showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
 				} catch (InterruptedException e) {
 					System.err.println("syncFrames got interrupted!");
 					e.printStackTrace();
 					System.out.println("Flushing mailbox");
 					mailbox.flush();
-				}
-				
-				showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
+				}				
 			}
 		}
 		
 		
 		protected long asyncAsFastAsPossible(long timestamp) {
 			delay = System.currentTimeMillis() - timestamp;
-			disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
 			return delay;
 		}
+		
+		
 		
 		private long t0 = 0;
 		private long lag = 0;		
@@ -112,13 +112,14 @@ public class DisplayThreadSkeleton extends Thread {
 			System.out.printf("Delay: 	  %d\tSync Mode: 	 %d\n", delay, sync_mode);
 		}
 		
+		
 		/**
 		 * Extract timestamp from image byte array.
 		 * @return timestamp in ms.
 		 */
 		protected long getTimestamp() {
 			
-			/* Decode Timestamp */ // /*
+			/* Decode Timestamp */ /*
 			int offset = 0;
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 						   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
@@ -127,13 +128,11 @@ public class DisplayThreadSkeleton extends Thread {
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
 			return 1000*seconds + 10*hundreths;
-			//*/
-			
-			/*
+			*/
+						
 			return 1000L*(((jpeg[25]<0?256+jpeg[25]:jpeg[25])<<24)+((jpeg[26]<0?256+jpeg[26]:jpeg[26])<<16)+
 					((jpeg[27]<0?256+jpeg[27]:jpeg[27])<<8)+(jpeg[28]<0?256+jpeg[28]:jpeg[28]))+
-					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);
-			*/
+					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);			
 		}
 		
 		
