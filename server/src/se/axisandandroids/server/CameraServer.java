@@ -29,6 +29,7 @@ public class CameraServer {
 	
 	
 	
+	
 	public static void main(String[] args) {
 
 		int listenPort 	= default_port;
@@ -61,6 +62,13 @@ public class CameraServer {
 		serv.listenForConnection();
 	}
 
+	/** Starting CameraServer.
+	 * 
+	 * @param listenPort The port that the server will listen to
+	 * @param camhost	 The camera host
+	 * @param camport	 The camera port
+	 * @param http		 If the http server should be started.
+	 */
 	public CameraServer(int listenPort, String camhost, int camport, boolean http) {
 		this.listenPort = listenPort;		
 
@@ -82,6 +90,7 @@ public class CameraServer {
 		System.out.println("Camera Server up and running...");
 	}
 
+	/** Listening on port listenPort and tries to accept any client connection on that port. */
 	
 	private void listenForConnection() {
 
@@ -100,18 +109,16 @@ public class CameraServer {
 			System.out.printf("Serving client %d: %s\n", ++nClients, 
 					clientSocket.getInetAddress().toString());
 
-			/* Handle the client some way !!! */
-
-			// With a thread object if multi-client:
-			// new ClientHandler(Connection client).start();
-
-			// OR if only one client...
+			/* Handle the client some way */
 
 			servClient(clientSocket);
 		}
 	}
 
-	
+	/**	Create and start all necessary threads.
+	* 
+ 	* @param clientSock The socket to which the client is connected.
+ 	*/
 	private void servClient(Socket clientSock) {
 		con = new Connection(clientSock);
 		cm = new CameraMonitor();
