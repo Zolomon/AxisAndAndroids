@@ -8,11 +8,12 @@ import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
 public class CameraThread extends Thread {
-
 	
-	private final long IDLE_PERIOD = 5000;
-	private static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
+	private int detectionSens 			= 5;
+	private final long IDLE_PERIOD 		= 5000;
+	private static final int FRAMESIZE 	= Axis211A.IMAGE_BUFFER_SIZE;
 		
+	
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;	
 	private FrameBuffer frame_buffer;
@@ -20,7 +21,6 @@ public class CameraThread extends Thread {
 	private byte[] jpeg = new byte[FRAMESIZE];;
 	private Axis211A myCamera;
 	private MotionDetector md;
-	private int detectionSens;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera,
@@ -35,7 +35,7 @@ public class CameraThread extends Thread {
 				        FrameBuffer frame_buffer,
 				        Axis211A cam, MotionDetector md) {
 		myCamera = cam;
-		detectionSens = 0;  //Default for the cameras is 15, 0 is no motion and 100 is... a lot
+		//detectionSens = 0;  //Default for the cameras is 15, 0 is no motion and 100 is... a lot
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		this.frame_buffer = frame_buffer;
