@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,17 +27,12 @@ public class DesktopGUI extends JFrame {
 	private JPanel imageAreaPanel;
 	private JPanel controlAreaPanel;
 
-	
-	
-	// private JButton syncModeButton;
-	// private JButton dispModeButton;
-
 	private String[] dispModes = { "Auto", "Idle", "Movie" };
-	private String[] syncModes = { "Auto", "Async", "Sync" };
+	private String[] syncModes = { "Auto", "Sync", "Async" };
 
 	private JComboBox dispBox;
 	private JComboBox syncBox;
-	
+
 	/**
 	 * Create a DesktopGUI instance. DisplayThreads have to register to the
 	 * DesktopGUI for any action to occur.
@@ -56,7 +50,7 @@ public class DesktopGUI extends JFrame {
 
 	}
 
-	
+
 	/**
 	 * Create a DesktopGUI instance. This constructor registers the specified 
 	 * DisplayThread automatically. Other DisplayThreads have to register to the
@@ -76,7 +70,7 @@ public class DesktopGUI extends JFrame {
 
 		this.registerDisplayThread(ddt);
 	}
-	
+
 	/**
 	 * Pack up the GUI before show time. Call this when all DisplayThreads are
 	 * registered.
@@ -125,8 +119,8 @@ public class DesktopGUI extends JFrame {
 	}
 
 	private int firstImageCount = 0;
-	
-	
+
+
 	/**
 	 * Resolve special treating of first Image from respective DisplayThread.
 	 * @param ddt, DisplayThread.
@@ -148,21 +142,21 @@ public class DesktopGUI extends JFrame {
 
 	public void refreshSyncButtonText() {
 		if (dm.getSyncMode() == Protocol.SYNC_MODE.AUTO) {
-			syncBox.setSelectedIndex(0);
+			syncBox.setSelectedIndex(Protocol.SYNC_MODE.AUTO);
 		} else if (dm.getSyncMode() == Protocol.SYNC_MODE.ASYNC) {
-			syncBox.setSelectedItem(1);
+			syncBox.setSelectedItem(Protocol.SYNC_MODE.ASYNC);
 		} else if (dm.getSyncMode() == Protocol.SYNC_MODE.SYNC) {
-			syncBox.setSelectedIndex(2);
+			syncBox.setSelectedIndex(Protocol.SYNC_MODE.SYNC);
 		}
 	}
 
 	public void refreshDispButtonText() {
 		if (dm.getDispMode() == Protocol.DISP_MODE.AUTO) {
-			dispBox.setSelectedIndex(0);
+			dispBox.setSelectedIndex(Protocol.DISP_MODE.AUTO);
 		} else if (dm.getDispMode() == Protocol.DISP_MODE.IDLE) {
-			dispBox.setSelectedIndex(1);
+			dispBox.setSelectedIndex(Protocol.DISP_MODE.IDLE);
 		} else if (dm.getDispMode() == Protocol.DISP_MODE.MOVIE) {
-			dispBox.setSelectedIndex(2);
+			dispBox.setSelectedIndex(Protocol.DISP_MODE.MOVIE);
 		}
 	}
 
@@ -221,9 +215,9 @@ public class DesktopGUI extends JFrame {
 			if (dispBox.getSelectedIndex() == 0) {
 				if (dm.getDispMode() != Protocol.DISP_MODE.AUTO) {
 					dm
-							.postToAllMailboxes(new ModeChange(
-									Protocol.COMMAND.DISP_MODE,
-									Protocol.DISP_MODE.AUTO));
+					.postToAllMailboxes(new ModeChange(
+							Protocol.COMMAND.DISP_MODE,
+							Protocol.DISP_MODE.AUTO));
 					dm.setDispMode(Protocol.DISP_MODE.AUTO);
 					dispBox.setSelectedIndex(0);
 				}
@@ -232,9 +226,9 @@ public class DesktopGUI extends JFrame {
 			else if (dispBox.getSelectedIndex() == 1) {
 				if (dm.getDispMode() != Protocol.DISP_MODE.IDLE) {
 					dm
-							.postToAllMailboxes(new ModeChange(
-									Protocol.COMMAND.DISP_MODE,
-									Protocol.DISP_MODE.IDLE));
+					.postToAllMailboxes(new ModeChange(
+							Protocol.COMMAND.DISP_MODE,
+							Protocol.DISP_MODE.IDLE));
 					dm.setDispMode(Protocol.DISP_MODE.IDLE);
 					dispBox.setSelectedIndex(1);
 				}
@@ -250,7 +244,7 @@ public class DesktopGUI extends JFrame {
 				}
 			}
 
-			System.out.println("DispMode was changed to: " + dm.getDispMode());
+			System.out.println("DispMode was changed to: " + dispModes[dm.getDispMode()]);
 		}
 	}
 
@@ -266,22 +260,24 @@ public class DesktopGUI extends JFrame {
 					syncBox.setSelectedIndex(0);
 				}
 			}
-
+			
 			else if (syncBox.getSelectedIndex() == 1) {
-				if (dm.getSyncMode() != Protocol.SYNC_MODE.ASYNC) {
-					dm.setSyncMode(Protocol.SYNC_MODE.ASYNC);
+				if (dm.getSyncMode() != Protocol.SYNC_MODE.SYNC) {
+					dm.setSyncMode(Protocol.SYNC_MODE.SYNC);
 					syncBox.setSelectedIndex(1);
 				}
 			}
-
+			
 			else if (syncBox.getSelectedIndex() == 2) {
-				if (dm.getSyncMode() != Protocol.SYNC_MODE.SYNC) {
-					dm.setSyncMode(Protocol.SYNC_MODE.SYNC);
+				if (dm.getSyncMode() != Protocol.SYNC_MODE.ASYNC) {
+					dm.setSyncMode(Protocol.SYNC_MODE.ASYNC);
 					syncBox.setSelectedIndex(2);
 				}
 			}
 
-			System.out.println("SyncMode was changed to: " + dm.getSyncMode());
+		
+
+			System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()] );
 		}
 	}
 
