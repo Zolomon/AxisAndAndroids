@@ -26,6 +26,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 	// In a multi client setup a list with subscribing clients connection 
 	// objects would be appropriate or some MultiConnection object. 
 
+	/* Create buffers */
 	/**
 	 * 
 	 * @param c, 
@@ -35,6 +36,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);	
 	}
+
 
 	public void run() {
 		frame_buffer.awaitBuffered(INITIAL_BUFFERWAIT_MS);

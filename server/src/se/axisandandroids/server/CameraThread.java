@@ -40,7 +40,7 @@ public class CameraThread extends Thread {
 		this.frame_buffer = frame_buffer;
 		this.md = md;
 	}
-
+/* While the camera is connected: receive images according to the display mode */
 	public void run() {
 		if (cameraConnect()) {
 			while (!interrupted()) {
