@@ -1,10 +1,11 @@
-package se.axisandandroids.client.display;
+package se.axisandandroids.desktop.client;
 
 import java.util.PriorityQueue;
 
-public class DisplayMonitor extends DisplayMonitorSkeleton {
+public class DesktopDisplayMonitor extends DisplayMonitorSkeleton {
+	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
 
-	public DisplayMonitor() {
+	public DesktopDisplayMonitor() {
 	}
 
 	@Override
