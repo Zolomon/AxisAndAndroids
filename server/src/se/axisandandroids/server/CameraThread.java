@@ -20,7 +20,7 @@ public class CameraThread extends Thread {
 	private byte[] jpeg = new byte[FRAMESIZE];;
 	private Axis211A myCamera;
 	private MotionDetector md;
-
+	private int detectionSens;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera,
@@ -35,6 +35,7 @@ public class CameraThread extends Thread {
 				        FrameBuffer frame_buffer,
 				        Axis211A cam, MotionDetector md) {
 		myCamera = cam;
+		detectionSens = 0;
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		this.frame_buffer = frame_buffer;
@@ -97,7 +98,7 @@ public class CameraThread extends Thread {
 	}
 
 	private void checkForMotion() {
-		if (md.detect()) {
+		if (md.getLevel() > detectionSens) {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 			mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
 			System.out.println("Motion detected!");
