@@ -23,6 +23,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	private String timeSinceLastImage;
 	private int mHeight;
 	private int mWidth;
+	private static final int MAXSAMPLES = 1000;
+	int tickindex = 0;
+	long ticksum = 0;
+	long[] ticklist = new long[MAXSAMPLES];
 
 	public Panel(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -48,6 +52,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 
 			public void newImage(Bitmap bitmap) {
 				mBitmap = bitmap;
+				mStartTime = System.currentTimeMillis();
 			}
 		};
 
@@ -58,6 +63,23 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		mPaintHUDText.setTextSize(20);
 	}
 
+	long mStartTime = System.currentTimeMillis();
+	long mElapsedTime = System.currentTimeMillis();
+
+	double calcAverageTick(long newtick) {
+		ticksum -= ticklist[tickindex]; /* subtract the value falling off */
+		ticksum += newtick; /* add new value */
+		ticklist[tickindex] = newtick; /*
+										 * save new value so it can be
+										 * subtracted later
+										 */
+		if (++tickindex == MAXSAMPLES) /* inc buffer index */
+			tickindex = 0;
+
+		/* return average */
+		return (double) ticksum / MAXSAMPLES;
+	}
+
 	public int getId() {
 		return myId;
 	}
@@ -66,21 +88,21 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		return mNewImageCallback;
 	}
 
-	public synchronized void setBitmap(Bitmap bitmap) {
-		mBitmap = bitmap;
-	}
-
 	public void doDraw(long elapsedTime, Canvas canvas) {
 		canvas.drawColor(Color.BLACK);
-		canvas.drawBitmap(mBitmap, 10, 10, null);
-
+		canvas.drawBitmap(mBitmap, 0, 0, null);
 		doDrawHUD(elapsedTime, canvas);
 	}
 
 	private void doDrawHUD(long elapsedTime, Canvas canvas) {
 		canvas.drawText("FPS: " + Math.round(1000f / elapsedTime), 20, 20,
 				mPaintHUDText);
-		canvas.drawText("Delay: " + timeSinceLastImage, 20, 30, mPaintHUDText);
+		mPaintHUDText.setColor(Color.argb(200, 255, 0, 0));
+		this.mElapsedTime = System.currentTimeMillis() - this.mStartTime;
+
+		canvas.drawText("Delay: " + calcAverageTick(mElapsedTime), 20, 35,
+				mPaintHUDText);
+		mPaintHUDText.setColor(Color.WHITE);
 	}
 
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
@@ -109,11 +131,19 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		mHeight = 800 / id;
-		mWidth = 480 / id;
+		mHeight = 800 / (id + 1);
+		mWidth = 480;
 
 		setMeasuredDimension(mWidth, mHeight);
 		mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
+	}
+
+	public void play() {
+		mThread.setIsPlaying(true);
+	}
+
+	public void pause() {
+		mThread.setIsPlaying(true);
 	}
 }
 
@@ -123,10 +153,15 @@ class ViewThread extends Thread {
 	private boolean mRun = false;
 	private long mStartTime;
 	private long mElapsedTime;
+	private boolean mIsPlaying = true;
 
 	public ViewThread(Panel panel) {
 		mPanel = panel;
 		mHolder = mPanel.getHolder();
+	}
+
+	public void setIsPlaying(boolean isPlaying) {
+		mIsPlaying = isPlaying;
 	}
 
 	public void setRunning(boolean run) {
@@ -137,15 +172,18 @@ class ViewThread extends Thread {
 	public void run() {
 		Canvas canvas = null;
 		System.out.println("Running ViewThread");
-		mStartTime = System.currentTimeMillis();
+		this.mStartTime = System.currentTimeMillis();
 		while (mRun) {
-			canvas = mHolder.lockCanvas();
-			if (canvas != null) {
-				mPanel.doDraw(mElapsedTime, canvas);
-				mElapsedTime = System.currentTimeMillis() - mStartTime;
-				mHolder.unlockCanvasAndPost(canvas);
+			if (mIsPlaying) {
+				canvas = mHolder.lockCanvas();
+				if (canvas != null) {
+					mPanel.doDraw(this.mElapsedTime, canvas);
+					this.mElapsedTime = System.currentTimeMillis()
+							- this.mStartTime;
+					mHolder.unlockCanvasAndPost(canvas);
+				}
+				this.mStartTime = System.currentTimeMillis();
 			}
-			mStartTime = System.currentTimeMillis();
 		}
 	}
 }

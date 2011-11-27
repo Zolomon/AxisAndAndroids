@@ -54,6 +54,14 @@ public class CtrlService extends android.app.Service {
 	public void disconnect() {
 		mConnectionHandler.disconnect();
 	}
+
+	public void playPanels() {
+		mConnectionHandler.playPanels();
+	}
+
+	public void pausePanels() {
+		mConnectionHandler.pausePanels();
+	}
 	
 	/* public methods for client */
 	
