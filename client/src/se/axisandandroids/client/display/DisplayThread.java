@@ -2,6 +2,13 @@ package se.axisandandroids.client.display;
 
 import android.graphics.BitmapFactory;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DisplayThread extends DisplayThreadSkeleton {
 	
 	private NewImageCallback mNewImageCallback;
