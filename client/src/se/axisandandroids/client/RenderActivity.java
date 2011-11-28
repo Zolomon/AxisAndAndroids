@@ -1,5 +1,6 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.client.display.NewDisplayModeCallback;
 import se.axisandandroids.client.display.NewSyncModeCallback;
 import se.axisandandroids.client.display.Panel;
@@ -7,6 +8,7 @@ import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.CameraTunnel;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.Protocol;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -48,26 +50,18 @@ public class RenderActivity extends Activity {
 		boolean res = getApplicationContext().bindService(intent, mConnection,
 				Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "" + res);
-
-		mService.mDisplayMonitor
-				.setNewDisplayModeCallback(new NewDisplayModeCallback() {
-
-					public void callback(int mode) {
-						setDisplayMode(mode);
-					}
-				});
-
-		mService.mDisplayMonitor
-				.setNewSyncModeCallback(new NewSyncModeCallback() {
-
-					public void callback(int mode) {
-						setSyncMode(mode);
-					}
-				});
 	}
 
+	
+//	if (dm.getDispMode() != Protocol.DISP_MODE.AUTO) {
+//		dm
+//		.postToAllMailboxes(new ModeChange(
+//				Protocol.COMMAND.DISP_MODE,
+//				Protocol.DISP_MODE.AUTO));
+//		dm.setDispMode(Protocol.DISP_MODE.AUTO);
+//		dispBox.setSelectedIndex(Protocol.DISP_MODE.AUTO);
+//	}
 	protected void setSyncMode(int mode) {
-
 		MenuItem syncItem = null;
 		switch (mSyncMode) {
 		case 0:
@@ -171,6 +165,22 @@ public class RenderActivity extends Activity {
 			}
 
 			mService.mConnectionHandler.clearConnections();
+
+			mService.mDisplayMonitor
+					.setNewDisplayModeCallback(new NewDisplayModeCallback() {
+
+						public void callback(int mode) {
+							setDisplayMode(mode);
+						}
+					});
+
+			mService.mDisplayMonitor
+					.setNewSyncModeCallback(new NewSyncModeCallback() {
+
+						public void callback(int mode) {
+							setSyncMode(mode);
+						}
+					});
 		}
 
 		public void onServiceDisconnected(ComponentName compName) {
@@ -194,6 +204,15 @@ public class RenderActivity extends Activity {
 		inflater.inflate(R.menu.render_menu, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.menu_display_mode_auto).setChecked(true);
+		menu.findItem(R.id.menu_sync_mode_auto).setChecked(true);
+		return true; 
+		
+	}
 
 	protected Panel createPanel() {
 		// TODO Auto-generated method stub
@@ -212,23 +231,59 @@ public class RenderActivity extends Activity {
 			finish();
 			return true;
 		case R.id.menu_display_mode_auto:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mDisplayMode = 0;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		case R.id.menu_display_mode_idle:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mDisplayMode = 1;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		case R.id.menu_display_mode_movie:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mDisplayMode = 2;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		case R.id.menu_sync_mode_auto:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mSyncMode = 0;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		case R.id.menu_sync_mode_sync:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mSyncMode = 1;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		case R.id.menu_sync_mode_async:
-			if (item.isChecked()) item.setChecked(false);
-		    else item.setChecked(true);
+			if (item.isChecked())
+				item.setChecked(false);
+			else
+				item.setChecked(true);
+			mSyncMode = 2;
+			System.out.println("DisplayMode: " + mDisplayMode + " SyncMode: "
+					+ mSyncMode);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
