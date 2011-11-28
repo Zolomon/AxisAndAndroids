@@ -95,7 +95,7 @@ The network protocol will consist of messages being sent by a Connection object.
 \end{figure}
 
 
-The command integers and mode flags are defined in the class Protocol.
+\noindent The command integers and mode flags are defined in the class Protocol.
 
 
 \section{Client side}
@@ -181,22 +181,24 @@ public synchronized int chooseSyncMode(long id, long delay) {	// RESOLVE !!!
 The desktop part of our surveillance solution consist of a minimalistic client application written with Swing. The client is started from the command line with the camera server hosts and ports as arguments. The client support viewing of more than two connected cameras but of course the performance will degrade when more cameras are connected. Even though the synchronization is designed with several concurrent displays in mind the automatic synchronization mode switching is not, but it can still do the job if the delay differences small enough.
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/desktopclient.png}
+\includegraphics[width=0.75\textwidth]{../screenshots/desktopclient.png}
 \caption{Screenshot of desktop client}
 \label{desktopclient}
 \end{figure}
 
 When stared the Desktop Client Application is easy to use. The display mode is shown and set with the drop down menu to the left and the synchronization mode by the drop down menu to the right. The current delay for each image is shown under the images respectively.
 
-Here is an UML diagram over the Desktop Client system. 
+Below is an UML diagram over the Desktop Client system. 
 
 As one can tell from the UML diagram, the DesktopClient consists of three basic parts. The GUI, a send thread and a recieve thread. A simple but effective design.
 
-\begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../uml/desktop-client.png}
+\clearpage
+\begin{figure}[h!]
+\includegraphics[width=2.0\textwidth]{../uml/desktop-client.png}
 \caption{UML of the desktop client}
 \end{figure}
 
+\clearpage
 
 \subsection{Android version}
 The android version was created to have a portable surveillance station.
@@ -213,20 +215,20 @@ Intents are used for different types of user interaction, activities are subpart
 Screenshots from the Android application in action, running on the Android Virtual Machine, is shown below. First the user is presented with a connect view. After connection information is entered the user gets into display mode by pressing menu and then choosing display. Then then the display view is entered.
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/androidConnecting.png}
+\includegraphics[width=0.75\textwidth]{../screenshots/androidConnecting.png}
 \caption{Screenshot of the Android client connection menue}
 \end{figure}
 
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/androidDisplaying.png}
+\includegraphics[width=0.75\textwidth]{../screenshots/androidDisplaying.png}
 \caption{Screenshot of the Android client displaying the fakecamera}
 \end{figure}
 
 From the menu in display view the user can select Display Mode and Sync Mode. Modes are set as in the following screen shots.
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/androidDisplayMode.png}
+\includegraphics[width=0.75\textwidth]{../screenshots/androidDisplayMode.png}
 \caption{Screenshot of the Android client Display Mode menue}
 \end{figure}
 
@@ -236,7 +238,7 @@ From the menu in display view the user can select Display Mode and Sync Mode. Mo
 \end{figure}
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/androidSyncing.png}
+\includegraphics[width=0.75\textwidth]{../screenshots/androidSyncing.png}
 \caption{Screenshot of the Android client syncing frames}
 \end{figure}
 
@@ -268,7 +270,7 @@ The figure below shows a UML diagram of the Camera Server system.
 Camera Server support the option to run a lightweight embedded http server. The http server is started in it’s own thread by specifying the flag -http <port> when starting the camera server. The http server send an image every time a http client requests one, so one could theoretically refresh the image 24 times per second and get a live-stream in a browser of your choosing. This also means that the camera can be accessed from unsupported platforms such as iPhone.
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../uml/server.png}
+\includegraphics[width=0.75\textwidth]{../uml/server.png}
 \caption{UML of the server side}
 \end{figure}
 
