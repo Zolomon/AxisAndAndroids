@@ -65,28 +65,35 @@ The ServerSendThread receives commands to its CircularBuffer mailbox fetched wit
 The ClientSendThread gets commands posted to its CircularBuffer mailbox. The commands can be from the GUI or from ClientReceiveThread which propaget display mode changes when received.
 
 \subsubsection{Network protocol}
-The network protocol will consist of messages being sent by a Connection object. Each message is initialized with a command integer. The system make use of two different message types as given by the table \ref{tableprot};
+The network protocol will consist of messages being sent by a Connection object. Each message is initialized with a command integer. The system make use of two different message types as given by the table below.
 
-\begin{table}[h!]
-    \begin{tabular}{|l|l|}
-    	\caption{The network protocol used for sending command integers and mode flags.}
-    	\label{tableprot}
-        \hline
-        \textbf{Command} & \textbf{Format} \\ \hline
-        Image   & \begin{tabular}{l|l|l}
-        
-        Command & Length & Byte Array \\
-        
-    \end{tabular}
-     \\ \hline
-        Mode    & \begin{tabular}{l|ll}
-       
-        Command & Mode~~ & ~~~~~~~~~~~~~~\ \\
-        
-    \end{tabular}     \\
-        \hline
-    \end{tabular}
-\end{table}
+%\begin{table}[h!]
+%    \begin{tabular}{|l|l|}
+%    	\caption{The network protocol used for sending command integers and mode flags.}
+%    	\label{tableprot}
+%        \hline
+%        \textbf{Command} & \textbf{Format} \\ \hline
+%        Image   & \begin{tabular}{l|l|l}
+%        
+%        Command & Length & Byte Array \\
+%        
+%    \end{tabular}
+%     \\ \hline
+%        Mode    & \begin{tabular}{l|ll}
+%       
+%        Command & Mode~~ & ~~~~~~~~~~~~~~\ \\
+%        
+%    \end{tabular}     \\
+%        \hline
+%    \end{tabular}
+%\end{table}
+
+\begin{figure}[hbp]
+\centering
+\includegraphics[width=0.75\textwidth]{../screenshots/tabell.png}
+\caption{The network protocol used for sending command integers and mode flags.}
+\end{figure}
+
 
 The command integers and mode flags are defined in the class Protocol.
 
@@ -175,7 +182,7 @@ The desktop part of our surveillance solution consist of a minimalistic client a
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../screenshots/desktopclient.png}
-\caption{Screenshot of Desktop client}
+\caption{Screenshot of desktop client}
 \label{desktopclient}
 \end{figure}
 
@@ -187,7 +194,7 @@ As one can tell from the UML diagram, the DesktopClient consists of three basic 
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../uml/desktop-client.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{UML of the desktop client}
 \end{figure}
 
 
@@ -207,30 +214,30 @@ Screenshots from the Android application in action, running on the Android Virtu
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../screenshots/androidConnecting.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{Screenshot of the Android client connection menue}
 \end{figure}
 
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../screenshots/androidDisplaying.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{Screenshot of the Android client displaying the fakecamera}
 \end{figure}
 
 From the menu in display view the user can select Display Mode and Sync Mode. Modes are set as in the following screen shots.
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../screenshots/androidDisplayMode.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{Screenshot of the Android client Display Mode menue}
 \end{figure}
 
 \begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../screenshots/androidSyncMode.png}
-\caption{Screenshot of the Control Center in attack 1}
+\includegraphics[width=0.75\textwidth]{../screenshots/androidSyncMode.png}
+\caption{Screenshot of the Android client Sync Mode menue}
 \end{figure}
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../screenshots/androidSyncing.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{Screenshot of the Android client syncing frames}
 \end{figure}
 
 
@@ -262,7 +269,7 @@ Camera Server support the option to run a lightweight embedded http server. The 
 
 \begin{figure}[hbp]
 \includegraphics[width=0.45\textwidth]{../uml/server.png}
-\caption{Screenshot of the Control Center in attack 1}
+\caption{UML of the server side}
 \end{figure}
 
 The UML above shows how CameraMonitor recieves commands from both the RecieveThread and the CameraThread. This is because both the client and the camera itself can decide when to switch display modes. The CameraThread is also connected to the SendThread. This is because when a display mode occurs because of motion detection, it has to tell the client. The client then tells the other cameras to make the same switch.
@@ -323,37 +330,5 @@ port 6000.
 \end{verbatim}
 
 
-\begin{figure}[hbp]
-\includegraphics[width=0.45\textwidth]{../uml/desktop-client.png}
-\caption{Screenshot of the Control Center in attack 1}
-\end{figure}
 
-\begin{table}
-    \begin{tabular}{|l|l|}
-        \hline
-        \textbf{Command} & \textbf{Format} \\ \hline
-        Image   & \begin{tabular}{l|l|l}
-        
-        Command & Length & Byte Array \\
-        
-    \end{tabular}
-     \\ \hline
-        Mode    & \begin{tabular}{l|ll}
-       
-        Command & Mode~~ & ~~~~~~~~~~~~~~\ \\
-        
-    \end{tabular}     \\
-        \hline
-    \end{tabular}
-\end{table}
-
-
-
-
-%\begin{thebibliography}{latex8}
-%\bibitem{master} DDoS in Experimental Environment - Johan Haleby and Franz Levin
-%\bibitem{winnuke} WinNuke - http://en.wikipedia.org/wiki/WinNuke
-%\bibitem{udpflood} UDP flood attack - http://en.wikipedia.org/wiki/UDP\_flood\_attack
-%
-%\end{thebibliography}
 \end{document}
