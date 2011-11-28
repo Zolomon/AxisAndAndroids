@@ -14,6 +14,7 @@ import se.axisandandroids.desktop.display.DesktopGUI;
 
 
 /**
+ * DesktopClient is the desktop version of our surveillance solution.
  * @author jgrstrm
  * @author zol
  * @author fattony

@@ -11,7 +11,9 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 
 
+
 /**
+ * ReceiveThread with DesktopGUI instance for simpler updating of mode changes.
  * @author jgrstrm
  * @author zol
  * @author fattony
@@ -22,6 +24,14 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	
 	protected DesktopGUI gui;
 	
+	
+	/**
+	 * Create new DesktopReceiveThread.
+	 * @param c, connection object to camera server.
+	 * @param disp_monitor, display monitor for syncing.
+	 * @param frame_buffer, a DisplayThreads image buffer to put received images in.
+	 * @param gui, the DesktopGUI.
+	 */
 	public DesktopReceiveThread(Connection c, 
 								DisplayMonitor disp_monitor,
 								FrameBuffer frame_buffer,
