@@ -8,6 +8,8 @@ import se.axisandandroids.networking.ReceiveThreadSkeleton;
 
 
 /**
+ * Receive thread for server is responsible for responding on commands, eg.
+ * display mode changes, from the client.
  * @author jgrstrm
  * @author zol
  * @author fattony

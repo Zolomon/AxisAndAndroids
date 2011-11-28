@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 
 
 /**
+ * Connection supplies high level networking to send and receive-threads.
+ * Send 
  * @author jgrstrm
  * @author zol
  * @author fattony

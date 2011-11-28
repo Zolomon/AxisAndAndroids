@@ -12,6 +12,8 @@ import se.lth.cs.cameraproxy.Axis211A;
 
 
 /**
+ * SendThread for server sends images put in its FrameBuffer and commands
+ * put in its mailbox CircularBuffer.
  * @author jgrstrm
  * @author zol
  * @author fattony
@@ -20,37 +22,35 @@ import se.lth.cs.cameraproxy.Axis211A;
 public class ServerSendThread extends SendThreadSkeleton {
 
 	protected int BUFFERSIZE = 3;
-	protected int INITIAL_BUFFERWAIT_MS = 10;
+	protected int INITIAL_BUFFERWAIT_MS = 0;
 	protected int COMMAND_BUFFERSIZE = 3;
 	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
-	public final CircularBuffer mailbox; // Command mailbox for this
-											// ServerSendThread.
-	public final FrameBuffer frame_buffer; // Image mailbox
+	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
+	public final FrameBuffer frame_buffer; 	// Image mailbox
 	private final byte[] jpeg = new byte[FRAMESIZE];
 
-	// In a multi client setup a list with subscribing clients connection
+	
+	// In a multi-client setup a list with subscribing clients connection
 	// objects would be appropriate or some MultiConnection object.
 
-	/* Create buffers */
 	/**
-	 * 
-	 * @param c
-	 *            ,
+	 * Create ServerSendThread with connection c.
+	 * @param c, Connection object over which to send images and commands. 	 
 	 */
 	public ServerSendThread(Connection c) {
 		super(c);
 		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
 	}
-
+	
 	public void run() {
 		frame_buffer.awaitBuffered(INITIAL_BUFFERWAIT_MS);
 		while (!interrupted()) {
 			if (c.isConnected())
 				perform();
 		}
-	}
+	}	
 
 	protected void perform() {
 		// 1) Check for message with commands.
@@ -77,7 +77,6 @@ public class ServerSendThread extends SendThreadSkeleton {
 
 		// 3) Wait for image message.
 		int len = frame_buffer.get(jpeg);
-
 		try {
 			// 4) Send Image via connection.
 			c.sendImage(jpeg, 0, len);
