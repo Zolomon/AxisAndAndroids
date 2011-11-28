@@ -9,6 +9,13 @@ import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ClientSendThread extends SendThreadSkeleton {
 
 	private final DisplayMonitor disp_monitor;

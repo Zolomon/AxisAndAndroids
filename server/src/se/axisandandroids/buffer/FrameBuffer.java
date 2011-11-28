@@ -2,6 +2,12 @@ package se.axisandandroids.buffer;
 
 import se.lth.cs.fakecamera.Axis211A;
 
+
+/**
+ * 
+ * @author jg
+ *
+ */
 public class FrameBuffer {
 
 	private final Frame[] buffer;	

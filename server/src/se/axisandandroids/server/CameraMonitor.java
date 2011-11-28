@@ -2,6 +2,12 @@ package se.axisandandroids.server;
 
 import se.axisandandroids.networking.Protocol;
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class CameraMonitor {
 
 	private int display_mode;
@@ -10,11 +16,11 @@ public class CameraMonitor {
 		display_mode = Protocol.DISP_MODE.AUTO;
 		//display_mode = Protocol.DISP_MODE.MOVIE;
 	}
-/**
- * Setting a new display mode, aka. changing the behaviour of the cameraThread.
- * @param display_mode An integer that specifies the display mode.
- * @return true if change is successful, false otherwise.
- */
+	/**
+	 * Setting a new display mode, aka. changing the behaviour of the cameraThread.
+	 * @param display_mode An integer that specifies the display mode.
+	 * @return true if change is successful, false otherwise.
+	 */
 	public synchronized boolean setDisplayMode(int display_mode) {
 		if (display_mode != Protocol.DISP_MODE.MOVIE
 				&& display_mode != Protocol.DISP_MODE.IDLE
@@ -27,10 +33,10 @@ public class CameraMonitor {
 			return true;
 		}
 	}
-/**
- * 
- * @return an integer with the display mode.
- */
+	/**
+	 * 
+	 * @return an integer with the display mode.
+	 */
 	public synchronized int getDislayMode() {
 		return display_mode;
 	}

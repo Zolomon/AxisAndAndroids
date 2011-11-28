@@ -3,6 +3,12 @@ package se.axisandandroids.networking;
 import java.io.IOException;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ReceiveThreadSkeleton extends Thread {
 
 	protected Connection c;

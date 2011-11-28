@@ -1,5 +1,12 @@
 package se.axisandandroids.networking;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class SendThreadSkeleton extends Thread {
 
 	protected Connection c;

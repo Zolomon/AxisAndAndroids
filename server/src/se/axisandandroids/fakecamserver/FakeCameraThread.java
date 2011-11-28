@@ -8,6 +8,12 @@ import se.axisandandroids.server.CameraMonitor;
 import se.lth.cs.fakecamera.*;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class FakeCameraThread extends Thread {
 
 	private long IDLE_PERIOD = 5000;

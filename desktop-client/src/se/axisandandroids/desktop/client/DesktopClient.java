@@ -13,6 +13,12 @@ import se.axisandandroids.desktop.display.DesktopDisplayThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DesktopClient {
 
 	private Socket socket;

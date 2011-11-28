@@ -7,6 +7,14 @@ import se.axisandandroids.networking.Protocol;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
+
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class CameraThread extends Thread {
 	
 	private int detectionSens 			= 3;
@@ -24,11 +32,11 @@ public class CameraThread extends Thread {
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera,
-	 * proxy-camera or fake camera and post it to one sendthread.
-	 * 
-	 * @param camera_monitor
-	 * @param mailbox
-	 * @param md
+	 * proxy-camera or fake camera and post it to one sendthread.	 
+	 * @param camera_monitor, camera monitor for shared data on serverside.
+	 * @param mailbox, a mailbox to which motion detect commands (ModeChange(DispMode, Movie)) to client can be sent.
+	 * @param cam, Axis211A camera instance from which images are fetched.
+	 * @param md, motion detector.
 	 */
 	public CameraThread(CameraMonitor camera_monitor, 
 				        CircularBuffer mailbox,
@@ -41,7 +49,8 @@ public class CameraThread extends Thread {
 		this.frame_buffer = frame_buffer;
 		this.md = md;
 	}
-/** While the camera is connected: receive images according to the display mode */
+
+	/* While the camera is connected: receive images according to the display mode */
 	public void run() {
 		if (cameraConnect()) {
 			while (!interrupted()) {
@@ -59,7 +68,7 @@ public class CameraThread extends Thread {
 			}
 		}
 	}
-
+	
 	private void periodReceive() {
 		long t, dt;
 		t = System.currentTimeMillis();
@@ -67,7 +76,6 @@ public class CameraThread extends Thread {
 		/* Periodic Activity */
 		int len = receiveJPEG();
 		frame_buffer.put(jpeg, len);	
-
 
 		t += IDLE_PERIOD;
 		dt = t - System.currentTimeMillis();
@@ -80,6 +88,10 @@ public class CameraThread extends Thread {
 		}
 	}
 
+	/**
+	 * Get image from camera.
+	 * @return, length of the jpeg, the image is writen in byte[] jpeg.
+	 */
 	private int receiveJPEG() {
 		int len = 0;
 		len = myCamera.getJPEG(jpeg, 0);

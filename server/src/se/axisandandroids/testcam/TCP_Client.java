@@ -29,6 +29,13 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class TCP_Client {
 
 

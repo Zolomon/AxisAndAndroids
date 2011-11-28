@@ -14,6 +14,12 @@ import se.lth.cs.fakecamera.Axis211A;
 
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ClientHandler extends Thread {
 	Socket clientSocket;
 	Axis211A axis;

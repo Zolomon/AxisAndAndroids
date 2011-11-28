@@ -10,6 +10,13 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
 import se.lth.cs.cameraproxy.Axis211A;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ServerSendThread extends SendThreadSkeleton {
 
 	protected int BUFFERSIZE = 3;

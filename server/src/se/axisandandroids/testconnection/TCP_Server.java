@@ -16,6 +16,12 @@ import java.net.Socket;
 import se.lth.cs.fakecamera.Axis211A;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class TCP_Server {
 	
 	private Axis211A axis;

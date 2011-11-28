@@ -1,32 +1,54 @@
 package se.axisandandroids.client.display;
 
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
-
 import se.axisandandroids.buffer.CircularBuffer;
-import se.axisandandroids.buffer.LongCircularBuffer;
 import se.axisandandroids.networking.Protocol;
 
 
 
+/**
+ * DisplayMonitor stores shared data between on the client side and is 
+ * responsible for the synchronization of image frames from different 
+ * DisplayThreads. From the delay difference of two distinct 
+ * threads it also chooses the synchronization mode.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DisplayMonitor {
+	
+	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 
-	private int disp_mode;
-	private int sync_mode = Protocol.SYNC_MODE.AUTO;
+	
+	private int sync_mode = Protocol.SYNC_MODE.AUTO;	
+	private int disp_mode;	// Server side, no default here
 
 
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
-	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
-	private final long DELAY_TERM = 20;
+	//private final long DELAY_TERM = 20;
+	//private long t0 = 0;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long t0 = 0;
 	private long lag = 20;
 
-
+	
+	/**
+	 * Construct a new DisplayMonitor.
+	 */
 	public DisplayMonitor() {}
+
+	
+	/**
+	 * Construct a new DisplayMonitor with a target synchronization delay given
+	 * by target_delay.
+	 * @param target_delay, the target delay given in milliseconds.
+	 */
+	public DisplayMonitor(long target_delay) {
+		lag = target_delay;
+	}
 
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 
@@ -57,27 +79,33 @@ public class DisplayMonitor {
 			wait();
 		}
 
-
 		/* SHOW TIME */
 		timestamps.remove();
 		notifyAll();
 
 		/* Calculate and return delay */
-
 		long delay = System.currentTimeMillis() - timestamp;						
-		//System.out.printf("Timestamp: %15d \t Time: %15d \t Delay: %8d \n", timestamp, System.currentTimeMillis(), delay);
-
 		chooseSyncMode(Thread.currentThread().getId(), delay);
-
-
 		return delay; // The real delay
 	}
 
-
+	
 	long id_last = 0;
 	long delay_last = 0;	
 	
-
+	
+	/**
+	 * Chooses the synchronization mode according to the delay given by
+	 * parameter delay and the delay of last DisplayThread executing this
+	 * method. The id parameter ensures the calculated delay distance is not
+	 * between frames of the same DisplayThread. When using for example 3 
+	 * DisplayThreads the synchronization mode switching may be oscillating
+	 * if the delay of one Display Thread deviate from the delay of the others 
+	 * above the synchronization threshold. 
+	 * @param id, DisplayThread ID.
+	 * @param delay, the delay of DisplayThread with ID id.
+	 * @return, the synchronization mode.
+	 */
 	public synchronized int chooseSyncMode(long id, long delay) {	// RESOLVE !!!		
 		if (sync_mode == Protocol.SYNC_MODE.AUTO || sync_mode == Protocol.SYNC_MODE.SYNC) {
 			if (id != id_last) {
@@ -95,17 +123,31 @@ public class DisplayMonitor {
 	}
 
 
-
+	/**
+	 * Subscribe a mailbox of a SendThread to a mail-list for forwarding of 
+	 * display mode changes from AUTO to MOVIE when motion is detected by
+	 * camera server.
+	 * @param mailbox, a SendThread mailbox.
+	 */
 	public synchronized void subscribeMailbox(CircularBuffer mailbox) {
 		System.out.println("SendThread mailbox subscribed");
 		mailboxes.add(mailbox);
 	}
 
+	/**
+	 * Unsubscribe from mailbox.
+	 * @param mailbox, a SendThread mailbox.
+	 */
 	public synchronized void unsubscribeMailbox(CircularBuffer mailbox) {
 		mailboxes.remove(mailbox);		
 	}
 	
 
+	/**
+	 * Post to all method for forwarding of display mode changes from AUTO to 
+	 * MOVIE when motion is detected by camera server.	 
+	 * @param msg, the message to post to all, eg. a ModeChange.
+	 */
 	public synchronized void postToAllMailboxes(Object msg) {	
 		System.out.println("Posting command to all ClientSendThreads...");
 		for (CircularBuffer mb : mailboxes) {
@@ -113,15 +155,36 @@ public class DisplayMonitor {
 		}
 	}
 
+	/**
+	 * Set display mode.
+	 * @param disp_mode
+	 */
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;
 	}
 
+	/**
+	 * Set synchronization mode.
+	 * @param sync_mode
+	 */
 	public synchronized void setSyncMode(int sync_mode) {
 		this.sync_mode = sync_mode;
 	}
 
-	public synchronized int getDispMode() { return disp_mode; }
-	public synchronized int getSyncMode() { return sync_mode; }
+	/**
+	 * Get display mode.
+	 * @return display mode
+	 */
+	public synchronized int getDispMode() { 
+		return disp_mode; 
+	}
+	
+	/**
+	 * Get synchronization mode.
+	 * @return sync. mode
+	 */
+	public synchronized int getSyncMode() { 
+		return sync_mode; 
+	}
 
 }

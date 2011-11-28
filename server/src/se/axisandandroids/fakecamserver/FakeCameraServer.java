@@ -11,6 +11,13 @@ import se.axisandandroids.server.ServerReceiveThread;
 import se.axisandandroids.server.ServerSendThread;
 import se.lth.cs.fakecamera.*;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class FakeCameraServer {
 
 	private final static int default_port = 6000;

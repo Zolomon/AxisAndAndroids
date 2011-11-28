@@ -9,6 +9,14 @@ import se.axisandandroids.networking.Connection;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
+
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class CameraServer {
 
 	private final static int default_port = 6000;

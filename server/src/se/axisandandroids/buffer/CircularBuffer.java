@@ -1,6 +1,11 @@
 package se.axisandandroids.buffer;
 
 
+/**
+ * 
+ * @author jg
+ *
+ */
 public class CircularBuffer {
 
 	private Object[] buffer;	

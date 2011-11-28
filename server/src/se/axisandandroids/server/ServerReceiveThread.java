@@ -6,6 +6,13 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
 
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
 	private CameraMonitor camera_monitor;

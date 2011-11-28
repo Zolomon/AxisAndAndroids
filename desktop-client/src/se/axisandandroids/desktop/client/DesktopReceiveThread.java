@@ -10,6 +10,13 @@ import se.axisandandroids.desktop.display.DesktopGUI;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DesktopReceiveThread extends ClientReceiveThread {
 
 	

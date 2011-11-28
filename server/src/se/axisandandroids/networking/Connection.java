@@ -8,6 +8,12 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class Connection {
 	
 	private String host;

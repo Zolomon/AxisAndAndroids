@@ -20,6 +20,14 @@ import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Protocol;
 
+
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DesktopGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 

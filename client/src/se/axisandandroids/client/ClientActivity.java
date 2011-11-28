@@ -26,6 +26,13 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ClientActivity extends Activity implements OnClickListener {
 	private static final String TAG = ClientActivity.class.getSimpleName();
 

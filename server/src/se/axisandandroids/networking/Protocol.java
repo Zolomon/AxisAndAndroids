@@ -1,6 +1,13 @@
 package se.axisandandroids.networking;
 
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class Protocol {
 
 	public class COMMAND {	

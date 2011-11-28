@@ -6,6 +6,12 @@ import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DisplayThreadSkeleton extends Thread {
 			
 		protected final int BUFFERSIZE = 3;

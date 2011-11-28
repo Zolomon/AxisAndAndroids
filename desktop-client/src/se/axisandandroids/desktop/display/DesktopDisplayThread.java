@@ -5,6 +5,12 @@ import se.axisandandroids.client.display.DisplayThreadSkeleton;
 import se.axisandandroids.networking.Protocol;
 
 
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
 	private DesktopGUI gui;	
