@@ -1,6 +1,7 @@
 package se.axisandandroids.buffer;
 
 /**
+ * Mode change command object.
  * @author jgrstrm
  * @author zol
  * @author fattony

@@ -5,6 +5,10 @@ import se.lth.cs.fakecamera.Axis211A;
 
 /**
  * 
+ * A circular buffer providing mailbox for Frame objects. Designed to avoid
+ * repeated object creation, ie. the Frame objects in the fixed size buffer 
+ * is reused when put(byte[] x, int len) and get(byte[] jpeg) which instead
+ * just copy byte arrays.
  * @author jg
  *
  */
@@ -183,6 +187,9 @@ public class FrameBuffer {
 		return f;
 	}
 
+	/**
+	 * Wait for the buffer to be filled.
+	 */
 	public synchronized void awaitFilled() {
 		try {
 			while (nAvailable < MAXSIZE) wait();
@@ -193,6 +200,10 @@ public class FrameBuffer {
 		notifyAll();
 	}
 
+	/**
+	 * Wait for buffer to be filled, abandon wait when time maxtime has passed.
+	 * @param maxtime, max wait time in milliseconds.
+	 */
 	public synchronized void awaitBuffered(long maxtime) {
 		try {
 			long t0 = System.currentTimeMillis();
@@ -208,7 +219,6 @@ public class FrameBuffer {
 		}
 		notifyAll();
 	}
-
 
 	/**
 	 * Return frame data of the next frame in buffer without removing it.

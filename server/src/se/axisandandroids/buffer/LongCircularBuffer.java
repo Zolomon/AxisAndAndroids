@@ -1,7 +1,7 @@
 package se.axisandandroids.buffer;
 
 /**
- * 
+ * Bonus buffer :)
  * @author jg
  *
  */

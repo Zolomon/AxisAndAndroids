@@ -13,6 +13,7 @@ import se.lth.cs.fakecamera.*;
 
 
 /**
+ * Camera server running against the fakecamera.
  * @author jgrstrm
  * @author zol
  * @author fattony
@@ -51,6 +52,7 @@ public class FakeCameraServer {
 		serv.listenForConnection();
 	}
 
+	
 	public FakeCameraServer(int port) {
 		this.port = port;
 
