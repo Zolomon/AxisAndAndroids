@@ -1,0 +1,14 @@
+se.axisandandroids.buffer
+se.axisandandroids.client
+se.axisandandroids.client.display
+se.axisandandroids.client.service
+se.axisandandroids.client.service.networking
+se.axisandandroids.desktop.client
+se.axisandandroids.desktop.display
+se.axisandandroids.fakecamserver
+se.axisandandroids.http
+se.axisandandroids.httpexample
+se.axisandandroids.networking
+se.axisandandroids.server
+se.axisandandroids.testcam
+se.axisandandroids.testconnection
