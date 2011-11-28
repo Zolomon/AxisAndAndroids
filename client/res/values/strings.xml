@@ -11,7 +11,7 @@
     <string name="show_displays">Displays</string>
     <string name="quit">Quit</string>
     <string name="menu_display_mode">Display Mode</string>
-    <string name="menu_display_mode_auto"></string>
+    <string name="menu_display_mode_auto">Auto</string>
     <string name="menu_display_mode_idle">Idle</string>
     <string name="menu_display_mode_movie">Movie</string>
     <string name="menu_sync_mode">Sync Mode</string>

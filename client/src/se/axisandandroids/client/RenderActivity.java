@@ -51,16 +51,6 @@ public class RenderActivity extends Activity {
 		super.onRestart();
 	}
 
-	// @Override
-	// protected void onResume() {
-	// super.onResume();
-	// for (Connection c : mService.mConnectionHandler.connections) {
-	// addPanel(c);
-	// }
-	//
-	// mService.mConnectionHandler.connections.clear();
-	// }
-
 	@Override
 	protected void onStop() {
 		mService.pausePanels();
@@ -120,7 +110,7 @@ public class RenderActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.client_menu, menu);
+		inflater.inflate(R.menu.render_menu, menu);
 		return true;
 	}
 
@@ -133,7 +123,7 @@ public class RenderActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_displays:
+		case R.id.menu_connections:
 			//finish();
 			setVisible(false);
 			return true;

@@ -8,21 +8,41 @@
     <item
         android:id="@+id/menu_quit"
         android:title="@string/quit"/>
-    <item android:id="@+id/menu_display_mode" android:title="@string/menu_display_mode">
-        <menu>
-            <item android:id="@+id/menu_display_mode_auto" android:title="@string/menu_display_mode_auto"/>
-            <item android:id="@+id/menu_display_mode_idle" android:title="@string/menu_display_mode_idle"/>
-            <item android:id="@+id/menu_display_mode_movie" android:title="@string/menu_display_mode_movie"/>
-        </menu>
-    </item>
-    <item android:id="@+id/menu_sync_mode" android:title="@string/menu_sync_mode">
-        <menu>
-            <item android:id="@+id/menu_sync_mode_auto" android:title="@string/menu_sync_mode_auto"/>
-            <item android:id="@+id/menu_sync_mode_sync" android:title="@string/menu_sync_mode_sync"/>
-            <item android:id="@+id/menu_sync_mode_async" android:title="@string/menu_sync_mode_async"/>
-        </menu>
-    </item>
-    
-    
+
+    <item
+        android:id="@+id/menu_display_mode"
+        android:title="@string/menu_display_mode">
+<menu >
+
+            <item
+                android:id="@+id/menu_display_mode_auto"
+                android:title="@string/menu_display_mode_auto"/>
+
+            <item
+                android:id="@+id/menu_display_mode_idle"
+                android:title="@string/menu_display_mode_idle"/>
+
+            <item
+                android:id="@+id/menu_display_mode_movie"
+                android:title="@string/menu_display_mode_movie"/>
+        </menu></item>
+
+    <item
+        android:id="@+id/menu_sync_mode"
+        android:title="@string/menu_sync_mode">
+<menu >
+
+            <item
+                android:id="@+id/menu_sync_mode_auto"
+                android:title="@string/menu_sync_mode_auto"/>
+
+            <item
+                android:id="@+id/menu_sync_mode_sync"
+                android:title="@string/menu_sync_mode_sync"/>
+
+            <item
+                android:id="@+id/menu_sync_mode_async"
+                android:title="@string/menu_sync_mode_async"/>
+        </menu></item>
 
 </menu>
