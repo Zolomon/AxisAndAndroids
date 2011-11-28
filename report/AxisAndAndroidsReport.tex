@@ -65,28 +65,30 @@ The ServerSendThread receives commands to its CircularBuffer mailbox fetched wit
 The ClientSendThread gets commands posted to its CircularBuffer mailbox. The commands can be from the GUI or from ClientReceiveThread which propaget display mode changes when received.
 
 \subsubsection{Network protocol}
-The network protocol will consist of messages being sent by a Connection object. Each message is initialized with a command integer. The system make use of two different message types as given by the table \ref{tableprot};
+The network protocol will consist of messages being sent by a Connection object. Each message is initialized with a command integer. The system make use of two different message types as given by the table below. % \ref{tableprot};
+
+
 
 \begin{table}[h!]
-    \begin{tabular}{|l|l|}
-    	\caption{The network protocol used for sending command integers and mode flags.}
-    	\label{tableprot}
-        \hline
-        \textbf{Command} & \textbf{Format} \\ \hline
-        Image   & \begin{tabular}{l|l|l}
-        
-        Command & Length & Byte Array \\
-        
-    \end{tabular}
-     \\ \hline
-        Mode    & \begin{tabular}{l|ll}
+%    \begin{tabular}{|l|l|}  
+    
+    	\begin{tabular}{|l|lll|}
+
+	\hline   \textbf{Command} & \textbf{Format} & & \\ \hline                
+     
+               
+       \hline Image   &   Command & Length & Byte Array \\ \hline
        
-        Command & Mode~~ & ~~~~~~~~~~~~~~\ \\
-        
-    \end{tabular}     \\
-        \hline
+     
+        \hline Mode    & Command & Mode & \\ \hline
     \end{tabular}
+
+ 
+   \caption{The network protocol used for sending command integers and mode flags.}
+
+    \label{tableprot}
 \end{table}
+
 
 The command integers and mode flags are defined in the class Protocol.
 
