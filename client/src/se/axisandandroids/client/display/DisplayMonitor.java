@@ -50,17 +50,29 @@ public class DisplayMonitor {
 		lag = target_delay;
 	}
 
+	
+	/**
+	 * The method responsible to synchronize image frames between display threads.
+	 * This is done according to the given timestamps to hold a target delay lag.
+	 * Further synchronization is done by releasing threads only if its timestamp 
+	 * is less than all other registered timestamps of threads currently in the method.	
+	 * (In some iteration of this method the target lab was set to the lag of the 
+	 *  first frame to synchronize. )
+	 * @param timestamp
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
 
-		/* No old showtime exists for ANY frame, display now! */
 		/*
+		// No old showtime exists for ANY frame, display now!
 		if (t0 <= 0) {
 			t0 = System.currentTimeMillis();
 			lag = t0 - timestamp;
 			lag += DELAY_TERM;
 			return t0 - timestamp;			
 		}
-		 */
+		*/
 
 		timestamps.offer(timestamp);
 
@@ -75,7 +87,7 @@ public class DisplayMonitor {
 			Thread.sleep(diffTime);		
 		} 
 
-		while (timestamp > timestamps.peek()) {
+		while (timestamp > timestamps.peek()) { // Maybe check timestamp difference too, hmmm
 			wait();
 		}
 

@@ -12,6 +12,7 @@ import se.lth.cs.fakecamera.Axis211A;
 
 
 /**
+ * The client receive thread.
  * @author jgrstrm
  * @author zol
  * @author fattony

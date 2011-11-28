@@ -7,6 +7,7 @@ import se.lth.cs.fakecamera.Axis211A;
 
 
 /**
+ * Great grand father of DisplayThreads.
  * @author jgrstrm
  * @author zol
  * @author fattony
