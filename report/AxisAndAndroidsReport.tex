@@ -67,26 +67,7 @@ The ClientSendThread gets commands posted to its CircularBuffer mailbox. The com
 \subsubsection{Network protocol}
 The network protocol will consist of messages being sent by a Connection object. Each message is initialized with a command integer. The system make use of two different message types as given by the table below.
 
-%\begin{table}[h!]
-%    \begin{tabular}{|l|l|}
-%    	\caption{The network protocol used for sending command integers and mode flags.}
-%    	\label{tableprot}
-%        \hline
-%        \textbf{Command} & \textbf{Format} \\ \hline
-%        Image   & \begin{tabular}{l|l|l}
-%        
-%        Command & Length & Byte Array \\
-%        
-%    \end{tabular}
-%     \\ \hline
-%        Mode    & \begin{tabular}{l|ll}
-%       
-%        Command & Mode~~ & ~~~~~~~~~~~~~~\ \\
-%        
-%    \end{tabular}     \\
-%        \hline
-%    \end{tabular}
-%\end{table}
+%\input{table}
 
 \begin{figure}[hbp]
 \centering
@@ -97,7 +78,7 @@ The network protocol will consist of messages being sent by a Connection object.
 
 \noindent The command integers and mode flags are defined in the class Protocol.
 
-
+\clearpage
 \section{Client side}
 
 \subsection{DisplayThread}
@@ -151,9 +132,8 @@ public synchronized long syncFrames(long timestamp) throws InterruptedException 
 		chooseSyncMode(Thread.currentThread().getId(), delay);
 		return delay; // The real delay
 	}
-
-
 \end{verbatim}
+
 \subsubsection{chooseSyncMode}
 \begin{verbatim}
 long id_last = 0;
@@ -191,17 +171,15 @@ When stared the Desktop Client Application is easy to use. The display mode is s
 
 Below is an UML diagram over the Desktop Client system. 
 
-As one can tell from the UML diagram, the DesktopClient consists of three basic parts. The GUI, a send thread and a recieve thread. A simple but effective design.
+As one can tell from the UML diagram, the DesktopClient consists of three basic parts: the GUI, a send thread and a recieve thread. A simple but effective design.
 
 \clearpage
 \begin{figure}[h!]
-\centering
-\includegraphics[width=2.0\textwidth]{../uml/desktop-client.png}
+\includegraphics[width=1.7\textwidth]{../uml/desktop-client.png}
 \caption{UML of the desktop client}
 \end{figure}
 
 \clearpage
-
 \subsection{Android version}
 The android version was created to have a portable surveillance station.
 
@@ -218,14 +196,14 @@ Screenshots from the Android application in action, running on the Android Virtu
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[width=0.75\textwidth]{../screenshots/androidConnecting.png}
+\includegraphics[width=0.45\textwidth]{../screenshots/androidConnecting.png}
 \caption{Screenshot of the Android client connection menue}
 \end{figure}
 
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[width=0.75\textwidth]{../screenshots/androidDisplaying.png}
+\includegraphics[width=0.45\textwidth]{../screenshots/androidDisplaying.png}
 \caption{Screenshot of the Android client displaying the fakecamera}
 \end{figure}
 
@@ -233,29 +211,24 @@ From the menu in display view the user can select Display Mode and Sync Mode. Mo
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[width=0.75\textwidth]{../screenshots/androidDisplayMode.png}
+\includegraphics[width=0.45\textwidth]{../screenshots/androidDisplayMode.png}
 \caption{Screenshot of the Android client Display Mode menue}
 \end{figure}
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[width=0.75\textwidth]{../screenshots/androidSyncMode.png}
+\includegraphics[width=0.45\textwidth]{../screenshots/androidSyncMode.png}
 \caption{Screenshot of the Android client Sync Mode menue}
 \end{figure}
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[width=0.75\textwidth]{../screenshots/androidSyncing.png}
+\includegraphics[width=0.45\textwidth]{../screenshots/androidSyncing.png}
 \caption{Screenshot of the Android client syncing frames}
 \end{figure}
 
 
-
-
-
-
-
-
+\clearpage
 \section{Server side}
 The server side consist of two servers CameraServer and FakeCameraServer, where the former run against camera proxy servers and the latter is mostly for test, demo or debug purposes.
 
@@ -277,12 +250,13 @@ The figure below shows a UML diagram of the Camera Server system.
 Camera Server support the option to run a lightweight embedded http server. The http server is started in it’s own thread by specifying the flag -http <port> when starting the camera server. The http server send an image every time a http client requests one, so one could theoretically refresh the image 24 times per second and get a live-stream in a browser of your choosing. This also means that the camera can be accessed from unsupported platforms such as iPhone.
 
 \begin{figure}[hbp]
-\includegraphics[width=0.75\textwidth]{../uml/server.png}
+\includegraphics[width=1.7\textwidth]{../uml/server.png}
 \caption{UML of the server side}
 \end{figure}
 
 The UML above shows how CameraMonitor recieves commands from both the RecieveThread and the CameraThread. This is because both the client and the camera itself can decide when to switch display modes. The CameraThread is also connected to the SendThread. This is because when a display mode occurs because of motion detection, it has to tell the client. The client then tells the other cameras to make the same switch.
 
+\clearpage
 \section{User guide}
 
 \subsection{The fake camera server}
