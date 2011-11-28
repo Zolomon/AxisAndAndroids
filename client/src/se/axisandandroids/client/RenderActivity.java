@@ -1,5 +1,7 @@
 package se.axisandandroids.client;
 
+import se.axisandandroids.client.display.NewDisplayModeCallback;
+import se.axisandandroids.client.display.NewSyncModeCallback;
 import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
@@ -28,6 +31,8 @@ public class RenderActivity extends Activity {
 	private LinearLayout mLinearLayout;
 	private LayoutInflater mLayoutInflater;
 	private boolean mPaused;
+	private int mSyncMode;
+	private int mDisplayMode;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +48,84 @@ public class RenderActivity extends Activity {
 		boolean res = getApplicationContext().bindService(intent, mConnection,
 				Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "" + res);
+
+		mService.mDisplayMonitor
+				.setNewDisplayModeCallback(new NewDisplayModeCallback() {
+
+					public void callback(int mode) {
+						setDisplayMode(mode);
+					}
+				});
+
+		mService.mDisplayMonitor
+				.setNewSyncModeCallback(new NewSyncModeCallback() {
+
+					public void callback(int mode) {
+						setSyncMode(mode);
+					}
+				});
 	}
-	
+
+	protected void setSyncMode(int mode) {
+
+		MenuItem syncItem = null;
+		switch (mSyncMode) {
+		case 0:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_auto);
+			break;
+		case 1:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_sync);
+			break;
+		case 2:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_async);
+			break;
+		}
+		syncItem.setChecked(false);
+		switch (mode) {
+		case 0:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_auto);
+			break;
+		case 1:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_sync);
+			break;
+		case 2:
+			syncItem = (MenuItem) findViewById(R.id.menu_sync_mode_async);
+			break;
+		}
+		syncItem.setChecked(true);
+		mSyncMode = mode;
+	}
+
+	protected void setDisplayMode(int mode) {
+		MenuItem displayItem = null;
+		switch (mDisplayMode) {
+		case 0:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_auto);
+			break;
+		case 1:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_idle);
+			break;
+		case 2:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_movie);
+			break;
+		}
+		displayItem.setChecked(false);
+		switch (mode) {
+		case 0:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_auto);
+			break;
+		case 1:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_idle);
+			break;
+		case 2:
+			displayItem = (MenuItem) findViewById(R.id.menu_display_mode_movie);
+			break;
+		}
+		displayItem.setChecked(true);
+		mDisplayMode = mode;
+
+	}
+
 	@Override
 	protected void onRestart() {
 		mService.playPanels();
@@ -55,14 +136,14 @@ public class RenderActivity extends Activity {
 	protected void onStop() {
 		mService.pausePanels();
 		try {
-			//mService.disconnect();
+			// mService.disconnect();
 			unbindService(mConnection);
 		} catch (java.lang.IllegalArgumentException e) {
 			// Print to log or make toast that it failed
 		}
 		super.onStop();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// Unbind from the service
@@ -102,7 +183,7 @@ public class RenderActivity extends Activity {
 		Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);
 
 		mService.mConnectionHandler.add(c.getId(), new CameraTunnel(c, panel,
-				mService.dm, c.getId()));
+				mService.mDisplayMonitor, c.getId()));
 		mLinearLayout.addView(theInflatedPanel, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, 320));
 	}
@@ -124,12 +205,30 @@ public class RenderActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.menu_connections:
-			//finish();
+			// finish();
 			setVisible(false);
 			return true;
 		case R.id.menu_quit:
 			finish();
 			return true;
+		case R.id.menu_display_mode_auto:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
+		case R.id.menu_display_mode_idle:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
+		case R.id.menu_display_mode_movie:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
+		case R.id.menu_sync_mode_auto:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
+		case R.id.menu_sync_mode_sync:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
+		case R.id.menu_sync_mode_async:
+			if (item.isChecked()) item.setChecked(false);
+		    else item.setChecked(true);
 		default:
 			return super.onOptionsItemSelected(item);
 		}

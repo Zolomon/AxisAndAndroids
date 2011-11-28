@@ -103,7 +103,11 @@ public class DisplayMonitor {
 
 	
 	long id_last = 0;
-	long delay_last = 0;	
+	long delay_last = 0;
+
+
+	private NewDisplayModeCallback mNewDisplayModeCallback;
+	private NewSyncModeCallback mNewSyncModeCallback;	
 	
 	
 	/**
@@ -173,6 +177,7 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;
+		mNewDisplayModeCallback.callback(this.disp_mode);
 	}
 
 	/**
@@ -181,10 +186,11 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setSyncMode(int sync_mode) {
 		this.sync_mode = sync_mode;
+		mNewSyncModeCallback.callback(this.sync_mode);
 	}
 
 	/**
-	 * Get display mode.
+	 * Get display mode. [0 == Auto, 1 == Idle, 2 == Movie]
 	 * @return display mode
 	 */
 	public synchronized int getDispMode() { 
@@ -192,11 +198,19 @@ public class DisplayMonitor {
 	}
 	
 	/**
-	 * Get synchronization mode.
+	 * Get synchronization mode. [0 == Auto, 1 == Sync, 2 == Async]
 	 * @return sync. mode
 	 */
 	public synchronized int getSyncMode() { 
 		return sync_mode; 
+	}
+	
+	public void setNewDisplayModeCallback(NewDisplayModeCallback callback) {
+		mNewDisplayModeCallback = callback;
+	}
+	
+	public void setNewSyncModeCallback(NewSyncModeCallback callback) {
+		mNewSyncModeCallback = callback;
 	}
 
 }

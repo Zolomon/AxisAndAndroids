@@ -14,17 +14,20 @@
         android:title="@string/menu_display_mode">
 <menu >
 
-            <item
-                android:id="@+id/menu_display_mode_auto"
-                android:title="@string/menu_display_mode_auto"/>
+            <group android:checkableBehavior="single" >
 
-            <item
-                android:id="@+id/menu_display_mode_idle"
-                android:title="@string/menu_display_mode_idle"/>
+                <item
+                    android:id="@+id/menu_display_mode_auto"
+                    android:title="@string/menu_display_mode_auto"/>
 
-            <item
-                android:id="@+id/menu_display_mode_movie"
-                android:title="@string/menu_display_mode_movie"/>
+                <item
+                    android:id="@+id/menu_display_mode_idle"
+                    android:title="@string/menu_display_mode_idle"/>
+
+                <item
+                    android:id="@+id/menu_display_mode_movie"
+                    android:title="@string/menu_display_mode_movie"/>
+            </group>
         </menu></item>
 
     <item
@@ -32,17 +35,20 @@
         android:title="@string/menu_sync_mode">
 <menu >
 
-            <item
-                android:id="@+id/menu_sync_mode_auto"
-                android:title="@string/menu_sync_mode_auto"/>
+            <group android:checkableBehavior="single" >
 
-            <item
-                android:id="@+id/menu_sync_mode_sync"
-                android:title="@string/menu_sync_mode_sync"/>
+                <item
+                    android:id="@+id/menu_sync_mode_auto"
+                    android:title="@string/menu_sync_mode_auto"/>
 
-            <item
-                android:id="@+id/menu_sync_mode_async"
-                android:title="@string/menu_sync_mode_async"/>
+                <item
+                    android:id="@+id/menu_sync_mode_sync"
+                    android:title="@string/menu_sync_mode_sync"/>
+
+                <item
+                    android:id="@+id/menu_sync_mode_async"
+                    android:title="@string/menu_sync_mode_async"/>
+            </group>
         </menu></item>
 
 </menu>
