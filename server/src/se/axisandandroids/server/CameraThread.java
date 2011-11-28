@@ -10,6 +10,8 @@ import se.lth.cs.cameraproxy.MotionDetector;
 
 
 /**
+ * CameraThread fetches images from proxies and dispatches them to a
+ * send thread given by its mailboxes for images and commands.
  * @author jgrstrm
  * @author zol
  * @author fattony

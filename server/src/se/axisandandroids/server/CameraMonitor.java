@@ -3,6 +3,7 @@ package se.axisandandroids.server;
 import se.axisandandroids.networking.Protocol;
 
 /**
+ * Camera monitor is responsible for syncing of shared data on the server side.
  * @author jgrstrm
  * @author zol
  * @author fattony
