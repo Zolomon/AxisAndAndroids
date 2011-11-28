@@ -17,8 +17,8 @@ public class CtrlService extends android.app.Service {
 	private static final String TAG = CtrlService.class.getSimpleName();
 	private final IBinder mBinder = new LocalBinder();
 
-	public DisplayMonitor dm = new DisplayMonitor();
-	public ConnectionHandler mConnectionHandler = new ConnectionHandler(dm);
+	public DisplayMonitor mDisplayMonitor = new DisplayMonitor();
+	public ConnectionHandler mConnectionHandler = new ConnectionHandler(mDisplayMonitor);
 	private List<Connection> mConnections;
 	private List<Panel> mPanels;
 	
