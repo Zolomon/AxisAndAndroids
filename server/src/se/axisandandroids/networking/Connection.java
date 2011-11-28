@@ -49,6 +49,7 @@ public class Connection {
 			sock.setTcpNoDelay(true);
 		} catch (SocketException e) {
 			System.err.println("Argh! socket slained without delay.");
+			e.printStackTrace();
 			System.exit(1);
 		}
 		connect();
@@ -66,6 +67,7 @@ public class Connection {
 			os = sock.getOutputStream();
 		} catch (IOException e) {
 			System.err.println("IO-error");
+			e.printStackTrace();
 			System.exit(1);
 		}		
 		System.out.printf("New Connection: %s\n", sock.getInetAddress().toString());
@@ -83,6 +85,7 @@ public class Connection {
 			sock.close();
 		} catch (IOException e) {
 			System.err.println("IO-error");
+			e.printStackTrace();
 			System.exit(1);
 		}		
 		sock = null; // etc... // other threads
@@ -96,8 +99,17 @@ public class Connection {
 	public void sendImage(byte[] data) throws IOException {		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(data.length);				
-		os.write(data, 0, data.length);	
+		onWrite(data, 0, data.length);	
 		os.flush();
+	}
+
+	private void onWrite(byte[] data, int offset, int length) {
+		try {
+			os.write(data, offset, length);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -111,7 +123,7 @@ public class Connection {
 		int len = b - a;		
 		sendInt(Protocol.COMMAND.IMAGE);
 		sendInt(len);	
-		os.write(data, a, len);					
+		onWrite(data, a, len);					
 		os.flush();
 	}
 
@@ -138,6 +150,7 @@ public class Connection {
 			}
 		} catch (IOException e) {
 			System.err.println("IO-error");
+			e.printStackTrace();
 			System.exit(1);
 		}		
 		return bytes_read;
@@ -187,7 +200,7 @@ public class Connection {
 		sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
 		sendintbuffer[2] = (byte) ( (nbr & 0x0000ff00) >> 8	 );
 		sendintbuffer[3] = (byte) ( (nbr & 0x000000ff) 		 );
-		os.write(sendintbuffer, 0, sendintbuffer.length);
+		onWrite(sendintbuffer, 0, sendintbuffer.length);
 		os.flush();
 
 		/*	os.write( (nbr & 0xff000000) >> 24 	);
@@ -238,7 +251,7 @@ public class Connection {
 	}
 /**
  * 
- * @return An integer with the port number.
+ * @return An integer with the port number.	
  */
 	public int getPort() { 
 		return port; 
@@ -252,5 +265,4 @@ public class Connection {
 	public boolean isConnected() {
 		return sock != null && !sock.isClosed() && sock.isConnected(); 
 	}
-
 }

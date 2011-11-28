@@ -43,6 +43,7 @@ public class DesktopClient {
 			System.exit(1);
 		} catch (IOException e) {
 			System.err.println("Socket ioexception.");
+			e.printStackTrace();
 			System.exit(1);
 		}
 		System.out.println("Connection Setup Complete: " + host +":"+port);

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -133,7 +134,8 @@ public class RenderActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.menu_displays:
-			finish();
+			//finish();
+			setVisible(false);
 			return true;
 		case R.id.menu_quit:
 			finish();
