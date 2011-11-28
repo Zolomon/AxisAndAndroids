@@ -2,24 +2,33 @@ package se.axisandandroids.client.display;
 
 import android.graphics.BitmapFactory;
 
+
+/**
+ * Display thread gets images in its FrameBuffer and gets them synchronized
+ * and lets the GUI show them.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DisplayThread extends DisplayThreadSkeleton {
 	
 	private NewImageCallback mNewImageCallback;
 	
+	/**
+	 * Create a new DisplayThread.
+	 * @param disp_monitor, display monitor to sync with other display threads.
+	 * @param callback, callback for rendering of image in the GUI.
+	 */
 	public DisplayThread(DisplayMonitor disp_monitor, NewImageCallback callback) {
 		super(disp_monitor);
 		mNewImageCallback = callback;
 	}
 
-	static final int NUM_FPS_SAMPLES = 64;
-	float[] fpsSAMPLES = new float[NUM_FPS_SAMPLES];
-	int currentSample = 0;
-
+	private static final int NUM_FPS_SAMPLES = 64;
+	private float[] fpsSAMPLES = new float[NUM_FPS_SAMPLES];
+	private int currentSample = 0;
 	private long oldTime;
-	
-	public DisplayThread(DisplayMonitor disp_monitor, int id) {
-		super(disp_monitor);
-	}
 
 	@Override 
 	protected void showImage(long timestamp, long delay, int len, int sync_mode) {

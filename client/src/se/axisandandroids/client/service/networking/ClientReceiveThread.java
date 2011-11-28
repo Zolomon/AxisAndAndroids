@@ -11,6 +11,13 @@ import se.axisandandroids.buffer.ModeChange;
 import se.lth.cs.fakecamera.Axis211A;
 
 
+/**
+ * The client receive thread.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	protected final DisplayMonitor disp_monitor;

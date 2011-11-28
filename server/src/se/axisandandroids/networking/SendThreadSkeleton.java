@@ -1,5 +1,13 @@
 package se.axisandandroids.networking;
 
+
+/**
+ * SendThread superclass. Just a cyclic thread with a connection object.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class SendThreadSkeleton extends Thread {
 
 	protected Connection c;
@@ -9,8 +17,7 @@ public class SendThreadSkeleton extends Thread {
 	}
 
 	public void run() {
-		while (!interrupted()) {
-			if (c.isConnected())
+		while (!interrupted() && c.isConnected()) {
 				perform();
 		}
 	}

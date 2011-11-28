@@ -3,6 +3,15 @@ package se.axisandandroids.networking;
 import java.io.IOException;
 
 
+/**
+ * Superclass for Receive threads. Gets, in its run-loop, a command integer 
+ * from its Connection object and chooses an appropriate action. The actions 
+ * are meant to be implemented by a subclass. 
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ReceiveThreadSkeleton extends Thread {
 
 	protected Connection c;
@@ -22,7 +31,7 @@ public class ReceiveThreadSkeleton extends Thread {
 			}
 		}
 	}
-	
+		
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
 		switch (cmd) {

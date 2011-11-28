@@ -11,6 +11,14 @@ import se.axisandandroids.server.ServerReceiveThread;
 import se.axisandandroids.server.ServerSendThread;
 import se.lth.cs.fakecamera.*;
 
+
+/**
+ * Camera server running against the fakecamera.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class FakeCameraServer {
 
 	private final static int default_port = 6000;
@@ -44,6 +52,7 @@ public class FakeCameraServer {
 		serv.listenForConnection();
 	}
 
+	
 	public FakeCameraServer(int port) {
 		this.mPort = port;
 

@@ -9,6 +9,15 @@ import se.axisandandroids.networking.Connection;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
+
+
+/**
+ * Camera server running against camera proxies.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class CameraServer {
 
 	private final static int default_port = 6000;
@@ -64,7 +73,6 @@ public class CameraServer {
 		}
 
 		System.out.println("Big brother is watching you all, Axis and Androids...");
-
 		
 		CameraServer serv = new CameraServer(listenPort, camhost, camport, http);
 		serv.listenForConnection();
@@ -98,8 +106,10 @@ public class CameraServer {
 		System.out.println("Camera Server up and running...");
 	}
 
-	/** Listening on port listenPort and tries to accept any client connection on that port. */
 	
+	/** 
+	 * Listening on port listenPort and tries to accept any client connection on that port. 
+	 */
 	private void listenForConnection() {
 
 		System.out.printf("Listening on port: %d\n", listenPort);

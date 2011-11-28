@@ -13,6 +13,13 @@ import se.axisandandroids.desktop.display.DesktopDisplayThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 
 
+/**
+ * DesktopClient is the desktop version of our surveillance solution.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class DesktopClient {
 
 	private Socket socket;
@@ -54,11 +61,12 @@ public class DesktopClient {
 	 * @throws IOException
 	 */
 	public void disconnect() throws IOException {
-		socket.close();
+		socket.close();	
 		System.out.println("Client disconnected.");
+		System.out.println("Interrupting threads");
+		interruptThreads();		
 	}
-
-	
+		
 	/**
 	 * Create the Desktop Client instace's threads, add them to list threads
 	 * to await startup.
@@ -80,19 +88,11 @@ public class DesktopClient {
 			disp_thread = new DesktopDisplayThread(dm, gui);
 		}		
 		DesktopReceiveThread recv_thread = new DesktopReceiveThread(c, dm, disp_thread.mailbox, gui);
-		ClientSendThread send_thread = new ClientSendThread(c, dm);
-
-		/*
-		System.out.println("Starting Threads: DisplayThread, ReceiveThread, SendThread...");
-		disp_thread.start();
-		recv_thread.start();
-		send_thread.start();
-		 */						
+		ClientSendThread send_thread = new ClientSendThread(c, dm);				
 
 		threads.add(disp_thread);
 		threads.add(recv_thread);
 		threads.add(send_thread);	
-
 	}		
 
 	/**
@@ -103,8 +103,16 @@ public class DesktopClient {
 		for (Thread t : threads) 
 			t.start();		
 	}
-
-
+	
+	/**
+	 * Interrupt the associated threads.
+	 */
+	public void interruptThreads() {
+		System.out.println("Interrupting Threads: DisplayThread, ReceiveThread, SendThread...");
+		for (Thread t : threads) {
+			t.interrupt();
+		} 
+	}
 	
 	/**
 	 * Main program for Desktop Client. Has capability to start multiple

@@ -1,6 +1,12 @@
 package se.axisandandroids.buffer;
 
 
+/**
+ * 
+ * A circular buffer for Object and subclasses.
+ * @author jg
+ *
+ */
 public class CircularBuffer {
 
 	private Object[] buffer;	
@@ -143,8 +149,6 @@ public class CircularBuffer {
 		assert(z.x[0] == 10);
 
 		fb.printBuffer();	
-
-
 
 		/* Test Case */
 		System.out.println("Test case");

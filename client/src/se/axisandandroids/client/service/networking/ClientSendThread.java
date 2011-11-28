@@ -9,6 +9,15 @@ import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.SendThreadSkeleton;
 
+
+/**
+ * SendThread for client, responsible for sending commands to one camera 
+ * server.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ClientSendThread extends SendThreadSkeleton {
 
 	private final DisplayMonitor disp_monitor;
@@ -16,6 +25,12 @@ public class ClientSendThread extends SendThreadSkeleton {
 	public final CircularBuffer mailbox;
 
 
+	/**
+	 * Create client send thread. The send thread subscribes it mailbox to
+	 * the display monitor in order to receive post to all meassages.
+	 * @param c, Conneciton to camera server.
+	 * @param disp_monitor, display monitor.
+	 */
 	public ClientSendThread(Connection c, DisplayMonitor disp_monitor) {
 		super(c);
 		mailbox = new CircularBuffer(BUFFERSIZE);

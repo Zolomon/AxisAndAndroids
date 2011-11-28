@@ -8,6 +8,15 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 
+/**
+ * Connection supplies high level networking to send and receive-threads.
+ * Send-methods are only used by ONE SendThread and receive-methods are
+ * only used by ONE receive thread by design.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class Connection {
 	
 	private String host;
@@ -28,7 +37,7 @@ public class Connection {
 
 	
 	/**
-	 * 
+	 * Create a new connection
 	 * @param host
 	 * @param port
 	 * @throws UnknownHostException

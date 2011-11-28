@@ -1,5 +1,12 @@
 package se.axisandandroids.buffer;
 
+/**
+ * Mode change command object.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class ModeChange extends Command {
 	public int mode;
 

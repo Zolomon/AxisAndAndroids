@@ -9,6 +9,13 @@ import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class CameraTunnel {
 
 	private Connection mConnection;

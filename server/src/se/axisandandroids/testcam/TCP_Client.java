@@ -29,6 +29,13 @@ import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
+
+/**
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class TCP_Client {
 
 
@@ -270,8 +277,15 @@ public class TCP_Client {
 					//					con.sendDisplayMode(Protocol.DISP_MODE.IDLE);
 					if (cmd == Protocol.COMMAND.IMAGE) {
 						//					System.out.println("Getting Image...");
-						con.recvImage(jpeg);	
-					} else {
+						con.recvImage(jpeg);
+					}
+					else if (cmd == Protocol.COMMAND.SYNC_MODE) {
+						con.recvInt();
+						}
+					else if (cmd == Protocol.COMMAND.DISP_MODE) {
+						con.recvInt();
+					}
+					else {
 						System.err.println("Protocol Voilation!");
 						System.exit(1);
 					}				

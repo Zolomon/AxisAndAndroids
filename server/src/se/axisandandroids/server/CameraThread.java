@@ -7,12 +7,23 @@ import se.axisandandroids.networking.Protocol;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
-public class CameraThread extends Thread {
 
+
+/**
+ * CameraThread fetches images from proxies and dispatches them to a
+ * send thread given by its mailboxes for images and commands.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
+public class CameraThread extends Thread {
 	
-	private final long IDLE_PERIOD = 5000;
-	private static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
+	private int detectionSens 			= 3;
+	private final long IDLE_PERIOD 		= 5000;
+	private static final int FRAMESIZE 	= Axis211A.IMAGE_BUFFER_SIZE;
 		
+	
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;	
 	private FrameBuffer frame_buffer;
@@ -21,26 +32,27 @@ public class CameraThread extends Thread {
 	private Axis211A myCamera;
 	private MotionDetector md;
 
-
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera,
-	 * proxy-camera or fake camera and post it to one sendthread.
-	 * 
-	 * @param camera_monitor
-	 * @param mailbox
-	 * @param md
+	 * proxy-camera or fake camera and post it to one sendthread.	 
+	 * @param camera_monitor, camera monitor for shared data on serverside.
+	 * @param mailbox, a mailbox to which motion detect commands (ModeChange(DispMode, Movie)) to client can be sent.
+	 * @param cam, Axis211A camera instance from which images are fetched.
+	 * @param md, motion detector.
 	 */
 	public CameraThread(CameraMonitor camera_monitor, 
 				        CircularBuffer mailbox,
 				        FrameBuffer frame_buffer,
 				        Axis211A cam, MotionDetector md) {
 		myCamera = cam;
+		//detectionSens = 0;  //Default for the cameras is 15, 0 is no motion and 100 is... a lot
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		this.frame_buffer = frame_buffer;
 		this.md = md;
 	}
-/** While the camera is connected: receive images according to the display mode */
+
+	/* While the camera is connected: receive images according to the display mode */
 	public void run() {
 		if (cameraConnect()) {
 			while (!interrupted()) {
@@ -58,7 +70,7 @@ public class CameraThread extends Thread {
 			}
 		}
 	}
-
+	
 	private void periodReceive() {
 		long t, dt;
 		t = System.currentTimeMillis();
@@ -66,7 +78,6 @@ public class CameraThread extends Thread {
 		/* Periodic Activity */
 		int len = receiveJPEG();
 		frame_buffer.put(jpeg, len);	
-
 
 		t += IDLE_PERIOD;
 		dt = t - System.currentTimeMillis();
@@ -79,6 +90,10 @@ public class CameraThread extends Thread {
 		}
 	}
 
+	/**
+	 * Get image from camera.
+	 * @return, length of the jpeg, the image is writen in byte[] jpeg.
+	 */
 	private int receiveJPEG() {
 		int len = 0;
 		len = myCamera.getJPEG(jpeg, 0);
@@ -97,7 +112,7 @@ public class CameraThread extends Thread {
 	}
 
 	private void checkForMotion() {
-		if (md.detect()) {
+		if (md.getLevel() > detectionSens) {
 			camera_monitor.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 			mailbox.put(new ModeChange(Protocol.COMMAND.DISP_MODE, Protocol.DISP_MODE.MOVIE));
 			System.out.println("Motion detected!");

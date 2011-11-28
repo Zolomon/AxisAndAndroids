@@ -8,6 +8,15 @@ import se.axisandandroids.server.CameraMonitor;
 import se.lth.cs.fakecamera.*;
 
 
+/**
+ * FakeCameraThread fetches images from fakecamera and distributes them
+ * to a send thread via the send threads FrameBuffer, also motion detect
+ * commands is distributed but via a separate mailbox of type CircularBuffer.
+ * @author jgrstrm
+ * @author zol
+ * @author fattony
+ * @author calliz
+ */
 public class FakeCameraThread extends Thread {
 
 	private long IDLE_PERIOD = 5000;
@@ -16,19 +25,19 @@ public class FakeCameraThread extends Thread {
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;
 	private FrameBuffer frame_buffer;
-	
-	
+		
 	private byte[] jpeg = new byte[FRAMESIZE];;
 	private MotionDetector md;
 	private Axis211A myCamera;
 
 	/**
 	 * Create a CameraThread with task to Fetch images from a camera,
-	 * proxy-camera or fake camera and post it to one sendthread.
-	 * 
+	 * proxy-camera or fake camera and post it to one send thread. 
 	 * @param camera_monitor
-	 * @param mailbox
-	 * @param md
+	 * @param mailbox, send threads mailbox for commands
+	 * @param frame_buffer, sed threads mailbox for images
+	 * @param cam, camera
+	 * @param md, motion detect
 	 */
 	public FakeCameraThread(CameraMonitor camera_monitor, 
 							CircularBuffer mailbox,

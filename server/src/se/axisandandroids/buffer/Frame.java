@@ -1,8 +1,13 @@
 package se.axisandandroids.buffer;
 
-/* Autoboxing around an image contained in a byte[]. This is meant to be
- * put in the buffer.														*/
 
+
+/**
+ * Frame class is a wrapper around a byte array and an integer saying
+ * how many of the byte arrays elements are valid. 
+ * @author jg
+ *
+ */
 public class Frame {
 	
 	public int len;
