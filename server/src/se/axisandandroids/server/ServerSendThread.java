@@ -61,8 +61,10 @@ public class ServerSendThread extends SendThreadSkeleton {
 				// 2) Send commands via connection object.
 				if (command instanceof ModeChange) {
 					System.out.println("Server Sending Mode Change.");
-					c.sendInt(((ModeChange) command).cmd);
-					c.sendInt(((ModeChange) command).mode);
+					if (c.isConnected()) {
+						c.sendInt(((ModeChange) command).cmd);
+						c.sendInt(((ModeChange) command).mode);
+					}
 				} else if (command instanceof Command) {
 					c.sendInt(((Command) command).cmd);
 				}
@@ -79,7 +81,8 @@ public class ServerSendThread extends SendThreadSkeleton {
 		int len = frame_buffer.get(jpeg);
 		try {
 			// 4) Send Image via connection.
-			c.sendImage(jpeg, 0, len);
+			if (c.isConnected())
+				c.sendImage(jpeg, 0, len);
 		} catch (IOException e) { // ACTION
 			System.err.println("Send Fail.");
 			e.printStackTrace();

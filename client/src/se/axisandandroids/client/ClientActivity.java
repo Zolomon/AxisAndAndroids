@@ -146,6 +146,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		Log.d(TAG, "onShowDisplays()");
 		Intent intent = new Intent(this, RenderActivity.class);
 		startActivity(intent);
+
 	}
 
 	private void onQuit() {

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -49,16 +50,6 @@ public class RenderActivity extends Activity {
 		mService.playPanels();
 		super.onRestart();
 	}
-
-	// @Override
-	// protected void onResume() {
-	// super.onResume();
-	// for (Connection c : mService.mConnectionHandler.connections) {
-	// addPanel(c);
-	// }
-	//
-	// mService.mConnectionHandler.connections.clear();
-	// }
 
 	@Override
 	protected void onStop() {
@@ -119,7 +110,7 @@ public class RenderActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.client_menu, menu);
+		inflater.inflate(R.menu.render_menu, menu);
 		return true;
 	}
 
@@ -132,8 +123,9 @@ public class RenderActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_displays:
-			finish();
+		case R.id.menu_connections:
+			//finish();
+			setVisible(false);
 			return true;
 		case R.id.menu_quit:
 			finish();

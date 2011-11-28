@@ -55,9 +55,11 @@ public class TCP_Client {
 			socket = new Socket(host, port);
 		} catch (UnknownHostException e) {
 			System.err.println("Unknown host.");
+			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
 			System.err.println("io-exception.");
+			e.printStackTrace();
 			System.exit(1);
 		}
 		System.out.println("Connection Setup Complete: " + host +":"+port);
