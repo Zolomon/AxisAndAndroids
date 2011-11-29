@@ -106,10 +106,6 @@ public class DisplayMonitor {
 	long delay_last = 0;
 
 
-	private NewDisplayModeCallback mNewDisplayModeCallback;
-	private NewSyncModeCallback mNewSyncModeCallback;	
-	
-	
 	/**
 	 * Chooses the synchronization mode according to the delay given by
 	 * parameter delay and the delay of last DisplayThread executing this
@@ -177,7 +173,7 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;
-		mNewDisplayModeCallback.callback(this.disp_mode);
+		//mNewDisplayModeCallback.callback(this.disp_mode); // Lägg inte de här du kraschar Desktop !!!
 	}
 
 	/**
@@ -186,7 +182,7 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setSyncMode(int sync_mode) {
 		this.sync_mode = sync_mode;
-		mNewSyncModeCallback.callback(this.sync_mode);
+		//mNewSyncModeCallback.callback(this.sync_mode); // Lägg inte de här du kraschar Desktop !!!
 	}
 
 	/**
@@ -205,11 +201,19 @@ public class DisplayMonitor {
 		return sync_mode; 
 	}
 	
-	public void setNewDisplayModeCallback(NewDisplayModeCallback callback) {
+	
+
+	
+	
+	
+	private NewDisplayModeCallback mNewDisplayModeCallback;  // Lägg inte de här du kraschar Desktop !!!
+	private NewSyncModeCallback mNewSyncModeCallback;	 		// Lägg inte de här du kraschar Desktop !!!		
+	
+	public synchronized void setNewDisplayModeCallback(NewDisplayModeCallback callback) {
 		mNewDisplayModeCallback = callback;
 	}
 	
-	public void setNewSyncModeCallback(NewSyncModeCallback callback) {
+	public synchronized void setNewSyncModeCallback(NewSyncModeCallback callback) {
 		mNewSyncModeCallback = callback;
 	}
 
