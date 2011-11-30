@@ -32,7 +32,7 @@ public class DisplayMonitor {
 	//private long t0 = 0;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long lag = 20;
+	private long lag = 200;
 
 	
 	/**
@@ -91,10 +91,10 @@ public class DisplayMonitor {
 			wait();
 		}
 
-		/* SHOW TIME */
+		// SHOW TIME
 		timestamps.remove();
 		notifyAll();
-
+		
 		/* Calculate and return delay */
 		long delay = System.currentTimeMillis() - timestamp;						
 		chooseSyncMode(Thread.currentThread().getId(), delay);

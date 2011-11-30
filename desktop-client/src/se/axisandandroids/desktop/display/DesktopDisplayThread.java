@@ -59,6 +59,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		/* -------------------------------------  First Image is Special */
 		len = mailbox.get(jpeg);
 		timestamp = getTimestamp();
+		
 		//timestamp = timestamp - 3600000; // ------------------------------------------> GMT+1
 
 		int sync_mode;
@@ -89,6 +90,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		while (! interrupted()) {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
+			
 			//timestamp = timestamp - 3600000; // ------------------------------------------> GMT+1
 
 
