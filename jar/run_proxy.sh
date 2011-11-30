@@ -9,8 +9,10 @@
 
 java -jar CameraServer.jar 6004 -camera argus-7.student.lth.se 4444 &
 java -jar CameraServer.jar 6006 -camera argus-8.student.lth.se 4446 &
-java -jar CameraServer.jar 6002 -camera argus-5.student.lth.se 4321 &
+java -jar CameraServer.jar 6002 -camera argus-4.student.lth.se 4321 &
 
-java -jar DesktopClient.jar localhost 6004 localhost 6006 localhost 6002 &
+sleep 4
+
+java -jar  DesktopClient_onehourplus.jar localhost 6004 localhost 6006 localhost 6002 &
 
 
