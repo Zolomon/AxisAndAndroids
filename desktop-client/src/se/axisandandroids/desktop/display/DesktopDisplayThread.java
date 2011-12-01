@@ -28,6 +28,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		gui = new DesktopGUI(disp_monitor, this);
 		gui.pack();
 		sync_mode_old = disp_monitor.getSyncMode();
+		this.setPriority(MAX_PRIORITY);
 	}
 	
 	/**
@@ -41,6 +42,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		this.gui = gui;
 		gui.registerDisplayThread(this);
 		sync_mode_old = disp_monitor.getSyncMode();
+		this.setPriority(MAX_PRIORITY);
 	}
 	
 	public void close() {

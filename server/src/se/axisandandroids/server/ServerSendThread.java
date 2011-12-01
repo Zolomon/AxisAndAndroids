@@ -78,7 +78,8 @@ public class ServerSendThread extends SendThreadSkeleton {
 		}
 
 		// 3) Wait for image message.
-		int len = frame_buffer.get(jpeg);
+		int len = frame_buffer.get(jpeg);  // No busy wait, because this method is blocking :P
+		
 		try {
 			// 4) Send Image via connection.
 			if (c.isConnected())

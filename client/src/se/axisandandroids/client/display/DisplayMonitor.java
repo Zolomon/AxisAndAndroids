@@ -32,7 +32,7 @@ public class DisplayMonitor {
 	//private long t0 = 0;
 
 	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long lag = 200;
+	private long lag = 20;
 
 	
 	/**
