@@ -9,6 +9,8 @@ package se.axisandandroids.http;
  *
  * Package created by Patrik Persson, maintained by klas@cs.lth.se
  * Adapted for Axis cameras by Roger Henriksson 
+ *
+ *
  */
 
 import java.io.IOException;
@@ -17,9 +19,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//import se.lth.cs.fakecamera.Axis211A;
 import se.lth.cs.cameraproxy.Axis211A;
-
+//import se.lth.cs.fakecamera.Axis211A;
 
 /**
  * Itsy bitsy teeny weeny web server. Always returns an image, regardless
