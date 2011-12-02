@@ -16,6 +16,7 @@ public class Protocol {
 		public final static int SYNC_MODE 	= 20;
 		public final static int DISP_MODE 	= 30;
 		public final static int CONNECTED 	= 40;
+		public final static int CLOCK_SYNC  = 50;
 	}
 	
 	public class SYNC_MODE { // DO NOT CHANGE USED FOR INDEXES

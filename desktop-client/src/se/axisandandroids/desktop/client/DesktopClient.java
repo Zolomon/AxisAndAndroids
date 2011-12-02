@@ -87,8 +87,8 @@ public class DesktopClient {
 		} else {
 			disp_thread = new DesktopDisplayThread(dm, gui);
 		}		
-		DesktopReceiveThread recv_thread = new DesktopReceiveThread(c, dm, disp_thread.mailbox, gui);
 		ClientSendThread send_thread = new ClientSendThread(c, dm);				
+		DesktopReceiveThread recv_thread = new DesktopReceiveThread(c, dm, disp_thread.mailbox, send_thread.mailbox, gui);
 
 		threads.add(disp_thread);
 		threads.add(recv_thread);

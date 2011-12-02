@@ -18,14 +18,14 @@ import se.axisandandroids.networking.Connection;
  */
 public class CameraTunnel {
 
-	private Connection mConnection;
-	private DisplayMonitor mDisplayMonitor;
-	private DisplayThread mDisplayThread;
-	private ClientSendThread mSendThread;
+	private Connection 			mConnection;
+	private DisplayMonitor 		mDisplayMonitor;
+	private DisplayThread 		mDisplayThread;
+	private ClientSendThread 	mSendThread;
 	private ClientReceiveThread mReceiveThread;
-	private NewImageCallback mNewImageCallback;
-	private int mId;
-	private Panel mPanel;
+	private NewImageCallback 	mNewImageCallback;
+	private int 				mId;
+	private Panel 				mPanel;
 
 	public CameraTunnel(Connection c, Panel p, DisplayMonitor disp_monitor,
 			int id) {
@@ -52,12 +52,11 @@ public class CameraTunnel {
 	}
 
 	private void createThreads() {
-		System.out
-				.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
-		mDisplayThread = new DisplayThread(mDisplayMonitor, mNewImageCallback);
-		mReceiveThread = new ClientReceiveThread(mConnection, mDisplayMonitor,
-				mDisplayThread.mailbox);
+		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");
+		
 		mSendThread = new ClientSendThread(mConnection, mDisplayMonitor);
+		mDisplayThread = new DisplayThread(mDisplayMonitor, mNewImageCallback);
+		mReceiveThread = new ClientReceiveThread(mConnection, mDisplayMonitor, mDisplayThread.mailbox, mSendThread.mailbox);
 		startThreads();
 	}
 

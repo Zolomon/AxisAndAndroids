@@ -2,6 +2,7 @@ package se.axisandandroids.server;
 
 import java.io.IOException;
 
+import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
 
@@ -58,4 +59,17 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 		// Clean disconnect at least ?
 	}
 
+	
+	protected void handleClockSync() {
+		byte[] T = new byte[5];
+		try {
+			c.recvBytes(T, 5);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Server got ------------>>>: " + ClockSync.bytesToLong(T));
+		long recvTime = System.currentTimeMillis();
+		camera_monitor.sync_clocks(ClockSync.bytesToLong(T), recvTime);
+	}
+	
 }

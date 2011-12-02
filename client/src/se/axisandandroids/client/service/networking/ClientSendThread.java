@@ -3,6 +3,7 @@ package se.axisandandroids.client.service.networking;
 import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.client.display.DisplayMonitor;
@@ -53,6 +54,10 @@ public class ClientSendThread extends SendThreadSkeleton {
 				System.out.println("Dispatching Mode Change " + ((ModeChange) command).mode);
 				c.sendInt(((ModeChange) command).cmd);
 				c.sendInt(((ModeChange) command).mode);
+			} else if (command instanceof ClockSync) {
+				System.out.println("Client Sending clock sync: " + ((ClockSync) command).time);			
+				c.sendInt(((ClockSync) command).cmd);
+				c.sendBytes(((ClockSync) command).getBytes(), 0, 5);
 			} else if (command instanceof Command) {
 				c.sendInt(((Command) command).cmd);
 			}

@@ -6,6 +6,8 @@ import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
+import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.lth.cs.fakecamera.Axis211A;
@@ -22,6 +24,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	protected final DisplayMonitor disp_monitor;
 	protected final FrameBuffer frame_buffer;	
+	protected final CircularBuffer sendCommandMailbox;
 	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	
 	/**
@@ -32,10 +35,12 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	 */
 	public ClientReceiveThread(Connection c, 
 							   DisplayMonitor disp_monitor, 
-							   FrameBuffer frame_buffer) {
+							   FrameBuffer frame_buffer, 
+							   CircularBuffer sendCommandMailbox) {
 		super(c);
 		this.disp_monitor = disp_monitor;	// Display Monitor
 		this.frame_buffer = frame_buffer;	// FrameBuffer belonging to DisplayThread
+		this.sendCommandMailbox = sendCommandMailbox;
 	}
 
 	
@@ -87,6 +92,10 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	protected void handleConnected() {
 
+	}
+	
+	protected void handleClockSync() {
+		sendCommandMailbox.put(new ClockSync(System.currentTimeMillis()));
 	}
 
 }

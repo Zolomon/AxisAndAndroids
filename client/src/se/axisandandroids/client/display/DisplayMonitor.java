@@ -19,20 +19,13 @@ import se.axisandandroids.networking.Protocol;
  */
 public class DisplayMonitor {
 	
+	private long lag = 20;
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
-
 	
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;	
 	private int disp_mode;	// Server side, no default here
 
-
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
-
-	//private final long DELAY_TERM = 20;
-	//private long t0 = 0;
-
-	private final PriorityQueue<Long> timestamps = new PriorityQueue<Long>();
-	private long lag = 20;
 
 	
 	/**
@@ -63,47 +56,24 @@ public class DisplayMonitor {
 	 * @throws InterruptedException
 	 */
 	public synchronized long syncFrames(long timestamp) throws InterruptedException {
-
-		/*
-		// No old showtime exists for ANY frame, display now!
-		if (t0 <= 0) {
-			t0 = System.currentTimeMillis();
-			lag = t0 - timestamp;
-			lag += DELAY_TERM;
-			return t0 - timestamp;			
-		}
-		*/
-
-		timestamps.offer(timestamp);
-
 		/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
 		long showtime_new = lag + timestamp;				
 		long diffTime;	// Time to showtime_new
 
-		/* Wait until it is:
-		 * 1) The right time.
-		 * 2) timestamp less than all other timestamps.				*/						
+		/* Wait until it is: The right time. */
 		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
 			Thread.sleep(diffTime);		
-		} 
-
-		while (timestamp > timestamps.peek()) { // Maybe check timestamp difference too, hmmm
-			wait();
-		}
-
-		// SHOW TIME
-		timestamps.remove();
-		notifyAll();
+		} 		
 		
 		/* Calculate and return delay */
 		long delay = System.currentTimeMillis() - timestamp;						
 		chooseSyncMode(Thread.currentThread().getId(), delay);
-		return delay; // The real delay
+		return delay; 
 	}
 
 	
-	long id_last = 0;
-	long delay_last = 0;
+	private long id_last = 0;
+	private long delay_last = 0;
 
 
 	/**

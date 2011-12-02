@@ -47,6 +47,9 @@ public class ReceiveThreadSkeleton extends Thread {
 		case Protocol.COMMAND.CONNECTED:
 			handleConnected();
 			break;
+		case Protocol.COMMAND.CLOCK_SYNC:
+			handleClockSync();
+			break;			
 		default:
 			break;						
 		}
@@ -68,6 +71,10 @@ public class ReceiveThreadSkeleton extends Thread {
 	}
 
 	protected void handleConnected() {
+		
+	}
+	
+	protected void handleClockSync() {
 		
 	}
 	

@@ -20,9 +20,7 @@ import se.lth.cs.cameraproxy.MotionDetector;
 public class CameraThread extends Thread {
 	
 	private int detectionSens 			= 3;
-	private final long IDLE_PERIOD 		= 5000;
-	private static final int FRAMESIZE 	= Axis211A.IMAGE_BUFFER_SIZE;
-		
+	private static final int FRAMESIZE 	= Axis211A.IMAGE_BUFFER_SIZE;		
 	
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;	
@@ -49,45 +47,33 @@ public class CameraThread extends Thread {
 		this.camera_monitor = camera_monitor;
 		this.mailbox = mailbox;
 		this.frame_buffer = frame_buffer;
-		this.md = md;
+		this.md = md;		
 	}
 
 	/* While the camera is connected: receive images according to the display mode */
 	public void run() {
+								
 		if (cameraConnect()) {
 			while (!interrupted()) {
-				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
-					periodReceive();
-				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
-					int len = receiveJPEG();
-					frame_buffer.put(jpeg, len);	
+					 receiveImage();
 				}
+				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
+					camera_monitor.awaitImageFetch();
+					receiveImage();
+				}				
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
-					periodReceive();
+					camera_monitor.awaitImageFetch();
+					receiveImage();
 					checkForMotion();
 				}
 			}
 		}
 	}
 	
-	private void periodReceive() {
-		long t, dt;
-		t = System.currentTimeMillis();
-
-		/* Periodic Activity */
-		int len = receiveJPEG();
-		frame_buffer.put(jpeg, len);	
-
-		t += IDLE_PERIOD;
-		dt = t - System.currentTimeMillis();
-		try {
-			if (dt > 0) {
-				sleep(dt);
-			}
-		} catch (InterruptedException e) {
-			System.err.println("Got interrupted while sleeping...");
-		}
+	private void receiveImage() {		
+		int len = receiveJPEG();	// ----------------------->> CORRECT TIMESTAMP HERE
+		frame_buffer.put(jpeg, len);			
 	}
 
 	/**

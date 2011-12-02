@@ -51,8 +51,8 @@ public class FakeCameraThread extends Thread {
 		this.md = md;
 	}
 
-	public void run() {
-		if (cameraConnect()) {
+	public void run() {				
+		if (cameraConnect()) {			
 			while (!interrupted()) {
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
 					periodReceive();

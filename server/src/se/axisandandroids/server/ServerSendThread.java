@@ -3,10 +3,12 @@ package se.axisandandroids.server;
 import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.SendThreadSkeleton;
 import se.lth.cs.cameraproxy.Axis211A;
 
@@ -21,9 +23,9 @@ import se.lth.cs.cameraproxy.Axis211A;
  */
 public class ServerSendThread extends SendThreadSkeleton {
 
-	protected int BUFFERSIZE = 3;
+	protected int BUFFERSIZE = 5;
 	protected int INITIAL_BUFFERWAIT_MS = 0;
-	protected int COMMAND_BUFFERSIZE = 3;
+	protected int COMMAND_BUFFERSIZE = 30;
 	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
 	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
@@ -65,6 +67,9 @@ public class ServerSendThread extends SendThreadSkeleton {
 						c.sendInt(((ModeChange) command).cmd);
 						c.sendInt(((ModeChange) command).mode);
 					}
+				} else if (command instanceof ClockSync) {
+					System.out.printf("****Server Sending CLOCK SYNC. ****\n");
+					c.sendInt(((Command) command).cmd);
 				} else if (command instanceof Command) {
 					c.sendInt(((Command) command).cmd);
 				}
@@ -74,7 +79,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 				System.out.println("Disconnection this Connection");
 				c.disconnect();
 				System.exit(1);
-			}
+			}			
 		}
 
 		// 3) Wait for image message.

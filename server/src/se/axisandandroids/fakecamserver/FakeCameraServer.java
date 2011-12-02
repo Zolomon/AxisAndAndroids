@@ -14,7 +14,7 @@ import se.lth.cs.fakecamera.*;
 
 /**
  * Camera server running against the fakecamera.
- * @author jgrstrm
+ * @author jgstrm
  * @author zol
  * @author fattony
  * @author calliz
