@@ -1,7 +1,7 @@
 package se.axisandandroids.client.display;
 
 
-import se.axisandandroids.buffer.FrameBuffer;
+import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.axisandandroids.networking.Protocol;
 import se.lth.cs.fakecamera.Axis211A;
 
@@ -15,14 +15,14 @@ import se.lth.cs.fakecamera.Axis211A;
  */
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 3;
+		protected final int BUFFERSIZE = 10;
 		protected final int INITIAL_BUFFER_WAIT_MS = 100;				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		
 		protected final byte[] jpeg = new byte[FRAMESIZE];
 
 		protected final DisplayMonitor disp_monitor;
-		public final FrameBuffer mailbox;
+		public final PriorityFrameBuffer mailbox;
 		public long delay;
 				
 		/**
@@ -31,7 +31,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 */
 		public DisplayThreadSkeleton(DisplayMonitor disp_monitor) {
 			this.disp_monitor = disp_monitor;
-			mailbox = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
+			mailbox = new PriorityFrameBuffer(BUFFERSIZE, FRAMESIZE);
 			this.setPriority(MAX_PRIORITY);			
 		}
 										
@@ -71,7 +71,6 @@ public class DisplayThreadSkeleton extends Thread {
 					try {
 						join();
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}

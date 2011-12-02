@@ -10,6 +10,7 @@ import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
+import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.lth.cs.fakecamera.Axis211A;
 
 
@@ -23,7 +24,7 @@ import se.lth.cs.fakecamera.Axis211A;
 public class ClientReceiveThread extends ReceiveThreadSkeleton {
 
 	protected final DisplayMonitor disp_monitor;
-	protected final FrameBuffer frame_buffer;	
+	protected final PriorityFrameBuffer frame_buffer;	
 	protected final CircularBuffer sendCommandMailbox;
 	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	
@@ -35,7 +36,7 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	 */
 	public ClientReceiveThread(Connection c, 
 							   DisplayMonitor disp_monitor, 
-							   FrameBuffer frame_buffer, 
+							   PriorityFrameBuffer frame_buffer, 
 							   CircularBuffer sendCommandMailbox) {
 		super(c);
 		this.disp_monitor = disp_monitor;	// Display Monitor

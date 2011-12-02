@@ -5,6 +5,7 @@ import java.io.IOException;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
+import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
@@ -35,7 +36,7 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	 */
 	public DesktopReceiveThread(Connection c, 
 								DisplayMonitor disp_monitor,
-								FrameBuffer frame_buffer,
+								PriorityFrameBuffer frame_buffer,
 								CircularBuffer sendCommandMailbox,
 								DesktopGUI gui) {
 		super(c, disp_monitor, frame_buffer, sendCommandMailbox);

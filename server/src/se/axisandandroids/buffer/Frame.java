@@ -8,7 +8,7 @@ package se.axisandandroids.buffer;
  * @author jg
  *
  */
-public class Frame {
+public class Frame implements Comparable<Frame> {
 	
 	public int len;
 	public byte[] x;
@@ -66,7 +66,7 @@ public class Frame {
 	public Frame(Frame other) {
 		this.len = other.len;
 		this.x = new byte[other.x.length];
-		System.arraycopy(x, 0, other.x, 0, len);
+		System.arraycopy(other.x, 0, this.x, 0, len);
 	}
 
 	/**
@@ -82,5 +82,32 @@ public class Frame {
 		}	
 		str += " ]";
 		return str;
+	}
+	
+	
+	/**
+	 * Extract timestamp from image byte array.
+	 * @return timestamp in ms.
+	 */
+	protected long getTimestamp() {
+		int offset = 0; // If you decide to use the header for piggy-backing.
+		
+		int pos = 25;
+		if (x.length < 25) { 	// FOR DEBUG
+			return x[0]; 		// FOR DEBUG
+		} 						// FOR DEBUG
+		
+		/* Decode Timestamp */ 
+		long seconds = ( ( (long)x[pos+offset]) << 24 ) & 0xff000000 | 
+					   ( ( (long)x[pos+1+offset]) << 16 ) & 0x00ff0000 | 
+					   ( ( (long)x[pos+2+offset]) << 8  ) & 0x0000ff00 | 
+					   (   (long)x[pos+3+offset]		  & 0x000000ff ); 
+		long hundreths = ( (long)x[pos+4+offset] & 0x000000ff );
+		return 1000*seconds + 10*hundreths;
+	}
+	
+	@Override
+	public int compareTo(Frame other) {		
+		return (int) (this.getTimestamp() - other.getTimestamp());
 	}
 }
