@@ -83,8 +83,8 @@ public class CameraMonitor {
 
 	public synchronized void sync_clocks(long time, long recvTime) {
 		System.out.printf("%d) CLOCK SYNC got time: %d.\n", recvmessages, time);
-		long estimatedTime = sendTime + (recvTime - sendTime)/2;
-		corrections.offer(estimatedTime - time);		
+		long estimatedTime = time + (recvTime - sendTime)/2;
+		corrections.offer(System.currentTimeMillis() - estimatedTime);		
 		++recvmessages;
 		notifyAll();
 	}

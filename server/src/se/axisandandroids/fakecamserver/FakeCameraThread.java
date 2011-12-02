@@ -19,7 +19,6 @@ import se.lth.cs.fakecamera.*;
  */
 public class FakeCameraThread extends Thread {
 
-	private long IDLE_PERIOD = 5000;
 	private static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 	
 	private CameraMonitor camera_monitor;
@@ -52,40 +51,30 @@ public class FakeCameraThread extends Thread {
 	}
 
 	public void run() {				
-		if (cameraConnect()) {			
-			while (!interrupted()) {
+		
+		if (cameraConnect()) {													
+			while (!interrupted()) {												
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
-					periodReceive();
+					camera_monitor.awaitImageFetch();
+					receiveImage();
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
-					int len = receiveJPEG();
-					frame_buffer.put(jpeg, len);
+					//camera_monitor.sync_clocks(mailbox);
+					//System.out.println("Correction: " + camera_monitor.getCorrection());								
+					receiveImage();
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
-					periodReceive();
+					camera_monitor.awaitImageFetch();
+					receiveImage();
 					checkForMotion();
-				}
+				}								
 			}
 		}
 	}
 
-	private void periodReceive() {
-		long t, dt;
-		t = System.currentTimeMillis();
-
-		/* Periodic Activity */
+	private void receiveImage() {		
 		int len = receiveJPEG();
 		frame_buffer.put(jpeg, len);
-
-		t += IDLE_PERIOD;
-		dt = t - System.currentTimeMillis();
-		try {
-			if (dt > 0) {
-				sleep(dt);
-			}
-		} catch (InterruptedException e) {
-			System.err.println("Got interrupted while sleeping...");
-		}
 	}
 
 	private int receiveJPEG() {

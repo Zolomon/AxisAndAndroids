@@ -57,7 +57,7 @@ public class ClientSendThread extends SendThreadSkeleton {
 			} else if (command instanceof ClockSync) {
 				System.out.println("Client Sending clock sync: " + ((ClockSync) command).time);			
 				c.sendInt(((ClockSync) command).cmd);
-				c.sendBytes(((ClockSync) command).getBytes(), 0, 5);
+				c.sendBytes(((ClockSync) command).getBytes(), 0, 6);
 			} else if (command instanceof Command) {
 				c.sendInt(((Command) command).cmd);
 			}

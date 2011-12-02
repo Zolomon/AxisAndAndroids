@@ -61,13 +61,12 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 
 	
 	protected void handleClockSync() {
-		byte[] T = new byte[5];
+		byte[] T = new byte[6];
 		try {
-			c.recvBytes(T, 5);
+			c.recvBytes(T, 6);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Server got ------------>>>: " + ClockSync.bytesToLong(T));
 		long recvTime = System.currentTimeMillis();
 		camera_monitor.sync_clocks(ClockSync.bytesToLong(T), recvTime);
 	}

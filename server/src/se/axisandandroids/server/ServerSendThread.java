@@ -25,7 +25,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 
 	protected int BUFFERSIZE = 5;
 	protected int INITIAL_BUFFERWAIT_MS = 0;
-	protected int COMMAND_BUFFERSIZE = 30;
+	protected int COMMAND_BUFFERSIZE = 40;
 	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
 	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
@@ -58,7 +58,7 @@ public class ServerSendThread extends SendThreadSkeleton {
 		// 1) Check for message with commands.
 		Object command = mailbox.tryGet();
 
-		if (command != null) {
+		while (command != null) {
 			try {
 				// 2) Send commands via connection object.
 				if (command instanceof ModeChange) {
@@ -68,7 +68,6 @@ public class ServerSendThread extends SendThreadSkeleton {
 						c.sendInt(((ModeChange) command).mode);
 					}
 				} else if (command instanceof ClockSync) {
-					System.out.printf("****Server Sending CLOCK SYNC. ****\n");
 					c.sendInt(((Command) command).cmd);
 				} else if (command instanceof Command) {
 					c.sendInt(((Command) command).cmd);
@@ -79,7 +78,8 @@ public class ServerSendThread extends SendThreadSkeleton {
 				System.out.println("Disconnection this Connection");
 				c.disconnect();
 				System.exit(1);
-			}			
+			}		
+			command = mailbox.tryGet();
 		}
 
 		// 3) Wait for image message.
