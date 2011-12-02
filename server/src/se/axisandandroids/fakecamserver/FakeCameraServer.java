@@ -3,9 +3,12 @@ package se.axisandandroids.fakecamserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 //import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.UDP_Connection;
+import se.axisandandroids.networking.UDP_ServConnection;
 import se.axisandandroids.server.CameraMonitor;
 import se.axisandandroids.server.ServerReceiveThread;
 import se.axisandandroids.server.ServerSendThread;
@@ -21,17 +24,17 @@ import se.lth.cs.fakecamera.*;
  */
 public class FakeCameraServer {
 
-	private final static int default_port = 6000;
-	private int mPort;
-	private int mNumberOfClients = 0;
-	private ServerSocket mServerSocket = null;
-	private Connection mConnnection;
-	private CameraMonitor mCameraMonitor;
-	private FakeCameraThread mFakeCameraThread;
-	private ServerReceiveThread mServerReceiveThread;
-	private ServerSendThread mSendThread;
-	private Axis211A mAxisCamera;
-	private MotionDetector mMotionDetector;
+	private final static int 			default_port = 6000;
+	private int 						mPort;
+	private int 						mNumberOfClients = 0;
+	private ServerSocket 				mServerSocket = null;
+	private UDP_ServConnection			mConnnection;
+	private CameraMonitor 				mCameraMonitor;
+	private FakeCameraThread 			mFakeCameraThread;
+	private ServerReceiveThread 		mServerReceiveThread;
+	private ServerSendThread 			mSendThread;
+	private Axis211A 					mAxisCamera;
+	private MotionDetector 				mMotionDetector;
 
 	public static void main(String[] args) {
 		int port = default_port;
@@ -93,7 +96,16 @@ public class FakeCameraServer {
 	}
 
 	private void servClient(Socket clientSock) {
-		mConnnection = new Connection(clientSock);
+		//mConnnection = new Connection(clientSock);
+		
+		try {
+			mConnnection = new UDP_ServConnection(clientSock, mPort);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		mCameraMonitor = new CameraMonitor();
 		mServerReceiveThread = new ServerReceiveThread(mConnnection,
 				mCameraMonitor);

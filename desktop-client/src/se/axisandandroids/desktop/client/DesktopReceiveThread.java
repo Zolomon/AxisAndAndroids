@@ -11,6 +11,7 @@ import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
+import se.axisandandroids.networking.UDP_ClientConnection;
 
 
 
@@ -34,7 +35,7 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	 * @param frame_buffer, a DisplayThreads image buffer to put received images in.
 	 * @param gui, the DesktopGUI.
 	 */
-	public DesktopReceiveThread(Connection c, 
+	public DesktopReceiveThread(UDP_ClientConnection c, 
 								DisplayMonitor disp_monitor,
 								PriorityFrameBuffer frame_buffer,
 								CircularBuffer sendCommandMailbox,

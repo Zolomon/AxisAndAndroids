@@ -3,9 +3,13 @@ package se.axisandandroids.networking;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import se.lth.cs.fakecamera.Axis211A;
 
 
 /**
@@ -19,11 +23,12 @@ import java.net.UnknownHostException;
  */
 public class Connection {
 
-	private String host;
-	private int port;
+	protected String host;
+	protected int port;
+	protected Socket sock;
+		
 	private static int id;
 	private int myId;
-	private Socket sock;		
 
 	// Input and output should be independent!
 	// Design => one sender and one receiver => thread safe in that regard
@@ -44,7 +49,7 @@ public class Connection {
 	 * @throws IOException
 	 */
 	public Connection(String host, int port) throws UnknownHostException, IOException {
-		this(new Socket(host, port));
+		this(new Socket(host, port));		
 	}
 
 	/**

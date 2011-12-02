@@ -3,12 +3,11 @@ package se.axisandandroids.client.service.networking;
 import java.io.IOException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
+import se.axisandandroids.networking.UDP_ClientConnection;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
-import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.lth.cs.fakecamera.Axis211A;
@@ -21,12 +20,13 @@ import se.lth.cs.fakecamera.Axis211A;
  * @author fattony
  * @author calliz
  */
-public class ClientReceiveThread extends ReceiveThreadSkeleton {
+public class ClientReceiveThread extends Thread {
 
+	protected UDP_ClientConnection c;
+	protected ImageReceiver imgRecv;
 	protected final DisplayMonitor disp_monitor;
 	protected final PriorityFrameBuffer frame_buffer;	
 	protected final CircularBuffer sendCommandMailbox;
-	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	
 	/**
 	 * Create a ClientReceiveThread. 
@@ -34,33 +34,63 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 	 * @param disp_monitor, a DisplayMonitor synchronizing different DisplayThreads.
 	 * @param frame_buffer, a FrameBuffer object = DisplayThreads image buffer (mailbox). 
 	 */
-	public ClientReceiveThread(Connection c, 
+	public ClientReceiveThread(UDP_ClientConnection c, 
 							   DisplayMonitor disp_monitor, 
 							   PriorityFrameBuffer frame_buffer, 
 							   CircularBuffer sendCommandMailbox) {
-		super(c);
+		this.c = c;
 		this.disp_monitor = disp_monitor;	// Display Monitor
 		this.frame_buffer = frame_buffer;	// FrameBuffer belonging to DisplayThread
 		this.sendCommandMailbox = sendCommandMailbox;
+		
+		
+		this.imgRecv = new ImageReceiver(c, frame_buffer);			
+		this.imgRecv.start();
 	}
 
+	public void run() {
+		while (! interrupted()) {
+			try {
+				if(c.isConnected()) {
+					recvCommand();
+				} else {
+					break;
+				}
+			} catch (IOException e) {
+				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
+				System.exit(1);
+			}
+		}
+	}
+		
+	private void recvCommand() throws IOException {
+		int cmd = c.recvInt();		
+		switch (cmd) {
+		case Protocol.COMMAND.IMAGE: 	
+			break;
+		case Protocol.COMMAND.SYNC_MODE:
+			handleSyncMode();
+			break;
+		case Protocol.COMMAND.DISP_MODE:
+			handleDispMode();
+			break;
+		case Protocol.COMMAND.CONNECTED:
+			break;
+		case Protocol.COMMAND.CLOCK_SYNC:
+			handleClockSync();
+			break;			
+		default:
+			break;						
+		}
+	}
+	
 	
 	/**
 	 * Receive an image from a server via the Connection object c, 
 	 * put the image in the DisplayThreads buffer.
 	 */
 	protected void handleImage() {
-		int len = 0;
-		try {
-			/* Get jpeg written to len first bytes of array jpeg. */
-			len = c.recvImage(jpeg);
-		} catch (IOException e) {
-			System.err.println("Failed to get image. Skipping this.");
-			e.printStackTrace();
-			return;
-		}		
-		/* Post jpeg to displayThreads buffer */			
-		frame_buffer.put(jpeg, len);
+		
 	}
 
 	/**
@@ -89,10 +119,6 @@ public class ClientReceiveThread extends ReceiveThreadSkeleton {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
-	}
-
-	protected void handleConnected() {
-
 	}
 	
 	protected void handleClockSync() {

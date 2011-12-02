@@ -56,31 +56,26 @@ public class FakeCameraThread extends Thread {
 			while (!interrupted()) {												
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
 					camera_monitor.awaitImageFetch();
-					receiveImage();
+					receiveJPEG();
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
 					//camera_monitor.sync_clocks(mailbox);
 					//System.out.println("Correction: " + camera_monitor.getCorrection());								
-					receiveImage();
+					receiveJPEG();
 				}
 				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
 					camera_monitor.awaitImageFetch();
-					receiveImage();
+					receiveJPEG();
 					checkForMotion();
 				}								
 			}
 		}
 	}
 
-	private void receiveImage() {		
-		int len = receiveJPEG();
-		frame_buffer.put(jpeg, len);
-	}
-
-	private int receiveJPEG() {
+	private void receiveJPEG() {
 		int len = 0;
 		len = myCamera.getJPEG(jpeg, 0);
-		return len;
+		frame_buffer.put(jpeg, len);
 	}
 
 	private boolean cameraConnect() {

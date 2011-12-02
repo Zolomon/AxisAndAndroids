@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.UDP_ClientConnection;
+import se.axisandandroids.networking.UDP_Connection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 
@@ -25,6 +27,8 @@ public class DesktopClient {
 	private Socket socket;
 	private InetAddress host;	
 	private int port;
+	private int udp_port;
+
 	private LinkedList<Thread> threads = new LinkedList<Thread>();
 
 
@@ -36,6 +40,7 @@ public class DesktopClient {
 	public DesktopClient(InetAddress host, int port) {
 		this.host = host;
 		this.port = port;
+		this.udp_port = port + 1;
 		connect();		
 	}
 
@@ -77,7 +82,14 @@ public class DesktopClient {
 
 		System.out.println("** Desktop Client");
 
-		Connection c = new Connection(socket);
+		UDP_ClientConnection c = null;
+		try {
+			c = new UDP_ClientConnection(socket, udp_port);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");	
 

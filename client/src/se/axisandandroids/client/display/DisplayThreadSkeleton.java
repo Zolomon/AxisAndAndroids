@@ -15,7 +15,7 @@ import se.lth.cs.fakecamera.Axis211A;
  */
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 10;
+		protected final int BUFFERSIZE = 40;
 		protected final int INITIAL_BUFFER_WAIT_MS = 100;				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		

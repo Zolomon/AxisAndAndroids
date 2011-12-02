@@ -10,6 +10,7 @@ import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.SendThreadSkeleton;
+import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
 
 
@@ -21,13 +22,15 @@ import se.lth.cs.cameraproxy.Axis211A;
  * @author fattony
  * @author calliz
  */
-public class ServerSendThread extends SendThreadSkeleton {
+public class ServerSendThread extends Thread {
 
 	protected int BUFFERSIZE = 5;
 	protected int INITIAL_BUFFERWAIT_MS = 0;
 	protected int COMMAND_BUFFERSIZE = 40;
 	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
+	
+	protected UDP_ServConnection c;
 	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
 	public final FrameBuffer frame_buffer; 	// Image mailbox
 	private final byte[] jpeg = new byte[FRAMESIZE];
@@ -40,8 +43,8 @@ public class ServerSendThread extends SendThreadSkeleton {
 	 * Create ServerSendThread with connection c.
 	 * @param c, Connection object over which to send images and commands. 	 
 	 */
-	public ServerSendThread(Connection c) {
-		super(c);
+	public ServerSendThread(UDP_ServConnection c) {
+		this.c = c;
 		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
 	}

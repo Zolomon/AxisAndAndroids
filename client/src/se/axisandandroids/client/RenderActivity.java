@@ -9,6 +9,7 @@ import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.CameraTunnel;
 import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
+import se.axisandandroids.networking.UDP_ClientConnection;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -161,7 +162,7 @@ public class RenderActivity extends Activity {
 			for (Connection c : mService.mConnectionHandler
 					.connectionIterator()) {
 				System.out.println("Connection ID: " + c.getId());
-				addPanel(c);
+				addPanel((UDP_ClientConnection) c);
 			}
 
 			mService.mConnectionHandler.clearConnections();
@@ -187,7 +188,7 @@ public class RenderActivity extends Activity {
 		}
 	};
 
-	private void addPanel(Connection c) {
+	private void addPanel(UDP_ClientConnection c) {
 		final FrameLayout theInflatedPanel = (FrameLayout) mLayoutInflater
 				.inflate(R.layout.panel, null);
 		Panel panel = (Panel) theInflatedPanel.findViewById(R.id.panel);

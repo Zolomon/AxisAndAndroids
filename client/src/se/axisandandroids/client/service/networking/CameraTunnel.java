@@ -8,6 +8,7 @@ import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.UDP_ClientConnection;
 
 
 /**
@@ -18,16 +19,16 @@ import se.axisandandroids.networking.Connection;
  */
 public class CameraTunnel {
 
-	private Connection 			mConnection;
-	private DisplayMonitor 		mDisplayMonitor;
-	private DisplayThread 		mDisplayThread;
-	private ClientSendThread 	mSendThread;
-	private ClientReceiveThread mReceiveThread;
-	private NewImageCallback 	mNewImageCallback;
-	private int 				mId;
-	private Panel 				mPanel;
+	private UDP_ClientConnection	mConnection;
+	private DisplayMonitor 			mDisplayMonitor;
+	private DisplayThread 			mDisplayThread;
+	private ClientSendThread 		mSendThread;
+	private ClientReceiveThread 	mReceiveThread;
+	private NewImageCallback 		mNewImageCallback;
+	private int 					mId;
+	private Panel 					mPanel;
 
-	public CameraTunnel(Connection c, Panel p, DisplayMonitor disp_monitor,
+	public CameraTunnel(UDP_ClientConnection c, Panel p, DisplayMonitor disp_monitor,
 			int id) {
 		this.mId = id;
 		this.mConnection = c;
@@ -44,7 +45,7 @@ public class CameraTunnel {
 	 * @param disp_monitor
 	 * @param id
 	 */
-	public CameraTunnel(Connection c, DisplayMonitor disp_monitor, int id) {
+	public CameraTunnel(UDP_ClientConnection c, DisplayMonitor disp_monitor, int id) {
 		this.mId = id;
 		this.mConnection = c;
 		this.mDisplayMonitor = disp_monitor;

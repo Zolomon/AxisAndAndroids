@@ -3,9 +3,11 @@ package se.axisandandroids.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.Connection;
+import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
 
@@ -29,7 +31,7 @@ public class CameraServer {
 	private int listenPort;
 	private int httpPort;
 	private ServerSocket servSocket = null;
-	private Connection con;
+	private UDP_ServConnection con;
 	private CameraMonitor cm;
 	private CameraThread ct;
 	private ServerReceiveThread receiveThread;
@@ -138,7 +140,13 @@ public class CameraServer {
  	* @param clientSock The socket to which the client is connected.
  	*/
 	private void servClient(Socket clientSock) {
-		con = new Connection(clientSock);
+		try {
+			con = new UDP_ServConnection(clientSock, listenPort);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		cm = new CameraMonitor();
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con);
