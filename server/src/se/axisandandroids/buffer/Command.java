@@ -1,8 +1,5 @@
 package se.axisandandroids.buffer;
 
-import se.axisandandroids.networking.Protocol;
-
-
 /** 
  * CameraServer can pass this to it's send thread. If camera only ever send
  * images a Frame will be enough.											

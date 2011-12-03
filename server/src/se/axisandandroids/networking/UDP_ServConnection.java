@@ -41,7 +41,7 @@ public class UDP_ServConnection extends Connection {
 
 
 	public void sendImage(byte[] data) throws IOException {		
-		System.out.println("Sending image");
+		//System.out.println("Sending: " + data.length + " bytes, over port " + udp_port);
 		synchronized (send_udp_socket) {
 			send_udp_packet.setLength(data.length);
 			send_udp_packet.setData(data, 0, data.length);
@@ -52,7 +52,7 @@ public class UDP_ServConnection extends Connection {
 	
 	public void sendImage(byte[] data, int a, int b) throws IOException {
 		int len = b - a;		
-		System.out.println("Sending: " + len + " bytes, over port " + udp_port);
+		//System.out.println("Sending: " + len + " bytes, over port " + udp_port);
 		synchronized (send_udp_socket) {
 			send_udp_packet.setLength(len);
 			send_udp_packet.setData(data, a, len);

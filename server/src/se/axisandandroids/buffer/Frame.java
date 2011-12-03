@@ -12,7 +12,6 @@ public class Frame implements Comparable<Frame> {
 	
 	public int len;
 	public byte[] x;
-
 	
 	/**
 	 * Create an empty frame.

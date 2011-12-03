@@ -4,7 +4,6 @@ import java.util.LinkedList;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
-import se.axisandandroids.buffer.Command;
 import se.axisandandroids.networking.Protocol;
 
 /**

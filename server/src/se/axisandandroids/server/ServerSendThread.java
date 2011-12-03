@@ -7,9 +7,6 @@ import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
-import se.axisandandroids.networking.Connection;
-import se.axisandandroids.networking.Protocol;
-import se.axisandandroids.networking.SendThreadSkeleton;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
 

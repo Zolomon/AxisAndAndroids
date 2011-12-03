@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import se.axisandandroids.http.JPEGHTTPServerThread;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
 import se.lth.cs.cameraproxy.MotionDetector;
@@ -22,14 +21,14 @@ import se.lth.cs.cameraproxy.MotionDetector;
  */
 public class CameraServer {
 
-	private final static int default_port = 6000;
 	private final static String default_camhost  = "argus-8.student.lth.se";
-	private final static int default_camport = 4321;
-	private final static int default_httpPort = 8080;
-	private int nClients = 0;
+	private final static int default_camport 	 = 4321;
+	private final static int default_port 		 = 6000;
+	private final static int default_httpPort 	 = 8080;
 	
+	
+	private int nClients = 0;	
 	private int listenPort;
-	private int httpPort;
 	private ServerSocket servSocket = null;
 	private UDP_ServConnection con;
 	private CameraMonitor cm;
@@ -76,7 +75,7 @@ public class CameraServer {
 
 		System.out.println("Big brother is watching you all, Axis and Androids...");
 		
-		CameraServer serv = new CameraServer(listenPort, camhost, camport, http);
+		CameraServer serv = new CameraServer(listenPort, camhost, camport, http, httpPort);
 		serv.listenForConnection();
 	}
 
@@ -87,9 +86,8 @@ public class CameraServer {
 	 * @param camport	 The camera port
 	 * @param http		 If the http server should be started.
 	 */
-	public CameraServer(int listenPort, String camhost, int camport, boolean http) {
+	public CameraServer(int listenPort, String camhost, int camport, boolean http, int httpPort) {
 		this.listenPort = listenPort;		
-
 		myCamera = new Axis211A(camhost, camport);
 		md = new MotionDetector(camhost, camport);
 

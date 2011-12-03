@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Protocol;
-import se.axisandandroids.networking.ReceiveThreadSkeleton;
 import se.axisandandroids.networking.UDP_ClientConnection;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.buffer.PriorityFrameBuffer;
-import se.lth.cs.fakecamera.Axis211A;
 
 
 /**

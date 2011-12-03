@@ -3,13 +3,11 @@ package se.axisandandroids.desktop.client;
 import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
-import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.UDP_ClientConnection;
 

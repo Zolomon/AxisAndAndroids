@@ -7,7 +7,6 @@ import se.axisandandroids.client.display.NewImageCallback;
 import se.axisandandroids.client.display.Panel;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
 import se.axisandandroids.client.service.networking.ClientSendThread;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.UDP_ClientConnection;
 
 

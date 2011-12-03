@@ -3,7 +3,6 @@ package se.axisandandroids.networking;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -15,7 +14,6 @@ public class UDP_ClientConnection extends Connection {
 	private DatagramSocket recv_udp_socket;
 	private DatagramPacket recv_udp_packet;
 	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-
 
 
 	public UDP_ClientConnection(String host, int tcp_port) throws UnknownHostException, IOException {
@@ -38,7 +36,7 @@ public class UDP_ClientConnection extends Connection {
 			recv_udp_packet.setData(b, 0, b.length);
 			recv_udp_socket.receive(recv_udp_packet); 
 			int len = recv_udp_packet.getLength();
-			System.out.println("Received " + len + " bytes.");
+			//System.out.println("Received " + len + " bytes.");
 			return len;
 		}
 	}

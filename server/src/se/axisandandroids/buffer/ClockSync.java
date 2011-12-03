@@ -23,8 +23,7 @@ public class ClockSync extends Command {
 		T[0] = (byte)((s & 0xff000000) >> 24);
 		T[1] = (byte)((s & 0x00ff0000) >> 16);
 		T[2] = (byte)((s & 0x0000ff00) >> 8);
-		T[3] = (byte)( s & 0x000000ff);		
-		
+		T[3] = (byte)( s & 0x000000ff);				
 		T[4] = (byte)((ms & 0x0000ff00) >> 8);
 		T[5] = (byte)( ms & 0xff);	
 		return T;

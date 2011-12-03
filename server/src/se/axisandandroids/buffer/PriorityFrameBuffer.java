@@ -5,7 +5,10 @@ import java.util.PriorityQueue;
 
 import se.lth.cs.fakecamera.Axis211A;
 
-
+/**
+ * FrameBuffer, with priorities. Reusing Frame objects with a recycle list.
+ * @author jg
+ */
 public class PriorityFrameBuffer {
 	
 	private final PriorityQueue<Frame> 	buffer;

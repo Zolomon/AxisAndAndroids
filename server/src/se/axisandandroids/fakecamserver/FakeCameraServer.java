@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 //import se.axisandandroids.http.JPEGHTTPServerThread;
-import se.axisandandroids.networking.Connection;
-import se.axisandandroids.networking.UDP_Connection;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.axisandandroids.server.CameraMonitor;
 import se.axisandandroids.server.ServerReceiveThread;

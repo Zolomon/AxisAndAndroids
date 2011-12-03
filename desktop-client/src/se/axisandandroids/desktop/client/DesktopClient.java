@@ -8,9 +8,7 @@ import java.util.LinkedList;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientSendThread;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.UDP_ClientConnection;
-import se.axisandandroids.networking.UDP_Connection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 
