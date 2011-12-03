@@ -1,9 +1,8 @@
 package se.axisandandroids.server;
 
-
 import se.axisandandroids.buffer.ClockSync;
-import se.axisandandroids.networking.Connection;
 import se.axisandandroids.networking.ReceiveThreadSkeleton;
+import se.axisandandroids.networking.UDP_ServConnection;
 
 
 
@@ -26,18 +25,17 @@ public class ServerReceiveThread extends ReceiveThreadSkeleton {
 	 * @param c, Connection object shared with a corresponding ServerSendThread.
 	 * @param camera_monitor, camera monitor synchronizing server settings.
 	 */
-	public ServerReceiveThread(Connection c, CameraMonitor camera_monitor) {
+	public ServerReceiveThread(UDP_ServConnection c, CameraMonitor camera_monitor) {
 		super(c);
 		this.camera_monitor = camera_monitor;
 	}
-
-
-	protected void handleImage() {
-		// Since the server pushes, nothing to be done here. If we don't require
-		// a request for image to make a client a subscriber in some future
-		// multi-client setup.
-	}
-
+	
+	public void run() {
+		while (!interrupted() && !camera_monitor.getDisconnect()) {						
+			recvCommand();			
+		}
+	}	
+		
 	protected void handleDispMode() {
 		int disp_mode = c.recvDisplayMode();	
 		camera_monitor.setDisplayMode(disp_mode);

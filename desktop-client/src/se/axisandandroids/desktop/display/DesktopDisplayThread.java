@@ -131,7 +131,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 	protected void showImage(long timestamp, long delay, int len, int sync_mode) {		
 		gui.refreshImage(this, jpeg, delay);		
 		if (sync_mode != sync_mode_old) {
-			gui.refreshSyncButtonText();
+			gui.refreshSyncComboBox();
 			sync_mode_old = sync_mode;
 		}
 	}

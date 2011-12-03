@@ -53,7 +53,7 @@ public class FakeCameraThread extends Thread {
 	public void run() {				
 		
 		if (cameraConnect()) {													
-			while (!interrupted()) {												
+			while (!interrupted() && !camera_monitor.getDisconnect()) {								
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.IDLE) {
 					camera_monitor.awaitImageFetch();
 					receiveJPEG();

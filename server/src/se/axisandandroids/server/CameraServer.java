@@ -136,7 +136,6 @@ public class CameraServer {
  	* @param clientSock The socket to which the client is connected.
  	*/
 	private void servClient(Socket clientSock) {
-
 		
 		cm = new CameraMonitor();
 		con = new UDP_ServConnection(clientSock, listenPort, cm);
@@ -153,10 +152,26 @@ public class CameraServer {
 		
 		cm.awaitDisconnect();
 		
+		System.out.println("CameraServer disconnecting client");
+		if (clientSock != null) {
+			try {
+				clientSock.close();
+				con.disconnect();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		// Interrupt Threads
 		receiveThread.interrupt();
 		sendThread.interrupt();
 		ct.interrupt();
+				
+		cm       		= null;
+		con   	     	= null;
+		receiveThread   = null;
+		sendThread 		= null;
+		ct 	 			= null;
 	}
 	
 

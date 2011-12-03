@@ -48,25 +48,21 @@ public class ServerSendThread extends Thread {
 	}
 
 	public void run() {	
-
 		mailbox.put(new Command(Protocol.COMMAND.CONNECTED));
 		camera_monitor.awaitConnected();
-
 		imgPusher.start();
 
-		while (!interrupted()  && !camera_monitor.getDisconnect()) {
+		while (!interrupted() && !camera_monitor.getDisconnect()) {						
 			// 1) Check for message with commands.
 			Object command = mailbox.get();
 			if (command != null) {
 				// 2) Send commands via connection object.
 				if (command instanceof ModeChange) {
 					System.out.println("Server Sending Mode Change.");
-					if (c.isConnected()) {
-						c.sendInt(((ModeChange) command).cmd);
-						c.sendInt(((ModeChange) command).mode);
-					}
+					c.sendInt(((ModeChange) command).cmd);
+					c.sendInt(((ModeChange) command).mode);
 				} else if (command instanceof ClockSync ||
-						   command instanceof Command) {				
+						command instanceof Command) {				
 					c.sendInt(((Command) command).cmd);
 				}
 			}

@@ -2,11 +2,10 @@ package se.axisandandroids.server;
 
 import java.util.LinkedList;
 
-import javax.activation.MailcapCommandMap;
-
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.networking.Protocol;
+
 
 /**
  * Camera monitor is responsible for syncing of shared data on the server side.

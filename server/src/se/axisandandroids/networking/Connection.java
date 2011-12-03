@@ -102,9 +102,8 @@ public class Connection {
 	public void disconnect() {
 		System.out.printf("Disconnecting Connection Object\n");
 		try {
-			System.out.println("Is null: " + (is == null) +", "+ (os == null) +", "+ (sock == null));			
-			is.close();
-			os.close();
+			if (is != null)   is.close();
+			if (os != null)   os.close();
 			if (sock != null) sock.close();
 		} catch (IOException e) {
 			System.err.println("IO excep.");

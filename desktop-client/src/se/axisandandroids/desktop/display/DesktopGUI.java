@@ -17,6 +17,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import apple.dts.samplecode.osxadapter.OSXAdapter;
+
+import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Protocol;
@@ -47,6 +50,10 @@ public class DesktopGUI extends JFrame {
 
 	private static final String TITLE = "AxisAndAndroids - Desktop Client";
 
+	
+	
+	/* FROM OSXADDAPTER SAMPLE PACKAGE 
+     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip */
 	public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
     final static int MENU_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -57,7 +64,9 @@ public class DesktopGUI extends JFrame {
 	 * @param dm, a DiplayMonitor for synchronizing.
 	 */
 	public DesktopGUI(DisplayMonitor dm) {
-		super();
+		super(); 
+		//super("OSXAdapter"); /* FROM OSXADDAPTER SAMPLE PACKAGE */
+		
 		this.dm = dm;
 		this.setTitle(TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
@@ -66,9 +75,12 @@ public class DesktopGUI extends JFrame {
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
-
-
 		this.addWindowListener(new onWindowClose(this.dm));
+		
+		/* FROM OSXADDAPTER SAMPLE PACKAGE
+		 *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip		  
+		 * Set up our application to respond to the Mac OS X application menu */
+		registerForMacOSXEvents();
 	}
 	
 	/**
@@ -79,7 +91,9 @@ public class DesktopGUI extends JFrame {
 	 * @param ddt, the DisplayThread.
 	 */
 	public DesktopGUI(DisplayMonitor dm, DesktopDisplayThread ddt) {
-		super();
+		super(); 
+		//super("OSXAdapter"); /* FROM OSXADDAPTER SAMPLE PACKAGE */
+		
 		this.dm = dm;
 		this.setTitle(TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
@@ -88,9 +102,13 @@ public class DesktopGUI extends JFrame {
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
-		this.registerDisplayThread(ddt);
-		
+		this.registerDisplayThread(ddt);		
 		this.addWindowListener(new onWindowClose(this.dm));
+				
+		/* FROM OSXADDAPTER SAMPLE PACKAGE
+		 *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip		  
+		 * Set up our application to respond to the Mac OS X application menu */
+        registerForMacOSXEvents();
 	}
 
 	/**
@@ -99,7 +117,6 @@ public class DesktopGUI extends JFrame {
 	 */
 	public void packItUp() {
 		System.out.println("Packing...");
-		// addButtons();
 		addComboBoxes();
 		this.setLocationRelativeTo(null);
 		this.pack();
@@ -169,7 +186,7 @@ public class DesktopGUI extends JFrame {
 	/**
 	 * Called to refresh the shown the shown sync. mode.
 	 */
-	public void refreshSyncButtonText() {
+	public void refreshSyncComboBox() {
 		if (dm.getSyncMode() == Protocol.SYNC_MODE.AUTO) {
 			syncBox.setSelectedIndex(Protocol.SYNC_MODE.AUTO);
 		} else if (dm.getSyncMode() == Protocol.SYNC_MODE.ASYNC) {
@@ -182,7 +199,7 @@ public class DesktopGUI extends JFrame {
 	/**
 	 * Called to refresh the shown the shown display mode.
 	 */
-	public void refreshDispButtonText() {
+	public void refreshDispComboBox() {
 		if (dm.getDispMode() == Protocol.DISP_MODE.AUTO) {
 			dispBox.setSelectedIndex(Protocol.DISP_MODE.AUTO);
 		} else if (dm.getDispMode() == Protocol.DISP_MODE.IDLE) {
@@ -316,10 +333,58 @@ public class DesktopGUI extends JFrame {
 		}
 		public void windowClosing(WindowEvent e) {
 			System.out.println("Window Closed... disconnect status set to: true.");
-			this.dm.setDisconnect(true);
-			//System.exit(0);
+        	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
+			this.dm.setDisconnect(true);			
 		}
 	}
+	
+	
+	
+	/**
+	 * FROM OSXADDAPTER SAMPLE PACKAGE
+     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip	 
+	 * Generic registration with the Mac OS X application menu
+	 * Checks the platform, then attempts to register with the Apple EAWT
+     * See OSXAdapter.java to see how this is done without directly referencing any Apple APIs
+     */
+    public void registerForMacOSXEvents() {
+        if (MAC_OS_X) {
+            try {
+                /* Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
+                   use as delegates for various com.apple.eawt.ApplicationListener methods */
+                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quit", (Class[])null));               
+                //OSXAdapter.setAboutHandler(this, getClass().getDeclaredMethod("about", (Class[])null));
+                //OSXAdapter.setPreferencesHandler(this, getClass().getDeclaredMethod("preferences", (Class[])null));
+                //OSXAdapter.setFileHandler(this, getClass().getDeclaredMethod("loadImageFile", new Class[] { String.class }));
+            } catch (Exception e) {
+                System.err.println("Error while loading the OSXAdapter:");
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * FROM OSXADDAPTER SAMPLE PACKAGE
+     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip
+     *  General quit handler; fed to the OSXAdapter as the method to call when a system quit event occurs
+     *  A quit event is triggered by Cmd-Q, selecting Quit from the application or Dock menu, or logging out
+     */
+    public boolean quit() { 
+    	/* // For options dialouge do:
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Quit?", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+        	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
+        	dm.setDisconnect(true);
+        }
+        return (option == JOptionPane.YES_OPTION);
+        */
+    	
+    	// On second thought: who needs options anyway?
+    	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
+    	dm.setDisconnect(true);
+    	return true;
+    }
+
 
 } // end class GUI
 

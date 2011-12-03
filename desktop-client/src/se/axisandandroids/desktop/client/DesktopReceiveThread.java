@@ -48,7 +48,7 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 		System.out.println("Handling Sync Mode.");
 		int sync_mode = c.recvSyncMode();
 		disp_monitor.setSyncMode(sync_mode);
-		gui.refreshSyncButtonText();
+		gui.refreshSyncComboBox();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 		int disp_mode = c.recvDisplayMode();
 		disp_monitor.setDispMode(disp_mode);			
 		disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));
-		gui.refreshDispButtonText();
+		gui.refreshDispComboBox();
 	}
 
 }

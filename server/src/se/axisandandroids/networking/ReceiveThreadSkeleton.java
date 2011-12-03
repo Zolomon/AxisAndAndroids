@@ -1,7 +1,5 @@
 package se.axisandandroids.networking;
 
-import java.io.IOException;
-
 
 /**
  * Superclass for Receive threads. Gets, in its run-loop, a command integer 
@@ -22,21 +20,15 @@ public class ReceiveThreadSkeleton extends Thread {
 
 	public void run() {
 		while (!interrupted() && c.isConnected()) {
-			try {
-				recvCommand();
-			} catch (IOException e) {
-				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
-				System.exit(1);
-			}
+			recvCommand();			
 		}
-		this.interrupt();
 	}
 		
 	public void interrupt() {
 		super.interrupt();
 	}
 	
-	private void recvCommand() throws IOException {
+	protected void recvCommand() {
 		int cmd = c.recvInt();		
 		switch (cmd) {
 		case Protocol.COMMAND.IMAGE: 	

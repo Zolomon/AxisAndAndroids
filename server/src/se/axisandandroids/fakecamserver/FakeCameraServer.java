@@ -109,6 +109,7 @@ public class FakeCameraServer {
 		mFakeCameraThread.start();
 		
 		mCameraMonitor.awaitDisconnect();
+		System.out.println("FakeCameraServer disconnecting client");
 		if (clientSock != null) {
 			try {
 				clientSock.close();
@@ -121,6 +122,13 @@ public class FakeCameraServer {
 		mServerReceiveThread.interrupt();
 		mSendThread.interrupt();
 		mFakeCameraThread.interrupt();
+		
+		
+		mCameraMonitor       = null;
+		mConnnection   	     = null;				
+		mServerReceiveThread = null;
+		mSendThread 		 = null;
+		mFakeCameraThread 	 = null;
 				
 	}
 
