@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -46,6 +47,10 @@ public class DesktopGUI extends JFrame {
 
 	private static final String TITLE = "AxisAndAndroids - Desktop Client";
 
+	public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
+    final static int MENU_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+
 	/**
 	 * Create a DesktopGUI instance. DisplayThreads have to register to the
 	 * DesktopGUI for any action to occur.
@@ -63,7 +68,7 @@ public class DesktopGUI extends JFrame {
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
 
 
-		addWindowListener(new onWindowClose(this.dm));
+		this.addWindowListener(new onWindowClose(this.dm));
 	}
 	
 	/**
@@ -85,7 +90,7 @@ public class DesktopGUI extends JFrame {
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
 		this.registerDisplayThread(ddt);
 		
-		addWindowListener(new onWindowClose(this.dm));
+		this.addWindowListener(new onWindowClose(this.dm));
 	}
 
 	/**
