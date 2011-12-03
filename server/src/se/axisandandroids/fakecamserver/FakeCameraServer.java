@@ -3,9 +3,6 @@ package se.axisandandroids.fakecamserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-//import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.axisandandroids.server.CameraMonitor;
 import se.axisandandroids.server.ServerReceiveThread;
@@ -95,24 +92,36 @@ public class FakeCameraServer {
 
 	private void servClient(Socket clientSock) {
 		
-		try {
-			mConnnection = new UDP_ServConnection(clientSock, mPort);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		mCameraMonitor = new CameraMonitor();
+		mConnnection = new UDP_ServConnection(clientSock, mPort, mCameraMonitor);				
+
+		
+		// Create threads
 		mServerReceiveThread = new ServerReceiveThread(mConnnection,
 				mCameraMonitor);
-		mSendThread = new ServerSendThread(mConnnection);
-		mFakeCameraThread = new FakeCameraThread(mCameraMonitor,
-				mSendThread.mailbox, mSendThread.frame_buffer, mAxisCamera,
-				mMotionDetector);
+		mSendThread = new ServerSendThread(mConnnection, mCameraMonitor);
+		mFakeCameraThread = new FakeCameraThread(mCameraMonitor, mSendThread.mailbox, 
+												 mSendThread.frame_buffer, mAxisCamera,
+												 mMotionDetector);
+		// Start threads
 		mServerReceiveThread.start();
 		mSendThread.start();
 		mFakeCameraThread.start();
+		
+		mCameraMonitor.awaitDisconnect();
+		if (clientSock != null) {
+			try {
+				clientSock.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Interrupt Threads
+		mServerReceiveThread.interrupt();
+		mSendThread.interrupt();
+		mFakeCameraThread.interrupt();
+				
 	}
 
 }

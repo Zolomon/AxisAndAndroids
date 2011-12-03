@@ -125,20 +125,15 @@ public class TCP_ClientHandler extends Thread {
 
 		Connection con = new Connection(socket);
 		int recv = -1;
-		try {
 
-			for (int i = -1000; i < 1000; ++i) {
-				recv = con.recvInt();	
-				System.out.printf("Got: %d\n", recv);
-				assert(127*i == recv);
-			}
+		for (int i = -1000; i < 1000; ++i) {
+			recv = con.recvInt();	
+			System.out.printf("Got: %d\n", recv);
+			assert(127*i == recv);
+		}
 
-			System.out.println("Done: **Test recv int");
+		System.out.println("Done: **Test recv int");
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
 	}
 
 
@@ -162,7 +157,7 @@ public class TCP_ClientHandler extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Send image 2
 		len = axis.getJPEG(jpeg, 0);		
 		assert(len <= jpeg.length);
@@ -174,25 +169,25 @@ public class TCP_ClientHandler extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}		
-		
+
 		// Send image 3
 		len = axis.getJPEG(jpeg, 0);		
 		assert(len <= jpeg.length);
 		con.sendImage(jpeg, 0, len);
 		System.out.println("Sent: " + len + " bytes.");
-		
+
 		try {
 			Thread.sleep((long)1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Send image 4
 		len = axis.getJPEG(jpeg, 0);		
 		assert(len <= jpeg.length);
 		con.sendImage(jpeg, 0, len);
 		System.out.println("Sent: " + len + " bytes.");
-		
+
 
 		axis.close();
 	}
@@ -210,17 +205,17 @@ public class TCP_ClientHandler extends Thread {
 
 			int cmd;						
 
-//			System.out.println("Waiting for Request");
+			//			System.out.println("Waiting for Request");
 
 			cmd = con.recvInt(); // ---> NON-BLOCKING => ERROR SRC
 
-//			System.out.printf("Command: %d \n", cmd);
+			//			System.out.printf("Command: %d \n", cmd);
 
 			switch (cmd) {			
 			case Protocol.COMMAND.IMAGE:			
-//				System.out.printf("%d. Image Requested", cmd);
+				//				System.out.printf("%d. Image Requested", cmd);
 
-//				System.out.println("Fetching from camera,");
+				//				System.out.println("Fetching from camera,");
 				int len = axis.getJPEG(jpeg, 0);		
 
 				//System.out.println("Sending Image...");

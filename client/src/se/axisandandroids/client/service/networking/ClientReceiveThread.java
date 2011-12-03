@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Protocol;
-import se.axisandandroids.networking.UDP_ClientConnection;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.ModeChange;
@@ -40,17 +39,12 @@ public class ClientReceiveThread extends Thread {
 		this.disp_monitor = disp_monitor;	// Display Monitor
 		this.frame_buffer = frame_buffer;	// FrameBuffer belonging to DisplayThread
 		this.sendCommandMailbox = sendCommandMailbox;				
-		this.imgRecv = new ImageReceiver(c, frame_buffer);			
+		this.imgRecv = new ImageReceiver(c, frame_buffer, disp_monitor);			
 	}
 
-	public void interrupt() {
-		imgRecv.interrupt();
-		super.interrupt();
-	}
-	
 	public void run() {		
 		imgRecv.start();
-		while (!interrupted() && c.isConnected()) {
+		while (!interrupted() && !disp_monitor.getDisconnect()) {
 			try {
 				recvCommand();
 			} catch (IOException e) {
@@ -60,7 +54,12 @@ public class ClientReceiveThread extends Thread {
 		}
 		interrupt();
 	}
-	
+
+	public void interrupt() {
+		imgRecv.interrupt();
+		super.interrupt();
+	}	
+
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
 		switch (cmd) {		
@@ -96,12 +95,8 @@ public class ClientReceiveThread extends Thread {
 	 */
 	protected void handleSyncMode() {
 		System.out.println("Handling Sync Mode.");
-		try {
-			int sync_mode = c.recvSyncMode();
-			disp_monitor.setSyncMode(sync_mode);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		int sync_mode = c.recvSyncMode();
+		disp_monitor.setSyncMode(sync_mode);
 	}
 
 	/**
@@ -110,17 +105,19 @@ public class ClientReceiveThread extends Thread {
 	 */
 	protected void handleDispMode() {
 		System.out.println("Handling Display Mode.");
-		try {
-			int disp_mode = c.recvDisplayMode();
-			disp_monitor.setDispMode(disp_mode);			
-			disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));				
-		} catch (IOException e) {
-			e.printStackTrace();
-		}			
+		int disp_mode = c.recvDisplayMode();
+		disp_monitor.setDispMode(disp_mode);			
+		disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));				
 	}
 
 	protected void handleClockSync() {
 		sendCommandMailbox.put(new ClockSync(System.currentTimeMillis()));
+	}
+
+
+	protected void handleDisconnect() {
+		System.out.println("Disconnect is requested...");
+		disp_monitor.setDisconnect(true);
 	}
 	
 	protected void handleConnected() {

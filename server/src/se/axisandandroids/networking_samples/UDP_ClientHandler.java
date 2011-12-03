@@ -24,15 +24,13 @@ import se.lth.cs.fakecamera.Axis211A;
 public class UDP_ClientHandler extends Thread {
 	private Socket clientSocket;
 	private Axis211A axis;
-	//private int tcp_port;
 	private int udp_port;
 	
 	public UDP_ClientHandler(Socket clientSocket, int tcp_port, Axis211A axis) {
 		super();
 		this.clientSocket = clientSocket;
 		this.axis = axis;
-		//this.tcp_port = tcp_port;
-		this.udp_port = tcp_port + 1;
+		this.udp_port = tcp_port+1;
 	}
 
 	public void run() {

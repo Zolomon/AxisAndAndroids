@@ -88,7 +88,7 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 		
 		/* -------------------------------------- Get all other Images */
 		
-		while (! interrupted()) {
+		while (!interrupted()) {
 			len = mailbox.get(jpeg);
 			timestamp = getTimestamp();
 			

@@ -44,7 +44,7 @@ public class DisplayThreadSkeleton extends Thread {
 			disp_monitor.awaitConnected();
 			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);			
 						
-			while (! interrupted()) {
+			while (!interrupted() && !disp_monitor.getDisconnect()) {
 				len = mailbox.get(jpeg);
 				timestamp = getTimestamp();
 				
@@ -71,7 +71,7 @@ public class DisplayThreadSkeleton extends Thread {
 						e1.printStackTrace();
 					}
 				}
-			}
+			} // end while
 		}
 		
 		

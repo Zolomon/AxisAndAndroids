@@ -77,16 +77,8 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String host = etHost.getText().toString();
 		String port = etPort.getText().toString();
 
-		try {
-			System.out.println("Trying to connect to: " + host + ":" + port);
-			mService.mConnectionHandler.addConnection(new Connection(host, Integer.parseInt(port)));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("Trying to connect to: " + host + ":" + port);
+		mService.mConnectionHandler.addConnection(new Connection(host, Integer.parseInt(port)));		
 
 		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);

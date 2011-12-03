@@ -50,6 +50,7 @@ public class DesktopGUI extends JFrame {
 	public DesktopGUI(DisplayMonitor dm) {
 		super();
 		this.dm = dm;
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
 		this.getContentPane().setLayout(new BorderLayout());
 		imageAreaPanel = new JPanel(new FlowLayout());
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
@@ -68,7 +69,7 @@ public class DesktopGUI extends JFrame {
 	public DesktopGUI(DisplayMonitor dm, DesktopDisplayThread ddt) {
 		super();
 		this.dm = dm;
-
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
 		this.getContentPane().setLayout(new BorderLayout());
 		imageAreaPanel = new JPanel(new FlowLayout());
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
@@ -137,7 +138,6 @@ public class DesktopGUI extends JFrame {
 			this.setLocationRelativeTo(null);
 			this.pack();
 			this.setVisible(true);
-			this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
 		}
 	}
 	

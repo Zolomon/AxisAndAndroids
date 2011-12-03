@@ -17,22 +17,22 @@ import se.axisandandroids.networking.Protocol;
  * @author calliz
  */
 public class DisplayMonitor {
-	
+
 	private long lag = 20;
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
-	
+
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;	
 	private int disp_mode;	// Server side, default value is set in CameraMonitor
 
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
-	
+
 	/**
 	 * Construct a new DisplayMonitor.
 	 */
 	public DisplayMonitor() {}
 
-	
+
 	/**
 	 * Construct a new DisplayMonitor with a target synchronization delay given
 	 * by target_delay.
@@ -42,7 +42,7 @@ public class DisplayMonitor {
 		lag = target_delay;
 	}
 
-	
+
 	/**
 	 * The method responsible to synchronize image frames between display threads.
 	 * This is done according to the given timestamps to hold a target delay lag.
@@ -63,14 +63,14 @@ public class DisplayMonitor {
 		while ((diffTime = showtime_new - System.currentTimeMillis()) > 0) {
 			Thread.sleep(diffTime);		
 		} 		
-		
+
 		/* Calculate and return delay */
 		long delay = System.currentTimeMillis() - timestamp;						
 		chooseSyncMode(Thread.currentThread().getId(), delay);
 		return delay; 
 	}
 
-	
+
 	private long id_last = 0;
 	private long delay_last = 0;
 
@@ -122,7 +122,7 @@ public class DisplayMonitor {
 	public synchronized void unsubscribeMailbox(CircularBuffer mailbox) {
 		mailboxes.remove(mailbox);		
 	}
-	
+
 
 	/**
 	 * Post to all method for forwarding of display mode changes from AUTO to 
@@ -159,7 +159,7 @@ public class DisplayMonitor {
 	public synchronized int getDispMode() { 
 		return disp_mode; 
 	}
-	
+
 	/**
 	 * Get synchronization mode. [0 == Auto, 1 == Sync, 2 == Async]
 	 * @return sync. mode
@@ -167,17 +167,18 @@ public class DisplayMonitor {
 	public synchronized int getSyncMode() { 
 		return sync_mode; 
 	}
-	
-	
-	
-	
+
+
+
+
+	/* Connected experiments */
 	private int nConnected = 0;
-	
+
 	public synchronized void setConnected() {
 		++nConnected;
 		notifyAll();
 	}
-	
+
 	public synchronized void awaitConnected(int n) {
 		while (nConnected < n) {
 			try {
@@ -187,7 +188,7 @@ public class DisplayMonitor {
 			}
 		}
 	}
-	
+
 	public synchronized void awaitConnected() {
 		while (nConnected < mailboxes.size()) {
 			try {
@@ -197,13 +198,36 @@ public class DisplayMonitor {
 			}
 		}
 	}
-	
-	
 
-	
-	
+	private boolean disconnect = false;
+
+	public synchronized void setDisconnect(boolean mode) {		
+		disconnect = mode;
+		notifyAll();
+	}
+
+	public synchronized void awaitDisconnect() {
+		while (!disconnect) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+	public synchronized boolean getDisconnect() {
+		return disconnect;
+	}
+
+
+
+
+
+
 	/* Android specific --> Preferable put somewhere else, since it is GUI related */
-	
+
 	/**
 	 * Set display mode.
 	 * @param disp_mode
@@ -221,14 +245,14 @@ public class DisplayMonitor {
 		this.sync_mode = sync_mode;
 		mNewSyncModeCallback.callback(this.sync_mode); 
 	}
-	
+
 	private NewDisplayModeCallback mNewDisplayModeCallback;  
 	private NewSyncModeCallback mNewSyncModeCallback;	 				
-	
+
 	public synchronized void setNewDisplayModeCallback(NewDisplayModeCallback callback) {
 		mNewDisplayModeCallback = callback;
 	}
-	
+
 	public synchronized void setNewSyncModeCallback(NewSyncModeCallback callback) {
 		mNewSyncModeCallback = callback;
 	}

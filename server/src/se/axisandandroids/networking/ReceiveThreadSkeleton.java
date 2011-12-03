@@ -51,6 +51,9 @@ public class ReceiveThreadSkeleton extends Thread {
 		case Protocol.COMMAND.CONNECTED:
 			handleConnected();
 			break;
+		case Protocol.COMMAND.DISCONNECT:
+			handleDisconnect();
+			break;			
 		case Protocol.COMMAND.CLOCK_SYNC:
 			handleClockSync();
 			break;			
@@ -63,21 +66,25 @@ public class ReceiveThreadSkeleton extends Thread {
 	/* Subclass and override following methods ----------------------------- */
 	
 	protected void handleImage() {
-		//byte[] b = c.recvImage(); // get timestamp etc.
+	
 	}
 
 	protected void handleSyncMode() {
-		//int sync_mode = c.recvSyncMode();
+	
 	}
 	
 	protected void handleDispMode() {
-		//int disp_mode = c.recvDisplayMode();
+
 	}
 
 	protected void handleConnected() {
 		
 	}
 	
+	protected void handleDisconnect() {
+		
+	}
+
 	protected void handleClockSync() {
 		
 	}

@@ -1,6 +1,5 @@
 package se.axisandandroids.server;
 
-import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
@@ -27,6 +26,7 @@ public class ServerSendThread extends Thread {
 	protected static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
 
+	private CameraMonitor camera_monitor;
 	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
 	public final FrameBuffer frame_buffer; 	// Image mailbox
 	private UDP_ServConnection c;	
@@ -39,51 +39,48 @@ public class ServerSendThread extends Thread {
 	 * Create ServerSendThread with connection c.
 	 * @param c, Connection object over which to send images and commands. 	 
 	 */
-	public ServerSendThread(UDP_ServConnection c) {
+	public ServerSendThread(UDP_ServConnection c, CameraMonitor camera_monitor) {
 		this.c = c;
+		this.camera_monitor = camera_monitor;
 		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
-		imgPusher = new ImagePusher(c, frame_buffer);
+		imgPusher = new ImagePusher(c, frame_buffer, camera_monitor);
 	}
 
 	public void run() {	
-		
+
 		mailbox.put(new Command(Protocol.COMMAND.CONNECTED));
-		
+		camera_monitor.awaitConnected();
+
 		imgPusher.start();
 
-		while (!interrupted() && c.isConnected()) {
+		while (!interrupted()  && !camera_monitor.getDisconnect()) {
 			// 1) Check for message with commands.
 			Object command = mailbox.get();
 			if (command != null) {
-				try {
-					// 2) Send commands via connection object.
-					if (command instanceof ModeChange) {
-						System.out.println("Server Sending Mode Change.");
-						if (c.isConnected()) {
-							c.sendInt(((ModeChange) command).cmd);
-							c.sendInt(((ModeChange) command).mode);
-						}
-					} else if (command instanceof ClockSync) {
-						c.sendInt(((Command) command).cmd);
-					} else if (command instanceof Command) {
-						c.sendInt(((Command) command).cmd);
+				// 2) Send commands via connection object.
+				if (command instanceof ModeChange) {
+					System.out.println("Server Sending Mode Change.");
+					if (c.isConnected()) {
+						c.sendInt(((ModeChange) command).cmd);
+						c.sendInt(((ModeChange) command).mode);
 					}
-				} catch (IOException e) {
-					System.err.println("Send Fail."); // ACTION
-					e.printStackTrace();
-					System.out.println("Disconnection this Connection");
-					c.disconnect();
-					System.exit(1);
-				}	
+				} else if (command instanceof ClockSync ||
+						   command instanceof Command) {				
+					c.sendInt(((Command) command).cmd);
+				}
 			}
-		} // end while
+		} // end while				
 		interrupt();
 	} // end run	
 
 
 	public void interrupt() {
+		if (camera_monitor.getDisconnect() && c != null) {
+			c.sendInt(Protocol.COMMAND.DISCONNECT);
+		}
 		imgPusher.interrupt();
+		camera_monitor.setDisconnect(true);
 		super.interrupt();
 	}
 }

@@ -52,9 +52,8 @@ public class CameraThread extends Thread {
 
 	/* While the camera is connected: receive images according to the display mode */
 	public void run() {
-
 		if (cameraConnect()) {
-			while (!interrupted()) {
+			while (!interrupted() && !camera_monitor.getDisconnect()) {
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.MOVIE) {
 					camera_monitor.awaitImageFetch();
 					receiveImage();
@@ -106,5 +105,10 @@ public class CameraThread extends Thread {
 		} else {
 			System.out.println("No motion");
 		}
+	}
+	
+	public void interrupt() {
+		camera_monitor.setDisconnect(true);
+		super.interrupt();
 	}
 }

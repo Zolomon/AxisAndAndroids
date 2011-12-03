@@ -16,7 +16,8 @@ public class Protocol {
 		public final static int SYNC_MODE 	= 20;
 		public final static int DISP_MODE 	= 30;
 		public final static int CONNECTED 	= 40;
-		public final static int CLOCK_SYNC  = 50;
+		public final static int DISCONNECT 	= 50;
+		public final static int CLOCK_SYNC  = 60;
 	}
 	
 	public class SYNC_MODE { // DO NOT CHANGE USED FOR INDEXES
@@ -25,7 +26,7 @@ public class Protocol {
 		public final static int ASYNC 		= 2;
 	}
 
-	public class DISP_MODE {// DO NOT CHANGE USED FOR INDEXES		
+	public class DISP_MODE { // DO NOT CHANGE USED FOR INDEXES		
 		public final static int AUTO 		= 0;
 		public final static int IDLE 		= 1;
 		public final static int MOVIE 		= 2;

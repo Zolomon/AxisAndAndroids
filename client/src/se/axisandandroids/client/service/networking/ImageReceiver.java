@@ -1,38 +1,34 @@
 package se.axisandandroids.client.service.networking;
 
-import java.io.IOException;
-
 import se.axisandandroids.buffer.PriorityFrameBuffer;
-import se.axisandandroids.networking.UDP_ClientConnection;
+import se.axisandandroids.client.display.DisplayMonitor;
 import se.lth.cs.fakecamera.Axis211A;
 
 public class ImageReceiver extends Thread {
-	
+
+	private final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
+
 	private UDP_ClientConnection c;
-	private PriorityFrameBuffer frame_buffer;		
-	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
-	
-	public ImageReceiver(UDP_ClientConnection c, PriorityFrameBuffer frame_buffer) {
+	private PriorityFrameBuffer frame_buffer;
+	private DisplayMonitor disp_monitor;
+
+	public ImageReceiver(UDP_ClientConnection c, PriorityFrameBuffer frame_buffer, DisplayMonitor disp_monitor) {
 		this.c = c;
 		this.frame_buffer = frame_buffer;
+		this.disp_monitor = disp_monitor;
 		//this.setPriority((NORM_PRIORITY + MIN_PRIORITY)/2);
 	}
 
 	public void run() {
-		while (!interrupted() && c.isConnected()) {			
+		while (!interrupted() && !disp_monitor.getDisconnect()) {			
 			int len = 0;
-			try {
-				len = c.recvImage(jpeg);
-			} catch (IOException e) {
-				System.err.println("Failed to get image. Skipping this.");
-				e.printStackTrace();
-			}		
+			len = c.recvImage(jpeg);
 			frame_buffer.put(jpeg, len);	
 		}
 	}
-	
+
 	public void interrupt() {
 		super.interrupt();
 	}
-	
+
 }

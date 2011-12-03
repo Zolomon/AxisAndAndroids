@@ -167,17 +167,11 @@ public class TCP_Client {
 
 	public void testSendInt() {
 		System.out.println("**Test send int");
-
 		Connection con = new Connection(socket);
-		try {
-			for (int i = -1000; i < 1000; ++i) {
-				con.sendInt(127*i);			
-				System.out.printf("Sent: %d\n",  127*i);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		for (int i = -1000; i < 1000; ++i) {
+			con.sendInt(127*i);			
+			System.out.printf("Sent: %d\n",  127*i);
+		}
 	}
 
 	public void testFakeCam() throws IOException {
@@ -251,7 +245,7 @@ public class TCP_Client {
 			this.pack();
 
 			this.con = new Connection(socket);
-						
+
 			refreshImage();
 		}
 
@@ -260,25 +254,20 @@ public class TCP_Client {
 			while (true) {
 				int cmd, len = 0;
 
-				try {			
-					//				System.out.println("Requesting Image");
-					con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
+				//				System.out.println("Requesting Image");
+				con.sendInt(Protocol.COMMAND.IMAGE); // Request Image	
 
-					//				System.out.println("Waiting for Answer");
-					cmd = con.recvInt(); 				 // Wait for Answer
+				//				System.out.println("Waiting for Answer");
+				cmd = con.recvInt(); 				 // Wait for Answer
 
-					if (cmd == Protocol.COMMAND.IMAGE) {
-						//					System.out.println("Getting Image...");
-						len = con.recvImage(jpeg);	
-					} else {
-						System.err.println("Protocol Voilation!");
-						System.exit(1);
-					}				
-				} catch (IOException e) {
-					System.err.println("Errornous err...");
-					e.printStackTrace();
+				if (cmd == Protocol.COMMAND.IMAGE) {
+					//					System.out.println("Getting Image...");
+					len = con.recvImage(jpeg);	
+				} else {
+					System.err.println("Protocol Voilation!");
 					System.exit(1);
-				}			
+				}				
+
 				System.out.println("Received " + len + " bytes.");
 
 				imagePanel.refresh(jpeg);			
@@ -289,7 +278,7 @@ public class TCP_Client {
 				}
 			}
 		}
-		
+
 	}
 
 	class ImagePanel extends JPanel {

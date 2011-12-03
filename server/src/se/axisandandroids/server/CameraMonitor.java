@@ -2,6 +2,8 @@ package se.axisandandroids.server;
 
 import java.util.LinkedList;
 
+import javax.activation.MailcapCommandMap;
+
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.networking.Protocol;
@@ -116,6 +118,48 @@ public class CameraMonitor {
 			return sum/count;		
 		}
 		return 0;
+	}
+	
+	
+	
+	/* Connected code experiment */
+	private int nConnected = 0;
+	
+	public synchronized void setConnected() {
+		++nConnected;
+		notifyAll();
+	}
+	
+	public synchronized void awaitConnected() {
+		while (nConnected > 0) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private boolean disconnect = false;
+	
+	public synchronized void setDisconnect(boolean mode) {		
+		disconnect = mode;
+		notifyAll();
+	}
+	
+	public synchronized void awaitDisconnect() {
+		while (!disconnect) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+	
+	public synchronized boolean getDisconnect() {
+		return disconnect;
 	}
 
 }

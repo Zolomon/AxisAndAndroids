@@ -26,7 +26,7 @@ public class Connection {
 
 
 
-	
+
 	// Input and output should be independent!
 	// Design => one sender and one receiver => thread safe in that regard
 	// Alternative is to wrap to private monitors or synchronize on the streams.
@@ -46,8 +46,21 @@ public class Connection {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public Connection(String host, int port) throws UnknownHostException, IOException {
-		this(new Socket(host, port));		
+	public Connection(String host, int port) {		
+		try {
+			this.sock = new Socket(host, port);
+			myId = Connection.id++;
+			sock.setTcpNoDelay(true);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			System.err.println("Unknown host.");
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Argh! socket slained without delay.");
+			System.exit(1);
+		} 
+		connect();
 	}
 
 	/**
@@ -67,7 +80,7 @@ public class Connection {
 		connect();
 	}
 
-	
+
 	/**
 	 * Creates input and output streams on a socket.
 	 */
@@ -94,11 +107,10 @@ public class Connection {
 			os.close();
 			sock.close();
 		} catch (IOException e) {
-			System.err.println("IO-error");
+			System.err.println("IO excep.");
 			e.printStackTrace();
-			System.exit(1);
 		}		
-		sock = null; // etc... // other threads
+		sock = null;
 	}
 
 	/** 
@@ -106,16 +118,20 @@ public class Connection {
 	 * @param data A byte vector with the image-data
 	 * @throws IOException
 	 */
-	public void sendImage(byte[] data) throws IOException {		
+	public void sendImage(byte[] data) {		
 		synchronized (os) {
 			sendInt(Protocol.COMMAND.IMAGE);
 			sendInt(data.length);				
-			//onWrite(data, 0, data.length);	
-			os.write(data, 0, data.length);
-			os.flush();
+			try {
+				os.write(data, 0, data.length);
+				os.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+				disconnect();
+			}
 		}
 	}
-	
+
 
 	/**
 	 * Send an image.
@@ -124,14 +140,18 @@ public class Connection {
 	 * @param b This is the vector index at which the image ends.
 	 * @throws IOException
 	 */
-	public void sendImage(byte[] data, int a, int b) throws IOException {
+	public void sendImage(byte[] data, int a, int b) {
 		synchronized (os) {
 			int len = b - a;		
 			sendInt(Protocol.COMMAND.IMAGE);
 			sendInt(len);	
-			//onWrite(data, a, len);
-			os.write(data, a, len);
-			os.flush();
+			try {
+				os.write(data, a, len);
+				os.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+				disconnect();
+			}
 		}
 	}
 
@@ -141,7 +161,7 @@ public class Connection {
 	 * @return The number of bytes read.
 	 * @throws IOException
 	 */
-	public int recvImage(byte[] b) throws IOException {		
+	public int recvImage(byte[] b) {		
 		int bytes_read = 0;
 		synchronized (is) {
 			int len = recvInt();				
@@ -157,24 +177,29 @@ public class Connection {
 					}
 				}
 			} catch (IOException e) {
-				System.err.println("IO-error");
+				System.err.println("IO except.");
 				e.printStackTrace();
-				System.exit(1);
+				disconnect();
 			}		
 		}
 		return bytes_read;
 	}
 
 
-	public void sendBytes(byte[] data, int a, int b) throws IOException {
+	public void sendBytes(byte[] data, int a, int b) {
 		synchronized (os) {
 			int len = b - a;		
-			os.write(data, a, len);
-			os.flush();
+			try {
+				os.write(data, a, len);
+				os.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+				disconnect();
+			}
 		}
 	}
 
-	public int recvBytes(byte[] b, int len) throws IOException {	
+	public int recvBytes(byte[] b, int len) {	
 		int bytes_read = 0;
 		synchronized (is) {
 			int status = 0;
@@ -189,9 +214,9 @@ public class Connection {
 					}
 				}
 			} catch (IOException e) {
-				System.err.println("IO-error");
+				System.err.println("IO except.");
 				e.printStackTrace();
-				System.exit(1);
+				disconnect();
 			}		
 		}
 		return bytes_read;
@@ -202,7 +227,7 @@ public class Connection {
 	 * @param disp_mode An integer that specifies the display mode.
 	 * @throws IOException
 	 */
-	public void sendDisplayMode(int disp_mode) throws IOException {
+	public void sendDisplayMode(int disp_mode) {
 		synchronized (os) {
 			sendInt(Protocol.COMMAND.DISP_MODE);
 			sendInt(disp_mode);
@@ -213,7 +238,7 @@ public class Connection {
 	 * @return An integer specifies the display mode.
 	 * @throws IOException
 	 */
-	public int recvDisplayMode() throws IOException { 	
+	public int recvDisplayMode() { 	
 		return recvInt();
 	}
 
@@ -222,7 +247,7 @@ public class Connection {
 	 * @param sync_mode An integer that specifies the sync mode.
 	 * @throws IOException
 	 */
-	public void sendSyncMode(int sync_mode) throws IOException {
+	public void sendSyncMode(int sync_mode) {
 		synchronized (os) {
 			sendInt(Protocol.COMMAND.SYNC_MODE);
 			sendInt(sync_mode);
@@ -233,7 +258,7 @@ public class Connection {
 	 * @return An integer specifies the sync mode.
 	 * @throws IOException
 	 */
-	public int recvSyncMode() throws IOException { 
+	public int recvSyncMode() { 
 		return recvInt();
 	}
 
@@ -242,15 +267,19 @@ public class Connection {
 	 * @param nbr The integer that specifies the mode.
 	 * @throws IOException
 	 */
-	public void sendInt(int nbr) throws IOException {
+	public void sendInt(int nbr) {
 		synchronized (os) {
 			sendintbuffer[0] = (byte) ( (nbr & 0xff000000) >> 24 );
 			sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
 			sendintbuffer[2] = (byte) ( (nbr & 0x0000ff00) >> 8	 );
 			sendintbuffer[3] = (byte) ( (nbr & 0x000000ff) 		 );
-			//onWrite(sendintbuffer, 0, sendintbuffer.length);
-			os.write(sendintbuffer, 0, sendintbuffer.length);
-			os.flush();
+			try {
+				os.write(sendintbuffer, 0, sendintbuffer.length);
+				os.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+				disconnect();
+			}
 
 			/*	os.write( (nbr & 0xff000000) >> 24 	);
 			os.write( (nbr & 0x00ff0000) >> 16 	);
@@ -264,21 +293,26 @@ public class Connection {
 	 * @return The integer that specifies the mode. 
 	 * @throws IOException
 	 */
-	public int recvInt() throws IOException {	
+	public int recvInt() {	
 		synchronized (is) {
-
 			int status = 0;
 			int bytes_read = 0;
 
-			while(bytes_read < 4) {
-				status = is.read(readintbuffer, bytes_read, 4 - bytes_read);
-				/* 	1) Blocking until data available. 
-			 	2) -1 if EOF. 
-			 	3) 0 if nothing read.			 */
-				if (status > 0) {
-					bytes_read += status;		
-				}		
-			} 
+			try {
+				while(bytes_read < 4) {
+					status = is.read(readintbuffer, bytes_read, 4 - bytes_read);
+
+					/* 	1) Blocking until data available. 
+			 			2) -1 if EOF. 
+			 			3) 0 if nothing read.			 */
+					if (status > 0) {
+						bytes_read += status;		
+					}		
+				} 
+			} catch (IOException e) {
+				e.printStackTrace();
+				disconnect();
+			}
 		}
 
 		return ( ( (int)readintbuffer[0]) << 24 ) & 0xff000000 | 
@@ -295,20 +329,20 @@ public class Connection {
 			return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 		 */			
 	}		
-	
-	
-	
+
+
+
 	/**
 	 * @return A string with the host name
 	 */
 	public String getHost() { 
 		return host; 
 	}
-	
+
 	public int getId() {
 		return myId;
 	}
-	
+
 	/**
 	 * @return An integer with the port number.	
 	 */

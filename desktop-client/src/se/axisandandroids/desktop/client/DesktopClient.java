@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientSendThread;
-import se.axisandandroids.networking.UDP_ClientConnection;
+import se.axisandandroids.client.service.networking.UDP_ClientConnection;
 import se.axisandandroids.desktop.display.DesktopDisplayThread;
 import se.axisandandroids.desktop.display.DesktopGUI;
 
@@ -21,13 +21,13 @@ import se.axisandandroids.desktop.display.DesktopGUI;
  * @author calliz
  */
 public class DesktopClient {
-
+	
 	private Socket socket;
 	private InetAddress host;	
 	private int port;
 
 	private LinkedList<Thread> threads = new LinkedList<Thread>();
-
+	private DisplayMonitor dm;
 
 	/**
 	 * Create a Desktop Client instance with one display.
@@ -61,9 +61,13 @@ public class DesktopClient {
 	 * Close socket.
 	 * @throws IOException
 	 */
-	public void disconnect() throws IOException {
+	public void disconnect() throws IOException {	
+		System.out.println("Client disconnecting tcp-socket.");
 		socket.close();	
-		System.out.println("Client disconnected.");
+		if (dm != null) {
+			System.out.println("Setting disconnect status: true.");
+			dm.setDisconnect(true);
+		}
 		System.out.println("Interrupting threads");
 		interruptThreads();		
 	}
@@ -75,19 +79,12 @@ public class DesktopClient {
 	 * @param gui, DesktopGUI instance.
 	 */
 	public void runDesktopClient(DisplayMonitor dm, DesktopGUI gui) {		
-
+		this.dm = dm;
+		
 		System.out.println("** Desktop Client");
 
-		UDP_ClientConnection c = null;
-
-		try {
-			c = new UDP_ClientConnection(socket, port);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		UDP_ClientConnection c = new UDP_ClientConnection(socket, port, dm);
+		
 		System.out.println("Creating Threads: DisplayThread, ReceiveThread, SendThread...");	
 
 		DesktopDisplayThread disp_thread;
@@ -171,11 +168,12 @@ public class DesktopClient {
 		}
 
 		/* WAIT for threads to finish before disconnecting. */
+		dm.awaitDisconnect();
 		try {
-			Thread.currentThread().join();
 			for (int i = 0; i < nCameras; ++i) {
 				clients[i].disconnect();
 			}
+			Thread.currentThread().join(); // System.exit(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e1) {

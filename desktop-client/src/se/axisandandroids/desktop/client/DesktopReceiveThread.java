@@ -1,15 +1,14 @@
 package se.axisandandroids.desktop.client;
 
-import java.io.IOException;
 
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.buffer.ModeChange;
 import se.axisandandroids.buffer.PriorityFrameBuffer;
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.client.service.networking.ClientReceiveThread;
+import se.axisandandroids.client.service.networking.UDP_ClientConnection;
 import se.axisandandroids.desktop.display.DesktopGUI;
 import se.axisandandroids.networking.Protocol;
-import se.axisandandroids.networking.UDP_ClientConnection;
 
 
 
@@ -22,10 +21,9 @@ import se.axisandandroids.networking.UDP_ClientConnection;
  */
 public class DesktopReceiveThread extends ClientReceiveThread {
 
-	
 	protected DesktopGUI gui;
-	
-	
+
+
 	/**
 	 * Create new DesktopReceiveThread.
 	 * @param c, connection object to camera server.
@@ -34,10 +32,10 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	 * @param gui, the DesktopGUI.
 	 */
 	public DesktopReceiveThread(UDP_ClientConnection c, 
-								DisplayMonitor disp_monitor,
-								PriorityFrameBuffer frame_buffer,
-								CircularBuffer sendCommandMailbox,
-								DesktopGUI gui) {
+			DisplayMonitor disp_monitor,
+			PriorityFrameBuffer frame_buffer,
+			CircularBuffer sendCommandMailbox,
+			DesktopGUI gui) {
 		super(c, disp_monitor, frame_buffer, sendCommandMailbox);
 		this.gui = gui;
 		this.setPriority(MAX_PRIORITY);			
@@ -48,13 +46,9 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	 */
 	protected void handleSyncMode() {
 		System.out.println("Handling Sync Mode.");
-		try {
-			int sync_mode = c.recvSyncMode();
-			disp_monitor.setSyncMode(sync_mode);
-			gui.refreshSyncButtonText();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		int sync_mode = c.recvSyncMode();
+		disp_monitor.setSyncMode(sync_mode);
+		gui.refreshSyncButtonText();
 	}
 
 	/**
@@ -63,14 +57,10 @@ public class DesktopReceiveThread extends ClientReceiveThread {
 	 */
 	protected void handleDispMode() {
 		System.out.println("Handling Display Mode.");
-		try {
-			int disp_mode = c.recvDisplayMode();
-			disp_monitor.setDispMode(disp_mode);			
-			disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));
-			gui.refreshDispButtonText();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}			
+		int disp_mode = c.recvDisplayMode();
+		disp_monitor.setDispMode(disp_mode);			
+		disp_monitor.postToAllMailboxes(new ModeChange(Protocol.COMMAND.DISP_MODE, disp_mode));
+		gui.refreshDispButtonText();
 	}
 
 }

@@ -3,8 +3,6 @@ package se.axisandandroids.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
 import se.axisandandroids.http.JPEGHTTPServerThread;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
@@ -138,20 +136,27 @@ public class CameraServer {
  	* @param clientSock The socket to which the client is connected.
  	*/
 	private void servClient(Socket clientSock) {
-		try {
-			con = new UDP_ServConnection(clientSock, listenPort);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		
 		cm = new CameraMonitor();
+		con = new UDP_ServConnection(clientSock, listenPort, cm);
+		
+		// create threads
 		receiveThread = new ServerReceiveThread(con, cm);
-		sendThread = new ServerSendThread(con);
+		sendThread = new ServerSendThread(con, cm);
 		ct = new CameraThread(cm, sendThread.mailbox, sendThread.frame_buffer, myCamera, md);
+		
+		// start threads
 		receiveThread.start();
 		sendThread.start();
 		ct.start();
+		
+		cm.awaitDisconnect();
+		
+		// Interrupt Threads
+		receiveThread.interrupt();
+		sendThread.interrupt();
+		ct.interrupt();
 	}
 	
 
