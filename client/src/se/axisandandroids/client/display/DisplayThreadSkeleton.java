@@ -15,7 +15,7 @@ import se.lth.cs.fakecamera.Axis211A;
  */
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 5;
+		protected final int BUFFERSIZE = 10;
 		protected final int INITIAL_BUFFER_WAIT_MS = 100;				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		
@@ -41,6 +41,7 @@ public class DisplayThreadSkeleton extends Thread {
 			long delay = -1;
 			long timestamp = -1;
 						
+			disp_monitor.awaitConnected();
 			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);			
 						
 			while (! interrupted()) {
@@ -122,8 +123,8 @@ public class DisplayThreadSkeleton extends Thread {
 		 * @return timestamp in ms.
 		 */
 		protected long getTimestamp() {			
-			/* Decode Timestamp */ 
-			int offset = 0;
+			/* Decode Timestamp */ /*
+			int offset = 0; 			
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 						   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
 						   ( ( (long)jpeg[27+offset]) << 8  ) & 0x0000ff00 | 
@@ -131,12 +132,11 @@ public class DisplayThreadSkeleton extends Thread {
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
 			return 1000*seconds + 10*hundreths;
+			*/
 
-			/*
 			return 1000L*(((jpeg[25]<0?256+jpeg[25]:jpeg[25])<<24)+((jpeg[26]<0?256+jpeg[26]:jpeg[26])<<16)+
 					((jpeg[27]<0?256+jpeg[27]:jpeg[27])<<8)+(jpeg[28]<0?256+jpeg[28]:jpeg[28]))+
 					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);		
-			*/
 	
 		}
 		

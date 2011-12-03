@@ -169,6 +169,36 @@ public class DisplayMonitor {
 	}
 	
 	
+	
+	
+	private int nConnected = 0;
+	
+	public synchronized void setConnected() {
+		++nConnected;
+		notifyAll();
+	}
+	
+	public synchronized void awaitConnected(int n) {
+		while (nConnected < n) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public synchronized void awaitConnected() {
+		while (nConnected < mailboxes.size()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 
 	
 	

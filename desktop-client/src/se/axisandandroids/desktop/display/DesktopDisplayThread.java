@@ -14,9 +14,10 @@ import se.axisandandroids.networking.Protocol;
  */
 public class DesktopDisplayThread extends DisplayThreadSkeleton {
 
+	protected static final int INITIAL_BUFFER_WAIT_MS = 100;
+
 	private DesktopGUI gui;	
-	protected final int INITIAL_BUFFER_WAIT_MS = 100;
-	long sync_mode_old;
+	private long sync_mode_old;
 
 	
 	/**

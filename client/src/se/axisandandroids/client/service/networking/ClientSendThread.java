@@ -37,11 +37,13 @@ public class ClientSendThread extends SendThreadSkeleton {
 		mailbox = new CircularBuffer(BUFFERSIZE);
 		this.disp_monitor = disp_monitor;
 		disp_monitor.subscribeMailbox(mailbox);
-	}
+	}	
 	
-	public void close() {
-		//disp_monitor.unsubscribeMailbox(mailbox);
-		interrupt();
+	public void run() {
+		disp_monitor.awaitConnected();
+		while (!interrupted() && c.isConnected()) {
+				perform();
+		}
 	}
 
 	protected void perform() {
@@ -69,6 +71,12 @@ public class ClientSendThread extends SendThreadSkeleton {
 		}
 	}
 
+
+	public void close() {
+		//disp_monitor.unsubscribeMailbox(mailbox);
+		interrupt();
+	}
+	
 	@Override
 	public void interrupt() {
 		// handle shit:D

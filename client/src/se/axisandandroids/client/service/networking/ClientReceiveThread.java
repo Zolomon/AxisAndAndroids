@@ -43,6 +43,11 @@ public class ClientReceiveThread extends Thread {
 		this.imgRecv = new ImageReceiver(c, frame_buffer);			
 	}
 
+	public void interrupt() {
+		imgRecv.interrupt();
+		super.interrupt();
+	}
+	
 	public void run() {		
 		imgRecv.start();
 		while (!interrupted() && c.isConnected()) {
@@ -56,11 +61,6 @@ public class ClientReceiveThread extends Thread {
 		interrupt();
 	}
 	
-	public void interrupt() {
-		imgRecv.interrupt();
-		super.interrupt();
-	}
-
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
 		switch (cmd) {		
@@ -74,6 +74,8 @@ public class ClientReceiveThread extends Thread {
 			handleClockSync();
 			break;			
 		case Protocol.COMMAND.CONNECTED: // Fall Through!
+			handleConnected();
+			break;
 		case Protocol.COMMAND.IMAGE: 	 // Fall Through!
 		default:
 			break;						
@@ -120,5 +122,11 @@ public class ClientReceiveThread extends Thread {
 	protected void handleClockSync() {
 		sendCommandMailbox.put(new ClockSync(System.currentTimeMillis()));
 	}
+	
+	protected void handleConnected() {
+		System.out.println("Server send thread registered as connected...");
+		disp_monitor.setConnected();
+	}
+
 
 }

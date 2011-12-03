@@ -50,13 +50,11 @@ public class DesktopGUI extends JFrame {
 	public DesktopGUI(DisplayMonitor dm) {
 		super();
 		this.dm = dm;
-
 		this.getContentPane().setLayout(new BorderLayout());
 		imageAreaPanel = new JPanel(new FlowLayout());
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
-
 	}
 
 
@@ -76,7 +74,6 @@ public class DesktopGUI extends JFrame {
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
-
 		this.registerDisplayThread(ddt);
 	}
 
@@ -241,6 +238,7 @@ public class DesktopGUI extends JFrame {
 							Protocol.DISP_MODE.AUTO));
 					dm.setDispMode(Protocol.DISP_MODE.AUTO);
 					dispBox.setSelectedIndex(Protocol.DISP_MODE.AUTO);
+					System.out.println("DispMode was changed to: " + dispModes[dm.getDispMode()]);
 				}
 			}
 			else if (dispBox.getSelectedIndex() == Protocol.DISP_MODE.IDLE) {
@@ -251,6 +249,7 @@ public class DesktopGUI extends JFrame {
 							Protocol.DISP_MODE.IDLE));
 					dm.setDispMode(Protocol.DISP_MODE.IDLE);
 					dispBox.setSelectedIndex(Protocol.DISP_MODE.IDLE);
+					System.out.println("DispMode was changed to: " + dispModes[dm.getDispMode()]);
 				}
 			}
 			else if (dispBox.getSelectedIndex() == Protocol.DISP_MODE.MOVIE) {
@@ -260,9 +259,9 @@ public class DesktopGUI extends JFrame {
 							Protocol.DISP_MODE.MOVIE));
 					dm.setDispMode(Protocol.DISP_MODE.MOVIE);
 					dispBox.setSelectedIndex(Protocol.DISP_MODE.MOVIE);
+					System.out.println("DispMode was changed to: " + dispModes[dm.getDispMode()]);
 				}
 			}
-			System.out.println("DispMode was changed to: " + dispModes[dm.getDispMode()]);
 		}
 	}
 
@@ -275,21 +274,23 @@ public class DesktopGUI extends JFrame {
 				if (dm.getSyncMode() != Protocol.SYNC_MODE.AUTO) {
 					dm.setSyncMode(Protocol.SYNC_MODE.AUTO);
 					syncBox.setSelectedIndex(Protocol.SYNC_MODE.AUTO);
+					System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()]);
 				}
 			}			
 			else if (syncBox.getSelectedIndex() ==  Protocol.SYNC_MODE.SYNC) {
 				if (dm.getSyncMode() != Protocol.SYNC_MODE.SYNC) {
 					dm.setSyncMode(Protocol.SYNC_MODE.SYNC);
 					syncBox.setSelectedIndex(Protocol.SYNC_MODE.SYNC);
+					System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()]);
 				}
 			}			
 			else if (syncBox.getSelectedIndex() == Protocol.SYNC_MODE.ASYNC) {
 				if (dm.getSyncMode() != Protocol.SYNC_MODE.ASYNC) {
 					dm.setSyncMode(Protocol.SYNC_MODE.ASYNC);
 					syncBox.setSelectedIndex(Protocol.SYNC_MODE.ASYNC);
+					System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()]);
 				}
 			}
-			System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()] );
 		}
 	}
 

@@ -7,6 +7,7 @@ import se.axisandandroids.buffer.ClockSync;
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.FrameBuffer;
 import se.axisandandroids.buffer.ModeChange;
+import se.axisandandroids.networking.Protocol;
 import se.axisandandroids.networking.UDP_ServConnection;
 import se.lth.cs.cameraproxy.Axis211A;
 
@@ -46,6 +47,9 @@ public class ServerSendThread extends Thread {
 	}
 
 	public void run() {	
+		
+		mailbox.put(new Command(Protocol.COMMAND.CONNECTED));
+		
 		imgPusher.start();
 
 		while (!interrupted() && c.isConnected()) {
