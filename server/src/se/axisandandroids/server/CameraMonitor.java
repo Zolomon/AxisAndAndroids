@@ -19,9 +19,12 @@ public class CameraMonitor {
 	private long t;
 	private int display_mode = -1;
 
+	
+	/**
+	 * Create camera monitor.
+	 */
 	public CameraMonitor() {
 		this.setDisplayMode(Protocol.DISP_MODE.AUTO);
-		//this.setDisplayMode(Protocol.DISP_MODE.MOVIE);
 	}
 
 	/**
@@ -33,23 +36,27 @@ public class CameraMonitor {
 		if (display_mode != this.display_mode) {
 			System.out.println("New display mode: " + display_mode);		
 			this.display_mode = display_mode;
-			notifyAll();
 			if (display_mode == Protocol.DISP_MODE.AUTO ||
 					display_mode == Protocol.DISP_MODE.IDLE) {
 				t = System.currentTimeMillis();
+			}  else {
+				notifyAll();
 			}
 		}
 	}
 
 
 	/**
-	 * 
-	 * @return an integer with the display mode.
+	 * Get the current display mode.
+	 * @return the display mode.
 	 */
-	public synchronized int getDislayMode() {
+	public synchronized int getDisplayMode() {
 		return display_mode;
 	}
 
+	/**
+	 * Wait for image fetching time.
+	 */
 	public synchronized void awaitImageFetch() {
 		long dt;		
 		t += IDLE_PERIOD;

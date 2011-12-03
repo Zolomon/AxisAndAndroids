@@ -71,11 +71,9 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 			if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 				delay = disp_monitor.syncFrames(timestamp);
 			} else if (sync_mode == Protocol.SYNC_MODE.AUTO){
-				//delay = asyncFrames(timestamp);
 				delay = asyncAsFastAsPossible(timestamp);	
 				disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
 			} else { // sync_mode == Protocol.SYNC_MODE.ASYNC
-				//delay = asyncFrames(timestamp);
 				delay = asyncAsFastAsPossible(timestamp);	
 			}						
 			showFirstImage(timestamp, delay, len);
@@ -100,11 +98,9 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 				if (sync_mode == Protocol.SYNC_MODE.SYNC) {					
 					delay = disp_monitor.syncFrames(timestamp);					
 				} else if (sync_mode == Protocol.SYNC_MODE.AUTO){					
-					//delay = asyncFrames(timestamp);
 					delay = asyncAsFastAsPossible(timestamp);						
 					disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);					
 				} else if (sync_mode == Protocol.SYNC_MODE.ASYNC) {					
-					//delay = asyncFrames(timestamp);
 					delay = asyncAsFastAsPossible(timestamp);				
 				}				
 				showImage(timestamp, delay, len, sync_mode);

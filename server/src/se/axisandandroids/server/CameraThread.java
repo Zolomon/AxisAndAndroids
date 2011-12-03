@@ -18,14 +18,14 @@ import se.lth.cs.cameraproxy.MotionDetector;
  * @author calliz
  */
 public class CameraThread extends Thread {
-	
+
 	private int detectionSens 			= 3;
 	private static final int FRAMESIZE 	= Axis211A.IMAGE_BUFFER_SIZE;		
-	
+
 	private CameraMonitor camera_monitor;
 	private CircularBuffer mailbox;	
 	private FrameBuffer frame_buffer;
-	
+
 	private byte[] jpeg = new byte[FRAMESIZE];;
 	private Axis211A myCamera;
 	private MotionDetector md;
@@ -39,9 +39,9 @@ public class CameraThread extends Thread {
 	 * @param md, motion detector.
 	 */
 	public CameraThread(CameraMonitor camera_monitor, 
-				        CircularBuffer mailbox,
-				        FrameBuffer frame_buffer,
-				        Axis211A cam, MotionDetector md) {
+			CircularBuffer mailbox,
+			FrameBuffer frame_buffer,
+			Axis211A cam, MotionDetector md) {
 		myCamera = cam;
 		//detectionSens = 0;  //Default for the cameras is 15, 0 is no motion and 100 is... a lot
 		this.camera_monitor = camera_monitor;
@@ -52,17 +52,18 @@ public class CameraThread extends Thread {
 
 	/* While the camera is connected: receive images according to the display mode */
 	public void run() {
-								
+
 		if (cameraConnect()) {
 			while (!interrupted()) {
-				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.MOVIE) {
-					 receiveImage();
+				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.MOVIE) {
+					camera_monitor.awaitImageFetch();
+					receiveImage();
 				}
-				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.IDLE) {
+				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.IDLE) {
 					camera_monitor.awaitImageFetch();
 					receiveImage();
 				}				
-				while (camera_monitor.getDislayMode() == Protocol.DISP_MODE.AUTO) {
+				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.AUTO) {
 					camera_monitor.awaitImageFetch();
 					receiveImage();
 					checkForMotion();
@@ -70,7 +71,7 @@ public class CameraThread extends Thread {
 			}
 		}
 	}
-	
+
 	private void receiveImage() {		
 		int len = receiveJPEG();	// ----------------------->> CORRECT TIMESTAMP HERE
 		frame_buffer.put(jpeg, len);			

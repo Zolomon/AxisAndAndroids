@@ -9,6 +9,11 @@ import java.net.UnknownHostException;
 
 import se.lth.cs.fakecamera.Axis211A;
 
+
+/**
+ * Extends connection UDP image sending for server side use.
+ * @author jg
+ */
 public class UDP_ServConnection extends Connection {
 
 	private InetAddress	   clientAddress;
@@ -18,27 +23,26 @@ public class UDP_ServConnection extends Connection {
 	protected final byte[] jpeg = new byte[Axis211A.IMAGE_BUFFER_SIZE];
 	
 
-	public UDP_ServConnection(String host, int port) throws UnknownHostException, IOException {
-		super(host, port);
+	public UDP_ServConnection(String host, int tcp_port) throws UnknownHostException, IOException {
+		super(host, tcp_port);
 		this.clientAddress = InetAddress.getByName(host);
-		this.udp_port = port + 1;
-		
+		this.udp_port = tcp_port;		
 		send_udp_socket = new DatagramSocket();		
-		send_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE, 
-													clientAddress, udp_port);		
+		send_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE, clientAddress, udp_port);		
 	}
 
 	public UDP_ServConnection(Socket tcpsocket, int tcp_port) throws UnknownHostException, IOException {
-		super(tcpsocket);
-				
+		super(tcpsocket);				
 		this.clientAddress = tcpsocket.getInetAddress();
-		this.udp_port = tcp_port + 1;
-		
+		this.udp_port = tcp_port;		
 		send_udp_socket = new DatagramSocket();		
-		send_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE, 
-				clientAddress, udp_port);		
+		send_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE, clientAddress, udp_port);		
 	}
 
+	public void disconnect() {
+		send_udp_socket.close();
+		super.disconnect();		
+	}
 
 	public void sendImage(byte[] data) throws IOException {		
 		//System.out.println("Sending: " + data.length + " bytes, over port " + udp_port);

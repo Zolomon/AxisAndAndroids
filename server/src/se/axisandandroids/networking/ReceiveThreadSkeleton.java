@@ -21,17 +21,21 @@ public class ReceiveThreadSkeleton extends Thread {
 	}
 
 	public void run() {
-		while (!interrupted()) {
+		while (!interrupted() && c.isConnected()) {
 			try {
-				if(c.isConnected())
-					recvCommand();
+				recvCommand();
 			} catch (IOException e) {
 				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
 				System.exit(1);
 			}
 		}
+		this.interrupt();
 	}
 		
+	public void interrupt() {
+		super.interrupt();
+	}
+	
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
 		switch (cmd) {

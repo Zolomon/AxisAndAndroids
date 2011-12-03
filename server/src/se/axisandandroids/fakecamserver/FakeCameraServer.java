@@ -94,7 +94,6 @@ public class FakeCameraServer {
 	}
 
 	private void servClient(Socket clientSock) {
-		//mConnnection = new Connection(clientSock);
 		
 		try {
 			mConnnection = new UDP_ServConnection(clientSock, mPort);

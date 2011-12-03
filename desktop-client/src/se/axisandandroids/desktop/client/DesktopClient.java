@@ -25,7 +25,6 @@ public class DesktopClient {
 	private Socket socket;
 	private InetAddress host;	
 	private int port;
-	private int udp_port;
 
 	private LinkedList<Thread> threads = new LinkedList<Thread>();
 
@@ -38,7 +37,6 @@ public class DesktopClient {
 	public DesktopClient(InetAddress host, int port) {
 		this.host = host;
 		this.port = port;
-		this.udp_port = port + 1;
 		connect();		
 	}
 
@@ -69,7 +67,7 @@ public class DesktopClient {
 		System.out.println("Interrupting threads");
 		interruptThreads();		
 	}
-		
+
 	/**
 	 * Create the Desktop Client instace's threads, add them to list threads
 	 * to await startup.
@@ -81,8 +79,9 @@ public class DesktopClient {
 		System.out.println("** Desktop Client");
 
 		UDP_ClientConnection c = null;
+
 		try {
-			c = new UDP_ClientConnection(socket, udp_port);
+			c = new UDP_ClientConnection(socket, port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -113,7 +112,7 @@ public class DesktopClient {
 		for (Thread t : threads) 
 			t.start();		
 	}
-	
+
 	/**
 	 * Interrupt the associated threads.
 	 */
@@ -123,7 +122,7 @@ public class DesktopClient {
 			t.interrupt();
 		} 
 	}
-	
+
 	/**
 	 * Main program for Desktop Client. Has capability to start multiple
 	 * Desktop Client instances in a common DesktopGUI and a common DisplayMonitor.
@@ -132,27 +131,17 @@ public class DesktopClient {
 	 */
 	public static void main(String[] args) {
 
-		int nCameras = args.length/2;	
-
-		if (nCameras == 0) {
-			/* No command line arguments, assume some defaults. */
-			InetAddress addr = null;
-			try {
-				addr = InetAddress.getByName("localhost");			
-			} catch (UnknownHostException e) {
-				System.err.println("Unknown host.");
-				System.exit(1);
-			}
-			DisplayMonitor dm = new DisplayMonitor();	
-			DesktopClient client0 = new DesktopClient(addr, 6000);
-			client0.runDesktopClient(dm, null);
-			System.exit(0);
+		if (args.length == 0) {
+			noargsdefaultmain();
 		}
 
-		/* Command line argument parsing */
+		int nCameras = args.length/2;	
+
 		String[] hosts = new String[nCameras];
 		int[] ports = new int[nCameras];
 		InetAddress[] addrs = new InetAddress[nCameras];
+
+		/* Command line argument parsing */		
 		for (int i = 0; i < nCameras; ++i) {
 			hosts[i] = args[2*i];
 			ports[i] = Integer.parseInt(args[2*i+1]);
@@ -170,7 +159,7 @@ public class DesktopClient {
 		DesktopClient[] clients = new DesktopClient[nCameras]; 
 
 		for (int i = 0; i < nCameras; ++i) {
-			System.out.println("Connecting to Camera Server: " + i);
+			System.out.println("Connecting to Camera Server: " + i + ". " + hosts[i] + ":" + ports[i]);
 			clients[i] = new DesktopClient(addrs[i], ports[i]);
 			clients[i].runDesktopClient(dm, gui);
 		}
@@ -192,7 +181,29 @@ public class DesktopClient {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
+	}
 
+	
+	/**
+	 *  No command line arguments, assume some defaults. 
+	 */
+	public static void noargsdefaultmain() {
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getByName("localhost");			
+		} catch (UnknownHostException e) {
+			System.err.println("Unknown host.");
+			System.exit(1);
+		}
+		DisplayMonitor dm = new DisplayMonitor();	
+		DesktopClient client0 = new DesktopClient(addr, 6000);
+		client0.runDesktopClient(dm, null);
+		try {
+			Thread.currentThread().join();			
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 }

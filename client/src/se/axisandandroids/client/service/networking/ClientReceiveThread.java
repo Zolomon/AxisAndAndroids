@@ -25,7 +25,7 @@ public class ClientReceiveThread extends Thread {
 	protected final DisplayMonitor disp_monitor;
 	protected final PriorityFrameBuffer frame_buffer;	
 	protected final CircularBuffer sendCommandMailbox;
-	
+
 	/**
 	 * Create a ClientReceiveThread. 
 	 * @param c, Connection object shared with a corresponding ClientSendThread.
@@ -33,62 +33,60 @@ public class ClientReceiveThread extends Thread {
 	 * @param frame_buffer, a FrameBuffer object = DisplayThreads image buffer (mailbox). 
 	 */
 	public ClientReceiveThread(UDP_ClientConnection c, 
-							   DisplayMonitor disp_monitor, 
-							   PriorityFrameBuffer frame_buffer, 
-							   CircularBuffer sendCommandMailbox) {
+			DisplayMonitor disp_monitor, 
+			PriorityFrameBuffer frame_buffer, 
+			CircularBuffer sendCommandMailbox) {
 		this.c = c;
 		this.disp_monitor = disp_monitor;	// Display Monitor
 		this.frame_buffer = frame_buffer;	// FrameBuffer belonging to DisplayThread
-		this.sendCommandMailbox = sendCommandMailbox;
-		
-		
+		this.sendCommandMailbox = sendCommandMailbox;				
 		this.imgRecv = new ImageReceiver(c, frame_buffer);			
-		this.imgRecv.start();
 	}
 
-	public void run() {
-		while (! interrupted()) {
+	public void run() {		
+		imgRecv.start();
+		while (!interrupted() && c.isConnected()) {
 			try {
-				if(c.isConnected()) {
-					recvCommand();
-				} else {
-					break;
-				}
+				recvCommand();
 			} catch (IOException e) {
 				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
 				System.exit(1);
 			}
 		}
+		interrupt();
 	}
-		
+	
+	public void interrupt() {
+		imgRecv.interrupt();
+		super.interrupt();
+	}
+
 	private void recvCommand() throws IOException {
 		int cmd = c.recvInt();		
-		switch (cmd) {
-		case Protocol.COMMAND.IMAGE: 	
-			break;
+		switch (cmd) {		
 		case Protocol.COMMAND.SYNC_MODE:
 			handleSyncMode();
 			break;
 		case Protocol.COMMAND.DISP_MODE:
 			handleDispMode();
-			break;
-		case Protocol.COMMAND.CONNECTED:
-			break;
+			break;		
 		case Protocol.COMMAND.CLOCK_SYNC:
 			handleClockSync();
 			break;			
+		case Protocol.COMMAND.CONNECTED: // Fall Through!
+		case Protocol.COMMAND.IMAGE: 	 // Fall Through!
 		default:
 			break;						
 		}
 	}
-	
-	
+
+
 	/**
 	 * Receive an image from a server via the Connection object c, 
 	 * put the image in the DisplayThreads buffer.
 	 */
 	protected void handleImage() {
-		
+
 	}
 
 	/**
@@ -118,7 +116,7 @@ public class ClientReceiveThread extends Thread {
 			e.printStackTrace();
 		}			
 	}
-	
+
 	protected void handleClockSync() {
 		sendCommandMailbox.put(new ClockSync(System.currentTimeMillis()));
 	}

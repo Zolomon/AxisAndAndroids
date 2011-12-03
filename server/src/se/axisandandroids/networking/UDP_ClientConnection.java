@@ -8,6 +8,11 @@ import java.net.UnknownHostException;
 
 import se.lth.cs.fakecamera.Axis211A;
 
+
+/**
+ * Extends Connection with UDP image fetching for client side use.
+ * @author jg
+ */
 public class UDP_ClientConnection extends Connection {
 
 	private int 		   udp_port;	
@@ -17,17 +22,22 @@ public class UDP_ClientConnection extends Connection {
 
 
 	public UDP_ClientConnection(String host, int tcp_port) throws UnknownHostException, IOException {
-		super(host, tcp_port);
-		this.udp_port = 6001; //tcp_port + 1; // ---------------------------------> had to hard code this			
+		super(host, tcp_port);				
+		this.udp_port = tcp_port;		
 		recv_udp_socket = new DatagramSocket(udp_port);		
 		recv_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE);
 	}
 
 	public UDP_ClientConnection(Socket tcpsocket, int tcp_port) throws UnknownHostException, IOException {
-		super(tcpsocket);				
-		this.udp_port = 6001; //tcp_port + 1; // ---------------------------------> had to hard code this
+		super(tcpsocket);						
+		this.udp_port = tcp_port;		
 		recv_udp_socket = new DatagramSocket(udp_port);		
 		recv_udp_packet = new DatagramPacket(jpeg, Axis211A.IMAGE_BUFFER_SIZE);
+	}
+	
+	public void disconnect() {
+		recv_udp_socket.close();
+		super.disconnect();		
 	}
 		
 	public int recvImage(byte[] b) throws IOException {	

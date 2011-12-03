@@ -21,18 +21,16 @@ import se.lth.cs.cameraproxy.Axis211A;
  */
 public class ServerSendThread extends Thread {
 
-	protected int BUFFERSIZE = 5;
-	protected int INITIAL_BUFFERWAIT_MS = 0;
-	protected int COMMAND_BUFFERSIZE = 40;
-	protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
+	protected static final int BUFFERSIZE = 5;
+	protected static final int COMMAND_BUFFERSIZE = 5;	
+	protected static final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 
-	
-	protected UDP_ServConnection c;
+
 	public final CircularBuffer mailbox; 	// Command mailbox for this ServerSendThread.
 	public final FrameBuffer frame_buffer; 	// Image mailbox
-	private final byte[] jpeg = new byte[FRAMESIZE];
+	private UDP_ServConnection c;	
+	private ImagePusher imgPusher;
 
-	
 	// In a multi-client setup a list with subscribing clients connection
 	// objects would be appropriate or some MultiConnection object.
 
@@ -44,58 +42,45 @@ public class ServerSendThread extends Thread {
 		this.c = c;
 		mailbox = new CircularBuffer(COMMAND_BUFFERSIZE);
 		frame_buffer = new FrameBuffer(BUFFERSIZE, FRAMESIZE);
+		imgPusher = new ImagePusher(c, frame_buffer);
 	}
-	
-	public void run() {
-		frame_buffer.awaitBuffered(INITIAL_BUFFERWAIT_MS);
-		while (!interrupted()) {
-			if (c.isConnected())
-				perform();
-		}
-	}	
 
-	protected void perform() {
-		// 1) Check for message with commands.
-		Object command = mailbox.tryGet();
+	public void run() {	
+		imgPusher.start();
 
-		while (command != null) {
-			try {
-				// 2) Send commands via connection object.
-				if (command instanceof ModeChange) {
-					System.out.println("Server Sending Mode Change.");
-					if (c.isConnected()) {
-						c.sendInt(((ModeChange) command).cmd);
-						c.sendInt(((ModeChange) command).mode);
+		while (!interrupted() && c.isConnected()) {
+			// 1) Check for message with commands.
+			Object command = mailbox.get();
+			if (command != null) {
+				try {
+					// 2) Send commands via connection object.
+					if (command instanceof ModeChange) {
+						System.out.println("Server Sending Mode Change.");
+						if (c.isConnected()) {
+							c.sendInt(((ModeChange) command).cmd);
+							c.sendInt(((ModeChange) command).mode);
+						}
+					} else if (command instanceof ClockSync) {
+						c.sendInt(((Command) command).cmd);
+					} else if (command instanceof Command) {
+						c.sendInt(((Command) command).cmd);
 					}
-				} else if (command instanceof ClockSync) {
-					c.sendInt(((Command) command).cmd);
-				} else if (command instanceof Command) {
-					c.sendInt(((Command) command).cmd);
-				}
-			} catch (IOException e) {
-				System.err.println("Send Fail."); // ACTION
-				e.printStackTrace();
-				System.out.println("Disconnection this Connection");
-				c.disconnect();
-				System.exit(1);
-			}		
-			command = mailbox.tryGet();
-		}
+				} catch (IOException e) {
+					System.err.println("Send Fail."); // ACTION
+					e.printStackTrace();
+					System.out.println("Disconnection this Connection");
+					c.disconnect();
+					System.exit(1);
+				}	
+			}
+		} // end while
+		interrupt();
+	} // end run	
 
-		// 3) Wait for image message.
-		int len = frame_buffer.get(jpeg);  // No busy wait, because this method is blocking :P
-		
-		try {
-			// 4) Send Image via connection.
-			if (c.isConnected())
-				c.sendImage(jpeg, 0, len);
-		} catch (IOException e) { // ACTION
-			System.err.println("Send Fail.");
-			e.printStackTrace();
-			System.out.println("Disconnection this Connection");
-			c.disconnect();
-			System.exit(1);
-		}
+
+	public void interrupt() {
+		imgPusher.interrupt();
+		super.interrupt();
 	}
-
 }
+

@@ -15,7 +15,7 @@ import se.lth.cs.fakecamera.Axis211A;
  */
 public class DisplayThreadSkeleton extends Thread {
 			
-		protected final int BUFFERSIZE = 40;
+		protected final int BUFFERSIZE = 5;
 		protected final int INITIAL_BUFFER_WAIT_MS = 100;				
 		protected final int FRAMESIZE = Axis211A.IMAGE_BUFFER_SIZE;
 		
@@ -40,10 +40,8 @@ public class DisplayThreadSkeleton extends Thread {
 			int len = 0;
 			long delay = -1;
 			long timestamp = -1;
-			
-			
-			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);
-			
+						
+			mailbox.awaitBuffered(INITIAL_BUFFER_WAIT_MS);			
 						
 			while (! interrupted()) {
 				len = mailbox.get(jpeg);
@@ -54,11 +52,9 @@ public class DisplayThreadSkeleton extends Thread {
 					if (sync_mode == Protocol.SYNC_MODE.SYNC) {
 						delay = disp_monitor.syncFrames(timestamp);
 					} else if (sync_mode == Protocol.SYNC_MODE.AUTO){
-						//delay = asyncFrames(timestamp);
 						delay = asyncAsFastAsPossible(timestamp);	
 						disp_monitor.chooseSyncMode(Thread.currentThread().getId(), delay);	
 					} else { /* CASE: sync_mode == Protocol.SYNC_MODE.ASYNC */
-						//delay = asyncFrames(timestamp);
 						delay = asyncAsFastAsPossible(timestamp);	
 					}		
 					showImage(timestamp, delay, len, sync_mode); // Override for Platform Dependent show image
@@ -87,17 +83,14 @@ public class DisplayThreadSkeleton extends Thread {
 		
 		private long t0 = 0;
 		private long lag = 0;		
-						
-		
-		protected long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?
-						
+								
+		protected long asyncFrames(long timestamp) throws InterruptedException { // PUT IN LOCAL MONITOR ?						
 			/* No old showtime exists for ANY frame, display now! */
 			if (t0 <= 0) {
 				t0 = System.currentTimeMillis();
 				lag = t0 - timestamp;
 				return t0 - timestamp;	
-			}
-			
+			}			
 			/* Calculate showtime for this thread in relation to FIRST SHOWN FRAME. */
 			long showtime = lag + timestamp;				
 			long diffTime;	// Time to showtime_new
@@ -106,10 +99,8 @@ public class DisplayThreadSkeleton extends Thread {
 			 * 1) The right time. */
 			while ((diffTime = showtime - System.currentTimeMillis()) > 0) {
 				sleep(diffTime);		
-			} 		
-			
-			delay = System.currentTimeMillis() - timestamp;
-									
+			} 					
+			delay = System.currentTimeMillis() - timestamp;									
 			return delay; // The real delay
 		}
 		
@@ -130,8 +121,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 * Extract timestamp from image byte array.
 		 * @return timestamp in ms.
 		 */
-		protected long getTimestamp() {
-			
+		protected long getTimestamp() {			
 			/* Decode Timestamp */ 
 			int offset = 0;
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 

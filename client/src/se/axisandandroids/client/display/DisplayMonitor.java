@@ -1,7 +1,6 @@
 package se.axisandandroids.client.display;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import se.axisandandroids.buffer.CircularBuffer;
 import se.axisandandroids.networking.Protocol;
 
@@ -23,7 +22,7 @@ public class DisplayMonitor {
 	public final long DELAY_SYNCMODE_THRESHOLD_MS = 200;
 	
 	private int sync_mode = Protocol.SYNC_MODE.AUTO;	
-	private int disp_mode;	// Server side, no default here
+	private int disp_mode;	// Server side, default value is set in CameraMonitor
 
 	private final LinkedList<CircularBuffer> mailboxes = new LinkedList<CircularBuffer>();
 
@@ -143,7 +142,6 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setDispMode(int disp_mode) {
 		this.disp_mode = disp_mode;
-		//mNewDisplayModeCallback.callback(this.disp_mode); // Lägg inte de här du kraschar Desktop !!!
 	}
 
 	/**
@@ -152,7 +150,6 @@ public class DisplayMonitor {
 	 */
 	public synchronized void setSyncMode(int sync_mode) {
 		this.sync_mode = sync_mode;
-		//mNewSyncModeCallback.callback(this.sync_mode); // Lägg inte de här du kraschar Desktop !!!
 	}
 
 	/**
@@ -175,9 +172,28 @@ public class DisplayMonitor {
 
 	
 	
+	/* Android specific --> Preferable put somewhere else, since it is GUI related */
 	
-	private NewDisplayModeCallback mNewDisplayModeCallback;  // Lägg inte de här du kraschar Desktop !!!
-	private NewSyncModeCallback mNewSyncModeCallback;	 		// Lägg inte de här du kraschar Desktop !!!		
+	/**
+	 * Set display mode.
+	 * @param disp_mode
+	 */
+	public synchronized void androidSetDispMode(int disp_mode) {
+		this.disp_mode = disp_mode;
+		mNewDisplayModeCallback.callback(this.disp_mode); 
+	}
+
+	/**
+	 * Set synchronization mode.
+	 * @param sync_mode
+	 */
+	public synchronized void androidSetSyncMode(int sync_mode) {
+		this.sync_mode = sync_mode;
+		mNewSyncModeCallback.callback(this.sync_mode); 
+	}
+	
+	private NewDisplayModeCallback mNewDisplayModeCallback;  
+	private NewSyncModeCallback mNewSyncModeCallback;	 				
 	
 	public synchronized void setNewDisplayModeCallback(NewDisplayModeCallback callback) {
 		mNewDisplayModeCallback = callback;

@@ -19,17 +19,19 @@ import java.net.UnknownHostException;
  */
 public class Connection {
 
-	protected String host;
-	protected int port;
-	protected Socket sock;
-
 	private static int id;
 	private int myId;
+	protected String host;
+	protected int port;
 
+
+
+	
 	// Input and output should be independent!
 	// Design => one sender and one receiver => thread safe in that regard
 	// Alternative is to wrap to private monitors or synchronize on the streams.
 
+	protected Socket sock;
 	private InputStream is;									
 	private OutputStream os;
 
@@ -65,9 +67,7 @@ public class Connection {
 		connect();
 	}
 
-	public int getId() {
-		return myId;
-	}
+	
 	/**
 	 * Creates input and output streams on a socket.
 	 */
@@ -115,17 +115,7 @@ public class Connection {
 			os.flush();
 		}
 	}
-
-	private void onWrite(byte[] data, int offset, int length) {
-		synchronized (os) {
-			try {
-				os.write(data, offset, length);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+	
 
 	/**
 	 * Send an image.
@@ -258,7 +248,8 @@ public class Connection {
 			sendintbuffer[1] = (byte) ( (nbr & 0x00ff0000) >> 16 );
 			sendintbuffer[2] = (byte) ( (nbr & 0x0000ff00) >> 8	 );
 			sendintbuffer[3] = (byte) ( (nbr & 0x000000ff) 		 );
-			onWrite(sendintbuffer, 0, sendintbuffer.length);
+			//onWrite(sendintbuffer, 0, sendintbuffer.length);
+			os.write(sendintbuffer, 0, sendintbuffer.length);
 			os.flush();
 
 			/*	os.write( (nbr & 0xff000000) >> 24 	);
@@ -307,12 +298,15 @@ public class Connection {
 	
 	
 	
-	
 	/**
 	 * @return A string with the host name
 	 */
 	public String getHost() { 
 		return host; 
+	}
+	
+	public int getId() {
+		return myId;
 	}
 	
 	/**
