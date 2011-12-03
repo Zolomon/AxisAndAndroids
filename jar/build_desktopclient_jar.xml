@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project desktop-client">
+<project default="create_run_jar" name="Create Runnable Jar for Project desktop-client with Jar-in-Jar Loader">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="/Users/jg/workspace/eda040_project/AxisAndAndroids/jar/DesktopClient.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="/Users/jg/workspace/eda040_project/AxisAndAndroids/jar/DesktopClient.jar">
             <manifest>
-                <attribute name="Main-Class" value="se.axisandandroids.desktop.client.DesktopClient"/>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="se.axisandandroids.desktop.client.DesktopClient"/>
                 <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ cameraproxy.jar fakecamera.jar media.jar OSXAdapter.jar media.jar fakecamera.jar"/>
             </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/desktop-client/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib/cameraproxy.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib/fakecamera.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib/media.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib" includes="cameraproxy.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib" includes="fakecamera.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/lib" includes="media.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/desktop-client/lib" includes="OSXAdapter.jar"/>
             <fileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/client/bin/classes"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/jg/workspace/eda040_project/AxisAndAndroids/client/lib/media.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/jg/workspace/eda040_project/AxisAndAndroids/client/lib/fakecamera.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/client/lib" includes="media.jar"/>
+            <zipfileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/client/lib" includes="fakecamera.jar"/>
             <fileset dir="/Users/jg/workspace/eda040_project/AxisAndAndroids/server/bin"/>
         </jar>
     </target>

@@ -173,7 +173,8 @@ public class DesktopClient {
 			for (int i = 0; i < nCameras; ++i) {
 				clients[i].disconnect();
 			}
-			Thread.currentThread().join(); // System.exit(0);
+			Thread.currentThread().join(); 
+			// System.exit(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e1) {

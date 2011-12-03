@@ -12,7 +12,7 @@ cd ../..
 sleep 4
 
 cd desktop-client/bin
-java -cp .:../../server/bin/:../../client/bin/classes/ se/axisandandroids/desktop/client/DesktopClient localhost 6000 localhost 6002 localhost 6004 localhost 6006 localhost 6008 localhost 6010  &
+java -cp .:../lib/OSXAdapter.jar:../../server/bin/:../../client/bin/classes/ se/axisandandroids/desktop/client/DesktopClient localhost 6000 localhost 6002 localhost 6004 localhost 6006 localhost 6008 localhost 6010  &
 cd ../..
 
 
