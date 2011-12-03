@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
@@ -42,6 +44,8 @@ public class DesktopGUI extends JFrame {
 	private JComboBox dispBox;
 	private JComboBox syncBox;
 
+	private static final String TITLE = "AxisAndAndroids - Desktop Client";
+
 	/**
 	 * Create a DesktopGUI instance. DisplayThreads have to register to the
 	 * DesktopGUI for any action to occur.
@@ -50,15 +54,18 @@ public class DesktopGUI extends JFrame {
 	public DesktopGUI(DisplayMonitor dm) {
 		super();
 		this.dm = dm;
+		this.setTitle(TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
 		this.getContentPane().setLayout(new BorderLayout());
 		imageAreaPanel = new JPanel(new FlowLayout());
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
+
+
+		addWindowListener(new onWindowClose(this.dm));
 	}
-
-
+	
 	/**
 	 * Create a DesktopGUI instance. This constructor registers the specified 
 	 * DisplayThread automatically. Other DisplayThreads have to register to the
@@ -69,6 +76,7 @@ public class DesktopGUI extends JFrame {
 	public DesktopGUI(DisplayMonitor dm, DesktopDisplayThread ddt) {
 		super();
 		this.dm = dm;
+		this.setTitle(TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
 		this.getContentPane().setLayout(new BorderLayout());
 		imageAreaPanel = new JPanel(new FlowLayout());
@@ -76,6 +84,8 @@ public class DesktopGUI extends JFrame {
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
 		this.registerDisplayThread(ddt);
+		
+		addWindowListener(new onWindowClose(this.dm));
 	}
 
 	/**
@@ -140,7 +150,7 @@ public class DesktopGUI extends JFrame {
 			this.setVisible(true);
 		}
 	}
-	
+
 	/**
 	 * Refresh the image and delay shown for DisplayThread ddt.
 	 * @param ddt, a DisplayThread.
@@ -177,7 +187,7 @@ public class DesktopGUI extends JFrame {
 		}
 	}
 
-	
+
 	/* ----------------------------------------------- INNER CLASSES */
 
 	class ImagePanel extends JPanel {
@@ -214,7 +224,7 @@ public class DesktopGUI extends JFrame {
 		private DesktopGUI gui;		
 		@SuppressWarnings("unused")
 		private DisplayMonitor dm;
-		
+
 		public ButtonHandler(DesktopGUI gui, DisplayMonitor dm) {
 			this.gui = gui;
 			this.dm = dm;
@@ -291,6 +301,18 @@ public class DesktopGUI extends JFrame {
 					System.out.println("SyncMode was changed to: " + syncModes[dm.getSyncMode()]);
 				}
 			}
+		}
+	}
+	
+	class onWindowClose extends WindowAdapter {
+		DisplayMonitor dm;
+		public onWindowClose(DisplayMonitor dm) {
+			this.dm = dm;
+		}
+		public void windowClosing(WindowEvent e) {
+			System.out.println("Window Closed... disconnect status set to: true.");
+			this.dm.setDisconnect(true);
+			//System.exit(0);
 		}
 	}
 

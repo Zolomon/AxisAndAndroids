@@ -100,12 +100,12 @@ public class Connection {
 	 * Close the connection and kill the socket.
 	 */
 	public void disconnect() {
-		System.out.printf("Disconnected: %s\n", sock.getInetAddress().toString());
+		System.out.printf("Disconnecting Connection Object\n");
 		try {
 			System.out.println("Is null: " + (is == null) +", "+ (os == null) +", "+ (sock == null));			
 			is.close();
 			os.close();
-			sock.close();
+			if (sock != null) sock.close();
 		} catch (IOException e) {
 			System.err.println("IO excep.");
 			e.printStackTrace();

@@ -2,6 +2,7 @@ package se.axisandandroids.client.display;
 
 import java.util.LinkedList;
 import se.axisandandroids.buffer.CircularBuffer;
+import se.axisandandroids.buffer.Command;
 import se.axisandandroids.networking.Protocol;
 
 
@@ -202,6 +203,7 @@ public class DisplayMonitor {
 	private boolean disconnect = false;
 
 	public synchronized void setDisconnect(boolean mode) {		
+		if (mode) postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
 		disconnect = mode;
 		notifyAll();
 	}

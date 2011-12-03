@@ -139,6 +139,7 @@ public class PriorityFrameBuffer {
 		} catch (InterruptedException e) {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
+			return 0;
 		}
 		
 		Frame frametoget = buffer.poll();

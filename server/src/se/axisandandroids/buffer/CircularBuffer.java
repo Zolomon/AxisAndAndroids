@@ -1,5 +1,7 @@
 package se.axisandandroids.buffer;
 
+import se.axisandandroids.networking.Protocol;
+
 
 /**
  * 
@@ -26,6 +28,7 @@ public class CircularBuffer {
 		} catch (InterruptedException e) {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
+			return;
 		}
 		//if (nAvailable == 0) notifyAll();
 		buffer[nextToPut] = x;	
@@ -53,13 +56,13 @@ public class CircularBuffer {
 		} catch (InterruptedException e) {
 			System.err.println("Get got interrupted");
 			e.printStackTrace();
+			return null;
 		}
 		//if (nAvailable == MAXSIZE) notifyAll();
 		Object ret = buffer[nextToGet];
 		if (++nextToGet == MAXSIZE) nextToGet = 0;
 		--nAvailable;
-		notifyAll();
-		
+		notifyAll();		
 		return ret;
 	}
 
