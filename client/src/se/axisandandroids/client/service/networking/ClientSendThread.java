@@ -39,7 +39,6 @@ public class ClientSendThread extends SendThreadSkeleton {
 	}	
 
 	public void run() {
-
 		disp_monitor.awaitConnected();
 		mailbox.put(new Command(Protocol.COMMAND.CONNECTED));
 

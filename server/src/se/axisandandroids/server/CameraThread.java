@@ -54,36 +54,32 @@ public class CameraThread extends Thread {
 	public void run() {
 		if (cameraConnect()) {
 			while (!interrupted() && !camera_monitor.getDisconnect()) {
-				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.MOVIE) {
-					camera_monitor.awaitImageFetch();
-					receiveImage();
-				}
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.IDLE) {
 					camera_monitor.awaitImageFetch();
-					receiveImage();
-				}				
+					receiveJPEG();
+				}
+				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.MOVIE) {
+					//camera_monitor.sync_clocks(mailbox);
+					//System.out.println("Correction: " + camera_monitor.getCorrection());								
+					receiveJPEG();
+				}		
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.AUTO) {
 					camera_monitor.awaitImageFetch();
-					receiveImage();
+					receiveJPEG();
 					checkForMotion();
 				}
 			}
 		}
 	}
 
-	private void receiveImage() {		
-		int len = receiveJPEG();	// ----------------------->> CORRECT TIMESTAMP HERE
-		frame_buffer.put(jpeg, len);			
-	}
-
 	/**
 	 * Get image from camera.
 	 * @return, length of the jpeg, the image is writen in byte[] jpeg.
 	 */
-	private int receiveJPEG() {
+	private void receiveJPEG() {
 		int len = 0;
 		len = myCamera.getJPEG(jpeg, 0);
-		return len;
+		frame_buffer.put(jpeg, len); 	// ----------------------->> CORRECT TIMESTAMP HERE
 	}
 
 	private boolean cameraConnect() {

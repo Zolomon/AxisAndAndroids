@@ -83,6 +83,12 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 			e.printStackTrace();
 			System.out.println("Flushing mailbox");
 			mailbox.flush();
+			disp_monitor.setDisconnect(true);
+			try {
+				join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		} 
 
 		
@@ -110,6 +116,12 @@ public class DesktopDisplayThread extends DisplayThreadSkeleton {
 				e.printStackTrace();				
 				System.out.println("Flushing mailbox");
 				mailbox.flush();
+				disp_monitor.setDisconnect(true);
+				try {
+					join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}			
 		}
 	}

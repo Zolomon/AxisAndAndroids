@@ -64,7 +64,7 @@ public class DisplayThreadSkeleton extends Thread {
 					e.printStackTrace();
 					System.out.println("Flushing mailbox");
 					mailbox.flush();
-
+					disp_monitor.setDisconnect(true);
 					try {
 						join();
 					} catch (InterruptedException e1) {
@@ -123,7 +123,7 @@ public class DisplayThreadSkeleton extends Thread {
 		 * @return timestamp in ms.
 		 */
 		protected long getTimestamp() {			
-			/* Decode Timestamp */ /*
+			/* Decode Timestamp */ 
 			int offset = 0; 			
 			long seconds = ( ( (long)jpeg[25+offset]) << 24 ) & 0xff000000 | 
 						   ( ( (long)jpeg[26+offset]) << 16 ) & 0x00ff0000 | 
@@ -132,12 +132,11 @@ public class DisplayThreadSkeleton extends Thread {
 			long hundreths = ( (long)jpeg[29+offset] & 0x000000ff );
 
 			return 1000*seconds + 10*hundreths;
-			*/
-
+			/*
 			return 1000L*(((jpeg[25]<0?256+jpeg[25]:jpeg[25])<<24)+((jpeg[26]<0?256+jpeg[26]:jpeg[26])<<16)+
 					((jpeg[27]<0?256+jpeg[27]:jpeg[27])<<8)+(jpeg[28]<0?256+jpeg[28]:jpeg[28]))+
 					10L*(jpeg[29]<0?256+jpeg[29]:jpeg[29]);		
-	
+			 */
 		}
 		
 		

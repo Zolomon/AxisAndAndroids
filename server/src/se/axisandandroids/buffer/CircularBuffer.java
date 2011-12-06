@@ -1,7 +1,5 @@
 package se.axisandandroids.buffer;
 
-import se.axisandandroids.networking.Protocol;
-
 
 /**
  * 
@@ -110,7 +108,7 @@ public class CircularBuffer {
 			byte[] x = new byte[raw_img.length];
 			System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 			x[0] = x[i] = (byte) i;			
-			fb.put(new Frame(x, x.length, false));
+			fb.put(new Frame(x));
 		}
 
 		fb.printBuffer();
@@ -133,7 +131,7 @@ public class CircularBuffer {
 		byte[] x = new byte[raw_img.length];
 		System.arraycopy(raw_img, 0, x, 0, BUFFMAX);
 		x[0] = (byte) 10;			
-		fb.put(new Frame(x, x.length, false));
+		fb.put(new Frame(x));
 
 		z = (Frame) fb.get();
 		assert(z.x[0] == 2);

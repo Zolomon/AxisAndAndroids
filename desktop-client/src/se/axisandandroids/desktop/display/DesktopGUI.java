@@ -48,7 +48,7 @@ public class DesktopGUI extends JFrame {
 	private JComboBox dispBox;
 	private JComboBox syncBox;
 
-	private static final String TITLE = "AxisAndAndroids - Desktop Client";
+	private static final String TITLE = "AxisAndAndroids::DesktopTeleskopos";
 
 	
 	
@@ -382,6 +382,11 @@ public class DesktopGUI extends JFrame {
     	// On second thought: who needs options anyway?
     	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
     	dm.setDisconnect(true);
+    	try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     	return true;
     }
 
