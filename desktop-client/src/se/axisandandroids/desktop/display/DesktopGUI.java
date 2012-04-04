@@ -17,7 +17,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-//import apple.dts.samplecode.osxadapter.OSXAdapter;
 
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.ModeChange;
@@ -52,12 +51,6 @@ public class DesktopGUI extends JFrame {
 
 	
 	
-	/* FROM OSXADDAPTER SAMPLE PACKAGE 
-     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip */
-	public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
-    final static int MENU_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-
 	/**
 	 * Create a DesktopGUI instance. DisplayThreads have to register to the
 	 * DesktopGUI for any action to occur.
@@ -65,7 +58,6 @@ public class DesktopGUI extends JFrame {
 	 */
 	public DesktopGUI(DisplayMonitor dm) {
 		super(); 
-		//super("OSXAdapter"); /* FROM OSXADDAPTER SAMPLE PACKAGE */
 		
 		this.dm = dm;
 		this.setTitle(TITLE);
@@ -89,8 +81,6 @@ public class DesktopGUI extends JFrame {
 	 */
 	public DesktopGUI(DisplayMonitor dm, DesktopDisplayThread ddt) {
 		super(); 
-		//super("OSXAdapter"); /* FROM OSXADDAPTER SAMPLE PACKAGE */
-		
 		this.dm = dm;
 		this.setTitle(TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);				
@@ -333,6 +323,5 @@ public class DesktopGUI extends JFrame {
 		}
 	}
 	
-
 } // end class GUI
 
