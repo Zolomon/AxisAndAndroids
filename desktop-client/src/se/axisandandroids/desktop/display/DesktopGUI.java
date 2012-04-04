@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import apple.dts.samplecode.osxadapter.OSXAdapter;
+//import apple.dts.samplecode.osxadapter.OSXAdapter;
 
 import se.axisandandroids.buffer.Command;
 import se.axisandandroids.buffer.ModeChange;
@@ -48,7 +48,7 @@ public class DesktopGUI extends JFrame {
 	private JComboBox dispBox;
 	private JComboBox syncBox;
 
-	private static final String TITLE = "AxisAndAndroids - Desktop Client";
+	private static final String TITLE = "AxisAndAndroids::DesktopTeleskopos";
 
 	
 	
@@ -75,12 +75,9 @@ public class DesktopGUI extends JFrame {
 		controlAreaPanel = new JPanel(new GridLayout(1, 2));
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
-		this.addWindowListener(new onWindowClose(this.dm));
 		
-		/* FROM OSXADDAPTER SAMPLE PACKAGE
-		 *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip		  
-		 * Set up our application to respond to the Mac OS X application menu */
-		registerForMacOSXEvents();
+		this.addWindowListener(new WindowHandler(dm));
+
 	}
 	
 	/**
@@ -103,12 +100,8 @@ public class DesktopGUI extends JFrame {
 		this.getContentPane().add(imageAreaPanel, BorderLayout.CENTER);
 		this.getContentPane().add(controlAreaPanel, BorderLayout.SOUTH);
 		this.registerDisplayThread(ddt);		
-		this.addWindowListener(new onWindowClose(this.dm));
-				
-		/* FROM OSXADDAPTER SAMPLE PACKAGE
-		 *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip		  
-		 * Set up our application to respond to the Mac OS X application menu */
-        registerForMacOSXEvents();
+		this.addWindowListener(new WindowHandler(dm));
+	
 	}
 
 	/**
@@ -326,65 +319,20 @@ public class DesktopGUI extends JFrame {
 		}
 	}
 	
-	class onWindowClose extends WindowAdapter {
+	
+	class WindowHandler extends WindowAdapter {	
 		DisplayMonitor dm;
-		public onWindowClose(DisplayMonitor dm) {
+		public WindowHandler(DisplayMonitor dm) {
 			this.dm = dm;
 		}
 		public void windowClosing(WindowEvent e) {
 			System.out.println("Window Closed... disconnect status set to: true.");
         	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
-			this.dm.setDisconnect(true);			
+			this.dm.setDisconnect(true);	
+			System.exit(0);
 		}
 	}
 	
-	
-	
-	/**
-	 * FROM OSXADDAPTER SAMPLE PACKAGE
-     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip	 
-	 * Generic registration with the Mac OS X application menu
-	 * Checks the platform, then attempts to register with the Apple EAWT
-     * See OSXAdapter.java to see how this is done without directly referencing any Apple APIs
-     */
-    public void registerForMacOSXEvents() {
-        if (MAC_OS_X) {
-            try {
-                /* Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
-                   use as delegates for various com.apple.eawt.ApplicationListener methods */
-                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quit", (Class[])null));               
-                //OSXAdapter.setAboutHandler(this, getClass().getDeclaredMethod("about", (Class[])null));
-                //OSXAdapter.setPreferencesHandler(this, getClass().getDeclaredMethod("preferences", (Class[])null));
-                //OSXAdapter.setFileHandler(this, getClass().getDeclaredMethod("loadImageFile", new Class[] { String.class }));
-            } catch (Exception e) {
-                System.err.println("Error while loading the OSXAdapter:");
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    /**
-     * FROM OSXADDAPTER SAMPLE PACKAGE
-     *  - http://developer.apple.com/library/mac/samplecode/OSXAdapter/OSXAdapter.zip
-     *  General quit handler; fed to the OSXAdapter as the method to call when a system quit event occurs
-     *  A quit event is triggered by Cmd-Q, selecting Quit from the application or Dock menu, or logging out
-     */
-    public boolean quit() { 
-    	/* // For options dialouge do:
-        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Quit?", JOptionPane.YES_NO_OPTION);
-        if (option == JOptionPane.YES_OPTION) {
-        	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
-        	dm.setDisconnect(true);
-        }
-        return (option == JOptionPane.YES_OPTION);
-        */
-    	
-    	// On second thought: who needs options anyway?
-    	dm.postToAllMailboxes(new Command(Protocol.COMMAND.DISCONNECT));
-    	dm.setDisconnect(true);
-    	return true;
-    }
-
 
 } // end class GUI
 

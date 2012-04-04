@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.SocketException;
+
 import se.axisandandroids.client.display.DisplayMonitor;
 import se.axisandandroids.networking.Connection;
 import se.lth.cs.fakecamera.Axis211A;

@@ -6,16 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import se.axisandandroids.client.display.DisplayMonitor;
-import se.axisandandroids.networking.Connection;
+
 
 public class ConnectionHandler {
 
 	private HashMap<Integer, CameraTunnel> tunnels;
-	private ArrayList<Connection> connections; 
+	private ArrayList<UDP_ClientConnection> connections; 
+	private DisplayMonitor disp_monitor;
 	
 	public ConnectionHandler(DisplayMonitor disp_monitor) {
+		this.disp_monitor = disp_monitor;
 		tunnels = new HashMap<Integer, CameraTunnel>();
-		connections = new ArrayList<Connection>();
+		connections = new ArrayList<UDP_ClientConnection>();
 	}
 
 	public void add(int id, CameraTunnel tunnel) {
@@ -48,7 +50,7 @@ public class ConnectionHandler {
 		return tunnels.size();
 	}
 	
-	public void addConnection(Connection c) {
+	public void addConnection(UDP_ClientConnection c) {
 		connections.add(c);
 	}
 	
@@ -56,7 +58,7 @@ public class ConnectionHandler {
 		connections.clear();
 	}
 	
-	public List<Connection> connectionIterator() {
+	public List<UDP_ClientConnection> connectionIterator() {
 		return Collections.unmodifiableList(connections);
 	}
 
@@ -70,5 +72,9 @@ public class ConnectionHandler {
 		for(CameraTunnel c : tunnels.values()) {
 			c.pausePanel();
 		}
+	}
+	
+	public DisplayMonitor getDispMonitor() {
+		return disp_monitor;
 	}
 }

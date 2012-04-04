@@ -144,7 +144,7 @@ public class CameraServer {
 		receiveThread = new ServerReceiveThread(con, cm);
 		sendThread = new ServerSendThread(con, cm);
 		ct = new CameraThread(cm, sendThread.mailbox, sendThread.frame_buffer, myCamera, md);
-		
+
 		// start threads
 		receiveThread.start();
 		sendThread.start();

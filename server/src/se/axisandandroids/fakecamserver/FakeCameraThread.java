@@ -60,7 +60,7 @@ public class FakeCameraThread extends Thread {
 				}
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.MOVIE) {
 					//camera_monitor.sync_clocks(mailbox);
-					//System.out.println("Correction: " + camera_monitor.getCorrection());								
+					//System.out.println("Correction: " + camera_monitor.getCorrection());						
 					receiveJPEG();
 				}
 				while (camera_monitor.getDisplayMode() == Protocol.DISP_MODE.AUTO) {

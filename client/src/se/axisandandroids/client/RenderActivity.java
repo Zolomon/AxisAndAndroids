@@ -159,10 +159,10 @@ public class RenderActivity extends Activity {
 			mLinearLayout = (LinearLayout) findViewById(R.id.gridview);
 			mLayoutInflater = LayoutInflater.from(RenderActivity.this);
 
-			for (Connection c : mService.mConnectionHandler
+			for (UDP_ClientConnection c : mService.mConnectionHandler
 					.connectionIterator()) {
 				System.out.println("Connection ID: " + c.getId());
-				addPanel((UDP_ClientConnection) c);
+				addPanel(c);
 			}
 
 			mService.mConnectionHandler.clearConnections();

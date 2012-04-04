@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import se.axisandandroids.client.service.CtrlService;
 import se.axisandandroids.client.service.CtrlService.LocalBinder;
 import se.axisandandroids.client.service.networking.ConnectionHandler;
-import se.axisandandroids.networking.Connection;
+import se.axisandandroids.client.service.networking.UDP_ClientConnection;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -78,7 +78,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 		String port = etPort.getText().toString();
 
 		System.out.println("Trying to connect to: " + host + ":" + port);
-		mService.mConnectionHandler.addConnection(new Connection(host, Integer.parseInt(port)));		
+		mService.mConnectionHandler.addConnection( new UDP_ClientConnection(host, Integer.parseInt(port), mConnectionHandler.getDispMonitor()) );
 
 		final TableLayout tl = (TableLayout) findViewById(R.id.tlConnections);
 		LayoutInflater inflater = LayoutInflater.from(ClientActivity.this);

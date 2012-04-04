@@ -49,6 +49,7 @@ public class ClientReceiveThread extends Thread {
 				recvCommand();
 			} catch (IOException e) {
 				System.err.println("ReceiveThread: Connection Object IO error"); // ACTION
+				c.disconnect();
 				System.exit(1);
 			}
 		}
@@ -56,6 +57,7 @@ public class ClientReceiveThread extends Thread {
 	}
 
 	public void interrupt() {
+		c.disconnect();
 		imgRecv.interrupt();
 		super.interrupt();
 	}	

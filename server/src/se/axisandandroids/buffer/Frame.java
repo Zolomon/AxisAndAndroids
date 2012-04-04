@@ -12,6 +12,7 @@ public class Frame implements Comparable<Frame> {
 	
 	public int len;
 	public byte[] x;
+	public long timestamp;
 	
 	/**
 	 * Create an empty frame.
@@ -19,6 +20,7 @@ public class Frame implements Comparable<Frame> {
 	public Frame() {
 		x = null;
 		len = 0;
+		timestamp = 0;
 	}
 	
 	/**
@@ -27,36 +29,23 @@ public class Frame implements Comparable<Frame> {
 	public Frame(int FRAMESIZE) {
 		x = new byte[FRAMESIZE];
 		len = 0;
+		setTimestamp();
 	}
 	
-	/**
-	 * Create a frame encapsulating frame data in x and where
-	 * len is index if last element belonging to the frame.
-	 * @param x, frame data buffer array.
-	 * @param len, length of valid data.
-	 */
-	public Frame(byte[] x, int len) {
-		//this.x = x; // no copy ?
-		System.arraycopy(x, 0, this.x, 0, len); // copy ?
-		this.len = len;
+	public Frame(byte[] x) {	
+		this.x = x; 							// no copy
+		this.len = this.x.length;
+		setTimestamp();
 	}	
 	
 	public Frame(byte[] x, int len, int FRAMESIZE) {
 		this.x = new byte[FRAMESIZE];
 		System.arraycopy(x, 0, this.x, 0, len); // copy ?
 		this.len = len;
-		
+		setTimestamp();
 	}	
 	
-	public Frame(byte[] x, int len, boolean copy) {
-		if (copy) {
-			System.arraycopy(x, 0, this.x, 0, len); // copy
-		} else {
-			this.x = x; 							// no copy
-		}
-		this.len = len;
-	}	
-
+	
 	/**
 	 * Copy Constructor. 
 	 * Create a Frame object from another Frame object.
@@ -66,7 +55,14 @@ public class Frame implements Comparable<Frame> {
 		this.len = other.len;
 		this.x = new byte[other.x.length];
 		System.arraycopy(other.x, 0, this.x, 0, len);
+		setTimestamp();
 	}
+	
+	public void copyToFrame(byte[] x, int len) {	
+		this.len = len;
+		System.arraycopy(x, 0, this.x, 0, len);
+		setTimestamp();
+	}	
 
 	/**
 	 * Print it all out.
@@ -88,13 +84,14 @@ public class Frame implements Comparable<Frame> {
 	 * Extract timestamp from image byte array.
 	 * @return timestamp in ms.
 	 */
-	protected long getTimestamp() {
+	protected void setTimestamp() {
 		int offset = 0; // If you decide to use the header for piggy-backing.
-		
 		int pos = 25;
-		if (x.length < 25) { 	// FOR DEBUG
-			return x[0]; 		// FOR DEBUG
-		} 						// FOR DEBUG
+		
+		if (x.length < 25) { 		// FOR DEBUG
+			timestamp =  x[0]; 		// FOR DEBUG
+			return;					// FOR DEBUG
+		} 							// FOR DEBUG
 		
 		/* Decode Timestamp */ 
 		long seconds = ( ( (long)x[pos+offset]) << 24 ) & 0xff000000 | 
@@ -102,7 +99,15 @@ public class Frame implements Comparable<Frame> {
 					   ( ( (long)x[pos+2+offset]) << 8  ) & 0x0000ff00 | 
 					   (   (long)x[pos+3+offset]		  & 0x000000ff ); 
 		long hundreths = ( (long)x[pos+4+offset] & 0x000000ff );
-		return 1000*seconds + 10*hundreths;
+		timestamp = 1000*seconds + 10*hundreths;
+	}
+	
+	/**
+	 * Extract timestamp from image byte array.
+	 * @return timestamp in ms.
+	 */
+	protected long getTimestamp() {
+		return timestamp;
 	}
 	
 	@Override

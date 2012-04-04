@@ -65,9 +65,8 @@ public class PriorityFrameBuffer {
 			System.err.println("Put got interrupted");
 			e.printStackTrace();
 		}		
-		Frame thenewframe = recycler.poll();		
-		System.arraycopy(x, 0, thenewframe.x, 0, len);			
-		thenewframe.len = len;
+		Frame thenewframe = recycler.poll();
+		thenewframe.copyToFrame(x, len);
 		buffer.offer(thenewframe);						
 		notifyAll();
 	}
@@ -83,7 +82,7 @@ public class PriorityFrameBuffer {
 			return null;
 		}
 		/* Return a copy with correct length. */
-		Frame thereturnframe = buffer.poll();		
+		Frame thereturnframe = buffer.poll();			
 		byte[] data = new byte[thereturnframe.len]; 
 		System.arraycopy(thereturnframe.x, 0, data, 0, thereturnframe.len);		
 		recycler.offer(thereturnframe);		

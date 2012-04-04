@@ -20,8 +20,8 @@ public class ImageReceiver extends Thread {
 	}
 
 	public void run() {
+		int len;
 		while (!interrupted() && !disp_monitor.getDisconnect()) {			
-			int len = 0;
 			len = c.recvImage(jpeg);
 			frame_buffer.put(jpeg, len);	
 		}

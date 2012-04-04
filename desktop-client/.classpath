@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="../server/lib/cameraproxy.jar"/>
 	<classpathentry exported="true" kind="lib" path="../server/lib/fakecamera.jar"/>
 	<classpathentry exported="true" kind="lib" path="../server/lib/media.jar"/>
-	<classpathentry exported="true" kind="lib" path="/Users/jg/workspace/eda040_project/AxisAndAndroids/desktop-client/lib/OSXAdapter.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/client"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/server"/>
 	<classpathentry kind="output" path="bin"/>

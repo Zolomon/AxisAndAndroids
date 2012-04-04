@@ -68,6 +68,7 @@ public class CameraMonitor {
 			}
 		} catch (InterruptedException e) {
 			System.err.println("Got interrupted while waiting...");
+			e.printStackTrace();
 		}
 	}
 
